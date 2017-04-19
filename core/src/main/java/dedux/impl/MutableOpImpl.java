@@ -1,7 +1,9 @@
 package dedux.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -83,6 +85,13 @@ public class MutableOpImpl<T> implements MutableOp<T> {
                     flag.unsubscribed = false;
                 }
             }
+        }
+    }
+
+    // for testing purposes
+    List<Subscription> subscriptions() {
+        synchronized (lock) {
+            return new ArrayList<>(map.keySet());
         }
     }
 

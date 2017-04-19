@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
 android {
 
     compileSdkVersion TARGET_SDK
@@ -20,9 +23,20 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dexOptions {
+        preDexLibraries true
+        javaMaxHeapSize '4g'
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
 dependencies {
     compile project(':core')
     compile 'ru.noties:debug:3.0.0@jar'
+    compile 'com.google.code.gson:gson:2.8.0'
 }

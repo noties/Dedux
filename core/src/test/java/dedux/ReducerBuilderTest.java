@@ -2,6 +2,8 @@ package dedux;
 
 import org.junit.Test;
 
+import java.util.Map;
+
 import javax.annotation.Nonnull;
 
 import static org.junit.Assert.assertEquals;
@@ -168,9 +170,20 @@ public class ReducerBuilderTest {
             return null;
         }
 
+        @Nonnull
+        @Override
+        public Map<String, Object> state() {
+            return null;
+        }
+
         @Override
         public <T> void set(@Nonnull T t) {
 
+        }
+
+        @Override
+        public Subscription subscribe(@Nonnull Consumer<MutableState> consumer) {
+            return null;
         }
     }
 }

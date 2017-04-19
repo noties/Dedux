@@ -7,16 +7,10 @@ import dedux.impl.StoreImpl;
 @SuppressWarnings("WeakerAccess")
 public class StoreBuilder {
 
-    public static StoreBuilder create(@Nonnull Reducer<Action> reducer) {
-        return new StoreBuilder(reducer);
-    }
-
-    private final Reducer<Action> reducer;
     private Middleware<Action> middleware;
     private PreloadedState preloadedState;
 
-    public StoreBuilder(@Nonnull Reducer<Action> reducer) {
-        this.reducer = reducer;
+    public StoreBuilder() {
     }
 
     public StoreBuilder middleware(Middleware<Action> middleware) {
@@ -29,7 +23,7 @@ public class StoreBuilder {
         return this;
     }
 
-    public Store build() {
+    public Store build(@Nonnull Reducer<Action> reducer) {
         return new StoreImpl(reducer, middleware, preloadedState);
     }
 }

@@ -14,9 +14,6 @@ import dedux.Subscription;
 
 public class MutableStateImpl implements MutableState {
 
-    // so, right now we need a way to serialize/deserialize the full state
-    // + ability to provide default values
-
     private final Map<Class<?>, MutableOp<?>> properties = new HashMap<>();
     private final MutableOp<MutableState> op = new MutableOpImpl<>((MutableState) this);
     private final Consumer<Object> notification = new Consumer<Object>() {
@@ -40,7 +37,6 @@ public class MutableStateImpl implements MutableState {
                 op = new MutableOpImpl<R>(null);
                 //noinspection unchecked
                 ((MutableOp) op).subscribe(notification);
-                // todo, here we also want to immediately subscribe to the possible value change
                 properties.put(cl, op);
             }
             //noinspection unchecked
@@ -53,9 +49,6 @@ public class MutableStateImpl implements MutableState {
         //noinspection unchecked
         get((Class<T>) t.getClass()).set(t);
     }
-
-    // we can have `flatten` function to return a simple `Map<String, Object>` for serialization
-    // and `+` have a function that takes a `Map<String, Object>` for deserialization
 
     @Nonnull
     @Override
