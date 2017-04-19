@@ -24,7 +24,7 @@ public class MiddlewareBuilder {
     public <A extends Action> MiddlewareBuilder add(@Nonnull Class<A> cl, @Nonnull Middleware<A> middleware) {
         List<Middleware<Action>> current = middlewares.get(cl);
         if (current == null) {
-            current = new ArrayList<>();
+            current = new ArrayList<>(3);
             //noinspection unchecked
             current.add((Middleware<Action>) middleware);
             middlewares.put(cl, current);

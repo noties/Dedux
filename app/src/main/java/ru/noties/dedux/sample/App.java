@@ -2,13 +2,6 @@ package ru.noties.dedux.sample;
 
 import android.app.Application;
 
-import java.util.Date;
-
-import javax.annotation.Nonnull;
-
-import dedux.Action;
-import dedux.MutableState;
-import dedux.Reducer;
 import dedux.Store;
 import dedux.StoreBuilder;
 import ru.noties.debug.AndroidLogDebugOutput;
@@ -24,20 +17,10 @@ public class App extends Application {
 
         Debug.init(new AndroidLogDebugOutput(BuildConfig.DEBUG));
 
-        final StatePersistance persistance = new StatePersistance(getApplicationContext());
+        this.store = AppStore.create(this);
+    }
 
-        store = new StoreBuilder()
-                .preloadedState(persistance.preloadedState())
-                .middleware((store, action, next) -> {
-                    Debug.i("action: %s, state: %s", action, store.state().state());
-                    next.next();
-                })
-                .build((state, action) -> {
-
-                });
-
-        Debug.i("created a store with initial state: %s", store.state().state());
-
-        persistance.onStoreCreated(store);
+    public Store store() {
+        return store;
     }
 }

@@ -15,6 +15,8 @@ import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -26,8 +28,9 @@ import javax.annotation.Nullable;
 import dedux.PreloadedState;
 import dedux.Store;
 import dedux.Subscription;
+import ru.noties.dedux.sample.utils.CollectionUtils;
 
-class StatePersistance {
+class StatePersistence {
 
     private static final String NAME = "state";
     private static final String KEY = "state";
@@ -39,10 +42,13 @@ class StatePersistance {
             .registerTypeAdapter(LoadedState.class, new LoadedStateJsonDeserializer())
             .create();
 
+    private final List<Object> initial;
+
     private Subscription subscription;
 
-    StatePersistance(@Nonnull Context context) {
+    StatePersistence(@Nonnull Context context, @Nullable List<Object> initial) {
         this.preferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        this.initial = initial;
     }
 
     // here we just check if we have previous state
@@ -76,21 +82,50 @@ class StatePersistance {
         final PreloadedState out;
         final String json = preferences.getString(KEY, null);
         if (TextUtils.isEmpty(json)) {
-            out = null;
+            if (!CollectionUtils.isEmpty(initial)) {
+                out = new PreloadedState();
+                for (Object o: initial) {
+                    out.add(o);
+                }
+            } else {
+                out = null;
+            }
         } else {
             PreloadedState preloadedState = null;
             final LoadedState loadedState = gson.fromJson(json, LoadedState.class);
             if (loadedState != null) {
                 final List<Object> objects = loadedState.objects;
+                final Map<Class<?>, Object> mapInitial = mapInitial();
+                preloadedState = new PreloadedState();
                 if (objects != null
                         && objects.size() > 0) {
-                    preloadedState = new PreloadedState();
                     for (Object object: objects) {
                         preloadedState.add(object);
+                        mapInitial.remove(object.getClass());
+                    }
+                }
+                if (mapInitial.size() > 0) {
+                    for (Object o: mapInitial.values()) {
+                        preloadedState.add(o);
                     }
                 }
             }
             out = preloadedState;
+        }
+        return out;
+    }
+
+    private Map<Class<?>, Object> mapInitial() {
+        final Map<Class<?>, Object> out;
+        if (initial != null
+                && initial.size() > 0) {
+            out = new HashMap<>();
+            for (Object o: initial) {
+                out.put(o.getClass(), o);
+            }
+        } else {
+            //noinspection unchecked
+            out = Collections.EMPTY_MAP;
         }
         return out;
     }

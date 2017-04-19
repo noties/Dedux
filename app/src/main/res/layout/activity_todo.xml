@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:id="@+id/content_frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        style="@style/AppBarRoot"
+        android:orientation="vertical">
+
+        <LinearLayout
+            style="@style/AppBarContent"
+            android:orientation="horizontal"
+            android:paddingRight="?android:attr/actionBarSize"
+            tools:ignore="RtlHardcoded">
+
+            <ImageView
+                android:id="@id/app_bar_back"
+                style="@style/AppBarIcon"
+                android:src="@drawable/ic_clear_24dp_white"
+                android:visibility="invisible" />
+
+            <TextView
+                style="@style/AppBarTitle"
+                tools:text="Todo" />
+
+        </LinearLayout>
+
+        <View style="@style/AppBarShadow" />
+
+    </LinearLayout>
+
+</FrameLayout>
