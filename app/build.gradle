@@ -9,7 +9,7 @@ android {
     buildToolsVersion BUILD_TOOLS
 
     defaultConfig {
-        applicationId "ru.noties.dedux.sample"
+        applicationId "ru.noties.tddd"
         minSdkVersion MIN_SDK
         targetSdkVersion TARGET_SDK
         versionCode 1

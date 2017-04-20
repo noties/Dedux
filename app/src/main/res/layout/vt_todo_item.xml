@@ -22,7 +22,7 @@
         android:layout_weight="1"
         tools:text="This is item. Can be big/small/whatever, right as long as everything is great and we have a lot of line also"/>
 
-    <ru.noties.dedux.sample.app.core.IconView
+    <ru.noties.tddd.app.core.IconView
         android:id="@+id/vt_todo_check_box"
         android:layout_width="?android:attr/actionBarSize"
         android:layout_height="?android:attr/actionBarSize"

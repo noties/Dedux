@@ -17,7 +17,7 @@
 
             <!--content here-->
 
-            <ru.noties.dedux.sample.app.components.list.ListComponent
+            <ru.noties.tddd.app.components.list.ListComponent
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
@@ -29,13 +29,13 @@
 
         </FrameLayout>
 
-        <ru.noties.dedux.sample.app.components.input.InputComponent
+        <ru.noties.tddd.app.components.input.InputComponent
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
 
-    <ru.noties.dedux.sample.app.components.appbar.AppBarComponent
+    <ru.noties.tddd.app.components.appbar.AppBarComponent
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
