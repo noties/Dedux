@@ -3,11 +3,10 @@ package ru.noties.dedux.sample;
 import android.app.Application;
 
 import dedux.Store;
-import dedux.StoreBuilder;
 import ru.noties.debug.AndroidLogDebugOutput;
 import ru.noties.debug.Debug;
 
-public class App extends Application {
+public class App extends Application implements StoreHolder {
 
     private Store store;
 
@@ -20,6 +19,7 @@ public class App extends Application {
         this.store = AppStore.create(this);
     }
 
+    @Override
     public Store store() {
         return store;
     }

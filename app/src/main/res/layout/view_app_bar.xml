@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <FrameLayout
+        style="@style/AppBarContent"
+        android:orientation="horizontal">
+
+        <ru.noties.dedux.sample.app.core.IconView
+            android:id="@+id/app_bar_filter"
+            style="@style/AppBarIcon"
+            android:layout_gravity="left"
+            android:src="@drawable/ic_filter_list_24_dp_white"
+            app:iv_color="@color/colorWhite"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/app_bar_title"
+            style="@style/AppBarTitle"
+            android:layout_marginLeft="?android:attr/actionBarSize"
+            android:layout_marginRight="?android:attr/actionBarSize"
+            android:text="@string/app_bar_title" />
+
+        <ru.noties.dedux.sample.app.core.IconView
+            android:id="@+id/app_bar_action"
+            style="@style/AppBarIcon"
+            android:layout_gravity="right"
+            android:src="@drawable/bg_checkbox"
+            android:visibility="gone"
+            app:iv_color="@color/colorWhite"
+            tools:ignore="RtlHardcoded" />
+
+    </FrameLayout>
+
+    <View style="@style/AppBarShadow" />
+
+</merge>

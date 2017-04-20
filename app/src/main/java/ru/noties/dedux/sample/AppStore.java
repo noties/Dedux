@@ -15,13 +15,11 @@ import dedux.ReducerBuilder;
 import dedux.Store;
 import dedux.StoreBuilder;
 import ru.noties.debug.Debug;
-import ru.noties.dedux.sample.action.AppStateAction;
-import ru.noties.dedux.sample.action.GoBackAction;
-import ru.noties.dedux.sample.action.NavigatorAction;
-import ru.noties.dedux.sample.state.AppBarState;
-import ru.noties.dedux.sample.state.AppScreen;
-import ru.noties.dedux.sample.state.AppState;
-import ru.noties.dedux.sample.state.NavigatorState;
+import ru.noties.dedux.sample.app.components.appbar.AppBarState;
+import ru.noties.dedux.sample.app.components.input.InputAction;
+import ru.noties.dedux.sample.app.components.input.InputReducer;
+import ru.noties.dedux.sample.app.components.input.InputState;
+import ru.noties.dedux.sample.state.StatePersistence;
 
 class AppStore {
 
@@ -54,66 +52,23 @@ class AppStore {
 
     private List<Object> initialState() {
         final List<Object> list = new ArrayList<>();
-        list.add(new AppState());
-        list.add(new AppBarState(false, "Todos"));
+        list.add(new AppBarState(application.getString(R.string.app_name), false, AppBarState.ActionState.INVISIBLE));
+        list.add(new InputState());
         return list;
     }
 
     private Reducer<Action> reducer() {
         return new ReducerBuilder()
-                .add(NavigatorAction.class, (s, a) -> s.set(new NavigatorState(a.back, a.close)))
-                .add(AppStateAction.class, (s, a) -> {
-                    s.set(new AppState(a.screen));
-                    final AppBarState appBarState;
-                    switch (a.screen) {
-                        case LIST:
-                            appBarState = new AppBarState(false, "Todos");
-                            break;
-                        case INPUT:
-                            appBarState = new AppBarState(true, "New");
-                            break;
-                        default:
-                            throw new RuntimeException("Unknown screen: " + a.screen);
-                    }
-                    s.set(appBarState);
-                })
+                .add(InputAction.class, new InputReducer())
                 .build((s, a) -> {});
     }
 
     private Middleware<Action> middleware() {
         return new MiddlewareBuilder()
-                .add(Action.class, new Middleware<Action>() {
-                    @Override
-                    public void apply(@Nonnull Store store, @Nonnull Action action, @Nonnull Next next) {
-                        Debug.i("action: %s, state: %s", action, store.state().state());
-                        next.next();
-                    }
-                })
-                .add(GoBackAction.class, new Middleware<GoBackAction>() {
-                    @Override
-                    public void apply(@Nonnull Store store, @Nonnull GoBackAction action, @Nonnull Next next) {
-
-                        // we query current state (screen)
-                        final AppState appState = store.state().get(AppState.class).get();
-                        if (appState != null) {
-                            final boolean back;
-                            final boolean close;
-                            if (AppScreen.INPUT == appState.appScreen) {
-                                back = true;
-                                close = false;
-                            } else {
-                                back = false;
-                                close = true;
-                            }
-                            store.dispatch(new NavigatorAction(back, close));
-                            if (back) {
-                                store.dispatch(new AppStateAction(AppScreen.LIST));
-                            }
-                        }
-
-                        next.next();
-                    }
-                })
+                .add(Action.class, ((store, action, next) -> {
+                    Debug.i("action: %s, currentState: %s", action, store.state().state());
+                    next.next();
+                }))
                 .build();
     }
 }

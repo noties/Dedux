@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+//sourceCompatibility = "1.8"
+//targetCompatibility = "1.8"
 
 android {
 
@@ -38,6 +38,8 @@ android {
 dependencies {
     compile project(':core')
     compile 'ru.noties:debug:3.0.0@jar'
+    compile 'ru.noties:vt:1.0.0'
     compile 'com.google.code.gson:gson:2.8.0'
-    compile 'com.android.support:support-annotations:26.0.0-alpha1'
+    compile "com.android.support:support-annotations:$SUPPORT_VERSION"
+    compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
 }

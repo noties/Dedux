@@ -28,4 +28,5 @@ ext {
     TARGET_SDK = 25
 
     BUILD_TOOLS = '25.0.2'
+    SUPPORT_VERSION = '25.3.1'
 }
