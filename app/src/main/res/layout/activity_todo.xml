@@ -17,6 +17,10 @@
 
             <!--content here-->
 
+            <ru.noties.dedux.sample.app.components.list.ListComponent
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/shadow_height"

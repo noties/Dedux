@@ -2,6 +2,7 @@ package ru.noties.dedux.sample.data;
 
 public class Todo {
 
+    private final long id;
     private final String name;
     private final boolean done;
 
@@ -11,9 +12,14 @@ public class Todo {
     // final String label;
 
 
-    public Todo(String name, boolean done) {
+    public Todo(long id, String name, boolean done) {
+        this.id = id;
         this.name = name;
         this.done = done;
+    }
+
+    public long id() {
+        return id;
     }
 
     public String getName() {
@@ -27,8 +33,24 @@ public class Todo {
     @Override
     public String toString() {
         return "Todo{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", done=" + done +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Todo todo = (Todo) o;
+
+        return id == todo.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (id ^ (id >>> 32));
     }
 }

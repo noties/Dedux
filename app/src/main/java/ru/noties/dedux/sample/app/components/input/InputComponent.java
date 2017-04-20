@@ -14,6 +14,7 @@ import javax.annotation.Nullable;
 
 import ru.noties.debug.Debug;
 import ru.noties.dedux.sample.R;
+import ru.noties.dedux.sample.app.model.AddTodoAction;
 import ru.noties.dedux.sample.app.components.ComponentHelper;
 import ru.noties.dedux.sample.app.core.TextWatcherAdapter;
 import ru.noties.dedux.sample.utils.KeyboardUtils;
@@ -95,7 +96,13 @@ public class InputComponent extends FrameLayout {
             editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    Debug.i(editText.getText());
+                    final CharSequence input = v.getText();
+                    if (TextUtils.isEmpty(input)) {
+                        // do nothing
+                        helper.store().dispatch(new InputAction(InputAction.Type.FOCUS).hasFocus(false));
+                    } else {
+                        helper.store().dispatch(new AddTodoAction(input.toString()));
+                    }
                     return true;
                 }
             });

@@ -12,10 +12,12 @@
         android:id="@+id/input_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="4dip"
         android:layout_marginLeft="8dip"
         android:layout_marginRight="8dip"
+        android:layout_marginTop="4dip"
         android:imeOptions="actionGo"
-        android:inputType="text|textShortMessage"
+        android:inputType="text|textShortMessage|textCapSentences"
         android:maxLines="3"
         android:paddingLeft="8dip"
         android:paddingRight="8dip" />

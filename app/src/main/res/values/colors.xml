@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="colorWhite">#FFF</color>
+
+    <color name="todo_text_color_normal">#333</color>
+    <color name="todo_text_color_done">#80333333</color>
 </resources>

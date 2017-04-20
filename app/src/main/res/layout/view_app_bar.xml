@@ -27,7 +27,7 @@
             android:id="@+id/app_bar_action"
             style="@style/AppBarIcon"
             android:layout_gravity="right"
-            android:src="@drawable/bg_checkbox"
+            android:src="@drawable/bg_app_bar_action"
             android:visibility="gone"
             app:iv_color="@color/colorWhite"
             tools:ignore="RtlHardcoded" />

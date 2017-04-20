@@ -15,10 +15,15 @@ import dedux.ReducerBuilder;
 import dedux.Store;
 import dedux.StoreBuilder;
 import ru.noties.debug.Debug;
+import ru.noties.dedux.sample.app.model.AddTodoAction;
 import ru.noties.dedux.sample.app.components.appbar.AppBarState;
 import ru.noties.dedux.sample.app.components.input.InputAction;
 import ru.noties.dedux.sample.app.components.input.InputReducer;
 import ru.noties.dedux.sample.app.components.input.InputState;
+import ru.noties.dedux.sample.app.model.AddTodoReducer;
+import ru.noties.dedux.sample.app.model.TodosState;
+import ru.noties.dedux.sample.app.model.ToggleTodoAction;
+import ru.noties.dedux.sample.app.model.ToggleTodoReducer;
 import ru.noties.dedux.sample.state.StatePersistence;
 
 class AppStore {
@@ -54,12 +59,15 @@ class AppStore {
         final List<Object> list = new ArrayList<>();
         list.add(new AppBarState(application.getString(R.string.app_name), false, AppBarState.ActionState.INVISIBLE));
         list.add(new InputState());
+        list.add(new TodosState());
         return list;
     }
 
     private Reducer<Action> reducer() {
         return new ReducerBuilder()
                 .add(InputAction.class, new InputReducer())
+                .add(AddTodoAction.class, new AddTodoReducer())
+                .add(ToggleTodoAction.class, new ToggleTodoReducer())
                 .build((s, a) -> {});
     }
 
