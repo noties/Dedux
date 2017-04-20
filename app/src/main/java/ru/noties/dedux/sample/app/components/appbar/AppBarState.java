@@ -4,35 +4,65 @@ import ru.noties.dedux.sample.state.BaseState;
 
 public class AppBarState extends BaseState {
 
-    public enum ActionState {
-        INVISIBLE
-        , CLEAR
-        , EMPTY
-        ;
-    }
-
     private String title;
     private boolean filterEnabled;
-    private ActionState actionState;
+    private boolean clearEnabled;
+    private boolean allDone;
+    private boolean toggleDoneEnabled;
 
     public AppBarState() {}
 
-    public AppBarState(String title, boolean filterEnabled, ActionState actionState) {
+    public AppBarState(String title, boolean filterEnabled, boolean clearEnabled, boolean allDone, boolean toggleDoneEnabled) {
         this.title = title;
         this.filterEnabled = filterEnabled;
-        this.actionState = actionState;
+        this.clearEnabled = clearEnabled;
+        this.allDone = allDone;
+        this.toggleDoneEnabled = toggleDoneEnabled;
     }
 
     public String title() {
         return title;
     }
 
+    public AppBarState title(String title) {
+        this.title = title;
+        return this;
+    }
+
     public boolean filterEnabled() {
         return filterEnabled;
     }
 
-    public ActionState actionState() {
-        return actionState;
+    public AppBarState filterEnabled(boolean filterEnabled) {
+        this.filterEnabled = filterEnabled;
+        return this;
+    }
+
+    public boolean clearEnabled() {
+        return clearEnabled;
+    }
+
+    public AppBarState clearEnabled(boolean clearEnabled) {
+        this.clearEnabled = clearEnabled;
+        return this;
+    }
+
+    public boolean allDone() {
+        return allDone;
+    }
+
+    public AppBarState allDone(boolean allDone) {
+        this.allDone = allDone;
+        return this;
+    }
+
+    public boolean toggleDoneEnabled() {
+        return toggleDoneEnabled;
+    }
+
+    public AppBarState toggleDoneEnabled(boolean toggleDoneEnabled) {
+        this.toggleDoneEnabled = toggleDoneEnabled;
+        return this;
     }
 
     @Override
@@ -40,7 +70,9 @@ public class AppBarState extends BaseState {
         return "AppBarState{" +
                 "title='" + title + '\'' +
                 ", filterEnabled=" + filterEnabled +
-                ", actionState=" + actionState +
+                ", clearEnabled=" + clearEnabled +
+                ", allDone=" + allDone +
+                ", toggleDoneEnabled=" + toggleDoneEnabled +
                 '}';
     }
 }

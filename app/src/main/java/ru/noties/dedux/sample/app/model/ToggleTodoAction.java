@@ -1,8 +1,6 @@
 package ru.noties.dedux.sample.app.model;
 
-import dedux.Action;
-
-public class ToggleTodoAction implements Action {
+public class ToggleTodoAction implements ModifyTodoAction {
 
     private final long id;
 

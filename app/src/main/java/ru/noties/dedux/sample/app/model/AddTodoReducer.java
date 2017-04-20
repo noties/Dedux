@@ -34,7 +34,7 @@ public class AddTodoReducer implements Reducer<AddTodoAction> {
         final TodosState out = new TodosState(list);
         state.set(out);
 
-        final InputState inputState = new InputState(false, null, 0, 0);
+        final InputState inputState = new InputState(true, null, 0, 0);
         state.set(inputState);
     }
 }

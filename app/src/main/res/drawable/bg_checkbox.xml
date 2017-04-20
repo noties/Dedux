@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:enterFadeDuration="@android:integer/config_shortAnimTime"
-    android:exitFadeDuration="@android:integer/config_shortAnimTime">
+    android:enterFadeDuration="@integer/drawable_selector_duration"
+    android:exitFadeDuration="@integer/drawable_selector_duration">
 
     <item
         android:state_activated="true"
-        android:drawable="@drawable/ic_clear_24dp_white"/>
+        android:drawable="@drawable/ic_check_box_24dp_white"/>
 
     <item
         android:drawable="@drawable/ic_check_box_outline_blank_24dp_white"/>
+
 
 </selector>

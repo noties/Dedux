@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <FrameLayout
+    <LinearLayout
         style="@style/AppBarContent"
         android:orientation="horizontal">
 
@@ -16,23 +16,32 @@
             app:iv_color="@color/colorWhite"
             tools:ignore="RtlHardcoded" />
 
+        <Space
+            android:layout_width="?android:attr/actionBarSize"
+            android:layout_height="0px" />
+
         <TextView
             android:id="@+id/app_bar_title"
             style="@style/AppBarTitle"
-            android:layout_marginLeft="?android:attr/actionBarSize"
-            android:layout_marginRight="?android:attr/actionBarSize"
+            android:layout_weight="1"
+            android:layout_width="0px"
             android:text="@string/app_bar_title" />
+
+        <ImageView
+            android:id="@+id/app_bar_clear"
+            style="@style/AppBarIcon"
+            android:visibility="invisible"
+            android:src="@drawable/ic_clear_24dp_white"/>
 
         <ru.noties.dedux.sample.app.core.IconView
             android:id="@+id/app_bar_action"
             style="@style/AppBarIcon"
             android:layout_gravity="right"
-            android:src="@drawable/bg_app_bar_action"
-            android:visibility="gone"
+            android:src="@drawable/bg_checkbox"
             app:iv_color="@color/colorWhite"
             tools:ignore="RtlHardcoded" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <View style="@style/AppBarShadow" />
 

@@ -11,6 +11,8 @@ import javax.annotation.Nullable;
 import ru.noties.dedux.sample.R;
 import ru.noties.dedux.sample.app.components.ComponentHelper;
 import ru.noties.dedux.sample.app.core.IconView;
+import ru.noties.dedux.sample.app.model.ClearDoneAction;
+import ru.noties.dedux.sample.app.model.ToggleAllDoneAction;
 import ru.noties.dedux.sample.utils.ViewUtils;
 
 public class AppBarComponent extends LinearLayout {
@@ -20,6 +22,7 @@ public class AppBarComponent extends LinearLayout {
     private TextView title;
     private IconView filter;
     private IconView action;
+    private View clear;
 
     public AppBarComponent(Context context) {
         super(context);
@@ -47,6 +50,7 @@ public class AppBarComponent extends LinearLayout {
         this.title = ViewUtils.findView(this, R.id.app_bar_title);
         this.filter = ViewUtils.findView(this, R.id.app_bar_filter);
         this.action = ViewUtils.findView(this, R.id.app_bar_action);
+        this.clear = findViewById(R.id.app_bar_clear);
     }
 
     @Override
@@ -68,7 +72,8 @@ public class AppBarComponent extends LinearLayout {
     private void render(@Nullable AppBarState state) {
         renderTitle(state);
         renderFilter(state);
-        renderAction(state);
+        renderClear(state);
+        renderAllDone(state);
     }
 
     private void renderTitle(@Nullable AppBarState state) {
@@ -88,25 +93,31 @@ public class AppBarComponent extends LinearLayout {
         filter.setOnClickListener(v -> helper.store().dispatch(null));
     }
 
-    private void renderAction(@Nullable AppBarState state) {
+    private void renderClear(@Nullable AppBarState state) {
+        final boolean visible = state != null && state.clearEnabled();
 
-        final AppBarState.ActionState actionState = state != null
-                ? state.actionState()
-                : null;
+        ViewUtils.setVisible(clear, visible, INVISIBLE);
 
-        final boolean invisible = actionState == null
-                || AppBarState.ActionState.INVISIBLE == actionState;
-
-        ViewUtils.setVisible(action, !invisible);
-
-        action.setActivated(AppBarState.ActionState.CLEAR == actionState);
-
-        final View.OnClickListener onClickListener;
-        if (!invisible) {
-            onClickListener = v -> helper.store().dispatch(null);
+        final OnClickListener listener;
+        if (visible) {
+            listener = v -> helper.store().dispatch(new ClearDoneAction());
         } else {
-            onClickListener = null;
+            listener = null;
         }
+        clear.setOnClickListener(listener);
+    }
+
+    private void renderAllDone(@Nullable AppBarState state) {
+
+        final boolean enabled = state != null && state.toggleDoneEnabled();
+        ViewUtils.setVisible(action, enabled, INVISIBLE);
+
+        final boolean allDone = enabled && state.allDone();
+
+        action.setActivated(allDone);
+        action.setEnabled(enabled);
+
+        final View.OnClickListener onClickListener = v -> helper.store().dispatch(new ToggleAllDoneAction());
         action.setOnClickListener(onClickListener);
     }
 }

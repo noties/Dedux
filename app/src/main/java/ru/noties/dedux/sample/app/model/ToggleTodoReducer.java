@@ -11,8 +11,12 @@ import ru.noties.dedux.sample.data.Todo;
 
 public class ToggleTodoReducer implements Reducer<ToggleTodoAction> {
 
+    // here is should sync return of the state....
+    // otherwise it's tempting to start modifying over states....
+
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull ToggleTodoAction toggleTodoAction) {
+
         final long id = toggleTodoAction.id();
         final TodosState todosState = state.get(TodosState.class).get();
         final List<Todo> todos = todosState.todos();
@@ -28,5 +32,7 @@ public class ToggleTodoReducer implements Reducer<ToggleTodoAction> {
             }
         }
         state.set(new TodosState(out));
+
+
     }
 }

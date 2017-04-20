@@ -1,8 +1,6 @@
 package ru.noties.dedux.sample.app.model;
 
-import dedux.Action;
-
-public class AddTodoAction implements Action {
+public class AddTodoAction implements ModifyTodoAction {
 
     private final String name;
 
