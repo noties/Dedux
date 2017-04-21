@@ -8,11 +8,12 @@ import android.widget.TextView;
 
 import javax.annotation.Nullable;
 
-import ru.noties.tddd.sample.R;
 import ru.noties.tddd.app.components.ComponentHelper;
 import ru.noties.tddd.app.core.IconView;
 import ru.noties.tddd.app.model.ClearDoneAction;
+import ru.noties.tddd.app.model.OpenAccountAction;
 import ru.noties.tddd.app.model.ToggleAllDoneAction;
+import ru.noties.tddd.sample.R;
 import ru.noties.tddd.utils.ViewUtils;
 
 public class AppBarComponent extends LinearLayout {
@@ -48,7 +49,7 @@ public class AppBarComponent extends LinearLayout {
         inflate(context, R.layout.view_app_bar, this);
 
         this.title = ViewUtils.findView(this, R.id.app_bar_title);
-        this.filter = ViewUtils.findView(this, R.id.app_bar_filter);
+        this.filter = ViewUtils.findView(this, R.id.app_bar_account);
         this.action = ViewUtils.findView(this, R.id.app_bar_action);
         this.clear = findViewById(R.id.app_bar_clear);
     }
@@ -71,7 +72,7 @@ public class AppBarComponent extends LinearLayout {
 
     private void render(@Nullable AppBarState state) {
         renderTitle(state);
-        renderFilter(state);
+        renderAccount(state);
         renderClear(state);
         renderAllDone(state);
     }
@@ -85,12 +86,12 @@ public class AppBarComponent extends LinearLayout {
         title.setText(cs);
     }
 
-    private void renderFilter(@Nullable AppBarState state) {
-        final int colorRes = state != null && state.filterEnabled()
+    private void renderAccount(@Nullable AppBarState state) {
+        final int colorRes = state != null && state.loggedIn()
                 ? R.color.colorAccent
                 : R.color.colorWhite;
         filter.setColorRes(colorRes);
-        filter.setOnClickListener(v -> helper.store().dispatch(null));
+        filter.setOnClickListener(v -> helper.store().dispatch(new OpenAccountAction()));
     }
 
     private void renderClear(@Nullable AppBarState state) {

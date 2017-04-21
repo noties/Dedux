@@ -3,8 +3,19 @@ package ru.noties.tddd.state;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
@@ -25,9 +36,13 @@ import java.util.concurrent.Executors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import dedux.Consumer;
+import dedux.MutableState;
 import dedux.PreloadedState;
+import dedux.State;
 import dedux.Store;
 import dedux.Subscription;
+import ru.noties.debug.Debug;
 import ru.noties.tddd.utils.CollectionUtils;
 
 public class StatePersistence {
@@ -71,6 +86,8 @@ public class StatePersistence {
                 executor.execute(() -> persist(state.state()));
             }, 1000L);
         });
+
+        firebaseDebug(store);
     }
 
     private void persist(Map<String, Object> map) {
@@ -169,6 +186,76 @@ public class StatePersistence {
             return Class.forName(type);
         } catch (ClassNotFoundException e) {
             return null;
+        }
+    }
+
+    private void firebaseDebug(Store store) {
+        final FirebaseAuth auth = FirebaseAuth.getInstance();
+        final FirebaseUser user = auth.getCurrentUser();
+        Debug.i(user);
+        if (user == null) {
+            auth.signInWithEmailAndPassword("debug@debug.debug", "Debug11")
+                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                launchFirebaseUser(store);
+                            } else {
+                                Debug.e(task.getException());
+                            }
+                        }
+                    });
+        } else {
+            launchFirebaseUser(store);
+        }
+    }
+
+    private void launchFirebaseUser(Store store) {
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference reference = database.getReference("debug");
+        final Handler handler = new Handler();
+        final Holder holder = new Holder(null);
+        store.subscribe(new Consumer<State>() {
+            @Override
+            public void apply(@Nonnull Subscription subscription, @Nullable State state) {
+                handler.removeCallbacksAndMessages(null);
+                handler.postDelayed(() -> {
+                    final String json = gson.toJson(state.state());
+                    holder.send = json;
+                    reference.setValue(json);
+                }, 2500L);
+            }
+        });
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                final String s = dataSnapshot.getValue(String.class);
+                if (TextUtils.equals(s, holder.send)) {
+                    return;
+                }
+
+                final LoadedState loadedState = gson.fromJson(s, LoadedState.class);
+                final MutableState state = (MutableState) store.state();
+
+                for (Object o: loadedState.objects) {
+                    state.set(o);
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private static class Holder {
+        String send;
+
+        public Holder(String send) {
+            this.send = send;
         }
     }
 }

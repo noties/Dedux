@@ -4,4 +4,8 @@
 
     <string name="app_bar_title">TD;DD</string>
 
+    <string name="account_title">Account</string>
+    <string name="account_email_hint">E-mail</string>
+    <string name="account_password_hint">Password</string>
+
 </resources>

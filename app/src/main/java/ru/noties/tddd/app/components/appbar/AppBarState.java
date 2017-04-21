@@ -5,19 +5,12 @@ import ru.noties.tddd.state.BaseState;
 public class AppBarState extends BaseState {
 
     private String title;
-    private boolean filterEnabled;
+    private boolean loggedIn;
     private boolean clearEnabled;
     private boolean allDone;
     private boolean toggleDoneEnabled;
 
-    public AppBarState() {}
-
-    public AppBarState(String title, boolean filterEnabled, boolean clearEnabled, boolean allDone, boolean toggleDoneEnabled) {
-        this.title = title;
-        this.filterEnabled = filterEnabled;
-        this.clearEnabled = clearEnabled;
-        this.allDone = allDone;
-        this.toggleDoneEnabled = toggleDoneEnabled;
+    public AppBarState() {
     }
 
     public String title() {
@@ -29,12 +22,12 @@ public class AppBarState extends BaseState {
         return this;
     }
 
-    public boolean filterEnabled() {
-        return filterEnabled;
+    public boolean loggedIn() {
+        return loggedIn;
     }
 
-    public AppBarState filterEnabled(boolean filterEnabled) {
-        this.filterEnabled = filterEnabled;
+    public AppBarState loggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
         return this;
     }
 
@@ -69,7 +62,7 @@ public class AppBarState extends BaseState {
     public String toString() {
         return "AppBarState{" +
                 "title='" + title + '\'' +
-                ", filterEnabled=" + filterEnabled +
+                ", loggedIn=" + loggedIn +
                 ", clearEnabled=" + clearEnabled +
                 ", allDone=" + allDone +
                 ", toggleDoneEnabled=" + toggleDoneEnabled +

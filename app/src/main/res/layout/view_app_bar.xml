@@ -9,10 +9,10 @@
         android:orientation="horizontal">
 
         <ru.noties.tddd.app.core.IconView
-            android:id="@+id/app_bar_filter"
+            android:id="@+id/app_bar_account"
             style="@style/AppBarIcon"
             android:layout_gravity="left"
-            android:src="@drawable/ic_filter_list_24_dp_white"
+            android:src="@drawable/ic_account_circle_24dp_white"
             app:iv_color="@color/colorWhite"
             tools:ignore="RtlHardcoded" />
 
@@ -23,15 +23,15 @@
         <TextView
             android:id="@+id/app_bar_title"
             style="@style/AppBarTitle"
-            android:layout_weight="1"
             android:layout_width="0px"
+            android:layout_weight="1"
             android:text="@string/app_bar_title" />
 
         <ImageView
             android:id="@+id/app_bar_clear"
             style="@style/AppBarIcon"
-            android:visibility="invisible"
-            android:src="@drawable/ic_clear_24dp_white"/>
+            android:src="@drawable/ic_clear_24dp_white"
+            android:visibility="invisible" />
 
         <ru.noties.tddd.app.core.IconView
             android:id="@+id/app_bar_action"

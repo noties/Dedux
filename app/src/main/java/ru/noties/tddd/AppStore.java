@@ -15,6 +15,14 @@ import dedux.ReducerBuilder;
 import dedux.Store;
 import dedux.StoreBuilder;
 import ru.noties.debug.Debug;
+import ru.noties.tddd.app.components.account.AccountAuthState;
+import ru.noties.tddd.app.components.navigation.NavigationState;
+import ru.noties.tddd.app.model.AccountEmailChangedAction;
+import ru.noties.tddd.app.model.AccountEmailChangedReducer;
+import ru.noties.tddd.app.model.CloseAccountAction;
+import ru.noties.tddd.app.model.CloseAccountReducer;
+import ru.noties.tddd.app.model.OpenAccountAction;
+import ru.noties.tddd.app.model.OpenAccountReducer;
 import ru.noties.tddd.sample.R;
 import ru.noties.tddd.app.components.appbar.AppBarState;
 import ru.noties.tddd.app.components.input.InputAction;
@@ -66,9 +74,11 @@ class AppStore {
 
     private List<Object> initialState() {
         final List<Object> list = new ArrayList<>();
-        list.add(new AppBarState(application.getString(R.string.app_name), false, false, false, false));
+        list.add(new AppBarState().title(application.getString(R.string.app_name)));
         list.add(new InputState());
         list.add(new TodosState());
+        list.add(new NavigationState().showApp(true).showAccount(false));
+        list.add(new AccountAuthState());
         return list;
     }
 
@@ -80,6 +90,9 @@ class AppStore {
                 .add(CheckDoneAction.class, new CheckDoneReducer())
                 .add(ToggleAllDoneAction.class, new ToggleAllDoneReducer())
                 .add(ClearDoneAction.class, new ClearDoneReducer())
+                .add(OpenAccountAction.class, new OpenAccountReducer())
+                .add(CloseAccountAction.class, new CloseAccountReducer())
+                .add(AccountEmailChangedAction.class, new AccountEmailChangedReducer())
                 .build();
     }
 
