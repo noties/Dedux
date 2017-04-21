@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
+import ru.noties.debug.Debug;
 import ru.noties.tddd.app.components.ComponentHelper;
 import ru.noties.tddd.app.model.TodosState;
 import ru.noties.tddd.app.model.ToggleTodoAction;
@@ -25,7 +27,10 @@ public class ListComponent extends FrameLayout {
     private ComponentHelper helper;
 
     private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
     private ViewTypesAdapter<Item> adapter;
+
+    private boolean selfChange;
 
     public ListComponent(Context context) {
         super(context);
@@ -56,7 +61,8 @@ public class ListComponent extends FrameLayout {
                 .build(context);
 
         recyclerView = ViewUtils.findView(this, R.id.list_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        layoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
 
@@ -67,6 +73,15 @@ public class ListComponent extends FrameLayout {
         if (helper != null) {
             // for now, then we will create standalone state for list (to show also filtered items)
             helper.attach(TodosState.class, this::render);
+            helper.attach(ListScrollState.class, this::renderScroll);
+
+            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    recyclerView.removeCallbacks(scrollChangedRunnable);
+                    recyclerView.postDelayed(scrollChangedRunnable, 1000L);
+                }
+            });
         }
     }
 
@@ -89,7 +104,46 @@ public class ListComponent extends FrameLayout {
         }
     }
 
-    private List<Item> createItems(TodosState state) {
+    private void renderScroll(@Nullable ListScrollState state) {
+        if (state != null && !selfChange) {
+            layoutManager.scrollToPositionWithOffset(state.position(), state.offset());
+        }
+    }
+
+    private final Runnable scrollChangedRunnable = () -> {
+
+        final int outPosition;
+        final int outOffset;
+
+        final int position = layoutManager.findFirstVisibleItemPosition();
+        if (position > -1) {
+            outPosition = position;
+
+            final RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+            if (holder != null) {
+                final View view = holder.itemView;
+                if (view != null) {
+                    outOffset = view.getTop();
+                } else {
+                    outOffset = 0;
+                }
+            } else {
+                outOffset = 0;
+            }
+
+        } else {
+            outPosition = 0;
+            outOffset = 0;
+        }
+
+        selfChange = true;
+
+        helper.store().dispatch(new ScrollAction(outPosition, outOffset));
+
+        selfChange = false;
+    };
+
+    private static List<Item> createItems(TodosState state) {
         final List<Item> list;
         if (state == null
                 || CollectionUtils.isEmpty(state.todos())) {

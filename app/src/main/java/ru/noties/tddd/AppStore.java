@@ -22,6 +22,8 @@ import ru.noties.tddd.app.components.confirm.ConfirmMiddleware;
 import ru.noties.tddd.app.components.input.InputAction;
 import ru.noties.tddd.app.components.input.InputReducer;
 import ru.noties.tddd.app.components.input.InputState;
+import ru.noties.tddd.app.components.list.ScrollAction;
+import ru.noties.tddd.app.components.list.ScrollReducer;
 import ru.noties.tddd.app.components.navigation.NavigationState;
 import ru.noties.tddd.app.model.AccountEmailChangedAction;
 import ru.noties.tddd.app.model.AccountEmailChangedReducer;
@@ -104,6 +106,7 @@ class AppStore {
                 .add(AccountEmailChangedAction.class, new AccountEmailChangedReducer())
                 .add(CountDoneAction.class, new CountDoneReducer())
                 .add(CloseConfirmAction.class, new CloseConfirmReducer())
+                .add(ScrollAction.class, new ScrollReducer())
                 .build();
     }
 

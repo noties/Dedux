@@ -70,7 +70,7 @@ public class AccountAuthComponent extends LinearLayout {
                 || prevLoggedIn != came) {
 
             final View view = came
-                    ? null
+                    ? null // todo
                     : new AccountInputComponent(getContext());
 
             container.removeAllViews();

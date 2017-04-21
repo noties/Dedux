@@ -20,7 +20,8 @@ public class NavigationComponent extends FrameLayout {
 
     private ComponentHelper helper;
 
-    private Dialog dialog;
+    private Dialog accountDialog;
+    private Dialog confirmDialog;
 
     public NavigationComponent(Context context) {
         super(context);
@@ -71,7 +72,7 @@ public class NavigationComponent extends FrameLayout {
 
     private void renderApp(@Nullable NavigationState state) {
         // in order to make this component `dump` we should follow the directions that came from state
-        // but as we have decided to always show app & use a dialog for account
+        // but as we have decided to always show app & use a accountDialog for account
         // we will always render app
         if (getChildCount() == 0) {
             addView(new AppComponent(getContext()));
@@ -83,43 +84,47 @@ public class NavigationComponent extends FrameLayout {
         final boolean show = state != null && state.showAccount();
 
         if (show) {
-            if (dialog == null
-                    || !dialog.isShowing()) {
+            if (accountDialog == null
+                    || !accountDialog.isShowing()) {
                 final Dialog dialog = new Dialog(getContext());
                 dialog.setContentView(new AccountAuthComponent(getContext()));
-                dialog.setOnDismissListener(di -> helper.store().dispatch(new CloseAccountAction()));
+                dialog.setOnDismissListener(di -> {
+                    helper.store().dispatch(new CloseAccountAction());
+                });
                 final Window window = dialog.getWindow();
                 if (window != null) {
                     window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                 }
-                this.dialog = dialog;
-                this.dialog.show();
+                this.accountDialog = dialog;
+                this.accountDialog.show();
             }
         } else {
-            if (dialog != null
-                    && dialog.isShowing()) {
-                dialog.dismiss();
-                dialog = null;
+            if (accountDialog != null
+                    && accountDialog.isShowing()) {
+                accountDialog.dismiss();
+                accountDialog = null;
             }
         }
     }
 
     private void renderConfirmClearDoneAction(@Nullable NavigationState state) {
+
         final boolean showConfirm = state != null && state.showConfirm();
+
         if (showConfirm) {
-            if (dialog == null
-                    || !dialog.isShowing()) {
+            if (confirmDialog == null
+                    || !confirmDialog.isShowing()) {
                 final Dialog dialog = new Dialog(getContext());
                 dialog.setContentView(new ConfirmComponent(getContext()));
                 dialog.setOnDismissListener(di -> helper.store().dispatch(new ConfirmAction()));
-                this.dialog = dialog;
-                this.dialog.show();
+                this.confirmDialog = dialog;
+                this.confirmDialog.show();
             }
         } else {
-            if (dialog != null
-                    && dialog.isShowing()) {
-                dialog.dismiss();
-                dialog = null;
+            if (confirmDialog != null
+                    && confirmDialog.isShowing()) {
+                confirmDialog.dismiss();
+                confirmDialog = null;
             }
         }
     }
