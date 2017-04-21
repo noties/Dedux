@@ -18,7 +18,7 @@
         android:layout_marginTop="4dip"
         android:imeOptions="actionGo"
         android:inputType="text|textShortMessage|textCapSentences"
-        android:maxLines="3"
+        android:maxLines="1"
         android:paddingLeft="8dip"
         android:paddingRight="8dip" />
 

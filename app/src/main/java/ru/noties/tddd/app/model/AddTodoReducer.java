@@ -17,8 +17,6 @@ public class AddTodoReducer implements Reducer<AddTodoAction> {
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull AddTodoAction addTodoAction) {
 
-        // erase current input state after we have saved the todo
-
         final Todo todo = new Todo(System.currentTimeMillis(), addTodoAction.name(), false);
 
         final TodosState currentState = state.get(TodosState.class).get();
@@ -31,7 +29,10 @@ public class AddTodoReducer implements Reducer<AddTodoAction> {
             list.add(todo);
         }
 
-        final TodosState out = new TodosState(list);
+        final TodosState out = new TodosState()
+                .todos(list)
+                .scrollToLast(true);
+
         state.set(out);
 
         final InputState inputState = new InputState(true, null, 0, 0);

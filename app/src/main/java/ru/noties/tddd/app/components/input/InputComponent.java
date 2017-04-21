@@ -12,11 +12,10 @@ import android.widget.TextView;
 
 import javax.annotation.Nullable;
 
-import ru.noties.debug.Debug;
-import ru.noties.tddd.sample.R;
-import ru.noties.tddd.app.model.AddTodoAction;
 import ru.noties.tddd.app.components.ComponentHelper;
 import ru.noties.tddd.app.core.TextWatcherAdapter;
+import ru.noties.tddd.app.model.AddTodoAction;
+import ru.noties.tddd.sample.R;
 import ru.noties.tddd.utils.KeyboardUtils;
 import ru.noties.tddd.utils.StringUtils;
 import ru.noties.tddd.utils.ViewUtils;
@@ -87,7 +86,6 @@ public class InputComponent extends FrameLayout {
             });
 
             editText.setOnFocusChangeListener((v, hasFocus) -> {
-                Debug.i(hasFocus, selfChange);
                 if (!selfChange) {
                     helper.store().dispatch(new InputAction().hasFocus(hasFocus));
                 }
@@ -141,24 +139,24 @@ public class InputComponent extends FrameLayout {
     }
 
     private void renderFocus(@Nullable InputState state) {
+
         final boolean hasFocus = state != null && state.hasFocus();
+
         if (hasFocus) {
             editText.requestFocus();
             KeyboardUtils.show(editText);
         } else {
             KeyboardUtils.hide(editText);
-            editText.post(() -> {
-                editText.clearFocus();
-                focus.post(() -> focus.requestFocus());
-            });
+            focus.requestFocus();
         }
     }
 
     private void renderText(@Nullable InputState state) {
-        // we will end up with recursive call...
+
         final String text = state != null
                 ? state.currentInput()
                 : null;
+
         if (!TextUtils.equals(text, editText.getText())) {
 
             editText.setText(text);
@@ -181,8 +179,6 @@ public class InputComponent extends FrameLayout {
 
         final int currentS = editText.getSelectionStart();
         final int currentE = editText.getSelectionEnd();
-
-        Debug.i(selfChange, s, e, currentS, currentE);
 
         if (s == 0 && e == 0) {
             editText.setSelection(0);

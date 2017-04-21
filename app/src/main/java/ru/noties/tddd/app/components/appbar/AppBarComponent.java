@@ -8,9 +8,11 @@ import android.widget.TextView;
 
 import javax.annotation.Nullable;
 
+import ru.noties.debug.Debug;
 import ru.noties.tddd.app.components.ComponentHelper;
+import ru.noties.tddd.app.components.CountDoneState;
 import ru.noties.tddd.app.core.IconView;
-import ru.noties.tddd.app.model.ClearDoneAction;
+import ru.noties.tddd.app.model.ConfirmClearDoneAction;
 import ru.noties.tddd.app.model.OpenAccountAction;
 import ru.noties.tddd.app.model.ToggleAllDoneAction;
 import ru.noties.tddd.sample.R;
@@ -59,6 +61,7 @@ public class AppBarComponent extends LinearLayout {
         super.onAttachedToWindow();
         if (helper != null) {
             helper.attach(AppBarState.class, this::render);
+            helper.attach(CountDoneState.class, this::renderCountDone);
         }
     }
 
@@ -101,7 +104,7 @@ public class AppBarComponent extends LinearLayout {
 
         final OnClickListener listener;
         if (visible) {
-            listener = v -> helper.store().dispatch(new ClearDoneAction());
+            listener = v -> helper.store().dispatch(new ConfirmClearDoneAction());
         } else {
             listener = null;
         }
@@ -120,5 +123,9 @@ public class AppBarComponent extends LinearLayout {
 
         final View.OnClickListener onClickListener = v -> helper.store().dispatch(new ToggleAllDoneAction());
         action.setOnClickListener(onClickListener);
+    }
+
+    private void renderCountDone(@Nullable CountDoneState state) {
+        Debug.i(state != null ? state.count() : null);
     }
 }

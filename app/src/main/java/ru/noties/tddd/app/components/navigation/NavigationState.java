@@ -6,6 +6,7 @@ public class NavigationState extends BaseState {
 
     private boolean showApp;
     private boolean showAccount;
+    private boolean showConfirm;
 
     public boolean showApp() {
         return showApp;
@@ -25,11 +26,21 @@ public class NavigationState extends BaseState {
         return this;
     }
 
+    public boolean showConfirm() {
+        return showConfirm;
+    }
+
+    public NavigationState showConfirm(boolean showConfirm) {
+        this.showConfirm = showConfirm;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "NavigationState{" +
                 "showApp=" + showApp +
                 ", showAccount=" + showAccount +
+                ", showConfirm=" + showConfirm +
                 '}';
     }
 }

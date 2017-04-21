@@ -8,4 +8,14 @@
     <string name="account_email_hint">E-mail</string>
     <string name="account_password_hint">Password</string>
 
+    <string name="confirm_clear_done_title">Confirm, eh?</string>
+    <string name="confirm_clear_done_message">Do you want to remove %1$s? There is no coming back, you know</string>
+    <string name="confirm_clear_done_confirm">Confirm</string>
+    <string name="confirm_clear_done_cancel">Cancel</string>
+
+    <plurals name="todos">
+        <item quantity="one">%1$d todo</item>
+        <item quantity="other">%1$d todos</item>
+    </plurals>
+
 </resources>

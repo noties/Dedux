@@ -87,7 +87,7 @@ public class StatePersistence {
             }, 1000L);
         });
 
-        firebaseDebug(store);
+//        firebaseDebug(store);
     }
 
     private void persist(Map<String, Object> map) {
