@@ -26,6 +26,7 @@ public class AppBarComponent extends LinearLayout {
     private IconView filter;
     private IconView action;
     private View clear;
+    private TextView countDone;
 
     public AppBarComponent(Context context) {
         super(context);
@@ -54,6 +55,7 @@ public class AppBarComponent extends LinearLayout {
         this.filter = ViewUtils.findView(this, R.id.app_bar_account);
         this.action = ViewUtils.findView(this, R.id.app_bar_action);
         this.clear = findViewById(R.id.app_bar_clear);
+        this.countDone = ViewUtils.findView(this, R.id.app_bar_done_count);
     }
 
     @Override
@@ -126,6 +128,14 @@ public class AppBarComponent extends LinearLayout {
     }
 
     private void renderCountDone(@Nullable CountDoneState state) {
-        Debug.i(state != null ? state.count() : null);
+
+        final int done = state != null
+                ? state.count()
+                : 0;
+
+        final boolean visible = done > 0;
+
+        ViewUtils.setVisible(countDone, visible);
+        countDone.setText(String.valueOf(done));
     }
 }
