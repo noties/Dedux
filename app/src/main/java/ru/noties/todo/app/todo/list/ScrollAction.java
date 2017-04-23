@@ -1,4 +1,4 @@
-package ru.noties.todo.app.components.list;
+package ru.noties.todo.app.todo.list;
 
 import dedux.Action;
 

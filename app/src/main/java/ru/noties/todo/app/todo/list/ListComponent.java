@@ -1,4 +1,4 @@
-package ru.noties.todo.app.components.list;
+package ru.noties.todo.app.todo.list;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
