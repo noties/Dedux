@@ -17,6 +17,11 @@ preserved state even if app is killed
 in general state handling in Adnroid is.. accidental click back and that's it, you have lost everything
 phone has turned off... and you have lost everything
 
+// nb, one reducer can update multiple states
+// nb, middleware has no access to mutable state (only read)
+// nb, reducerBuilder, will match first reducer
+// nb, middlewareBuilder will create a list of all middlewares that `isAssignable` from action class
+
 
 ## Licence
 ```

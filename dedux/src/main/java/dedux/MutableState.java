@@ -8,7 +8,6 @@ public interface MutableState extends State {
     @Override
     <R> MutableOp<R> get(@Nonnull Class<R> cl);
 
-
     // also, need to note, that this must a simple class, not an array,
     // not a generic one of any kind (List<?> etc)
 
@@ -16,6 +15,7 @@ public interface MutableState extends State {
     // NB, DOES NOT ALLOW NULL, if NULL value must be set use `get(*.class).set(null)`
     <T> void set(@Nonnull T t);
 
+    // allows NULL as values
     void set(@Nonnull String className, @Nullable Object value);
 
     Subscription subscribe(@Nonnull Consumer<MutableState> consumer);

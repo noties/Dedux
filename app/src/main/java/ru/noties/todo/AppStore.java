@@ -5,9 +5,7 @@ import android.app.Application;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,43 +20,42 @@ import dedux.ReducerBuilder;
 import dedux.Store;
 import dedux.StoreBuilder;
 import ru.noties.debug.Debug;
-import ru.noties.todo.app.components.CountDoneState;
-import ru.noties.todo.app.components.account.AccountAuthState;
-import ru.noties.todo.app.components.appbar.AppBarState;
-import ru.noties.todo.app.components.confirm.ConfirmAction;
-import ru.noties.todo.app.components.confirm.ConfirmMiddleware;
-import ru.noties.todo.app.components.input.InputAction;
-import ru.noties.todo.app.components.input.InputReducer;
-import ru.noties.todo.app.components.input.InputState;
+import ru.noties.todo.app.account.state.AccountAuthState;
+import ru.noties.todo.app.appbar.state.AppBarState;
+import ru.noties.todo.app.navigation.confirm.ConfirmAction;
+import ru.noties.todo.app.navigation.confirm.ConfirmMiddleware;
+import ru.noties.todo.app.todo.input.InputAction;
+import ru.noties.todo.app.todo.input.InputReducer;
+import ru.noties.todo.app.todo.input.InputState;
 import ru.noties.todo.app.components.list.ScrollAction;
 import ru.noties.todo.app.components.list.ScrollReducer;
-import ru.noties.todo.app.components.navigation.NavigationState;
-import ru.noties.todo.app.model.AccountAuthStateChangedAction;
-import ru.noties.todo.app.model.AccountEmailChangedAction;
-import ru.noties.todo.app.model.AccountEmailChangedReducer;
-import ru.noties.todo.app.model.AddTodoAction;
-import ru.noties.todo.app.model.AddTodoReducer;
-import ru.noties.todo.app.model.CheckDoneAction;
-import ru.noties.todo.app.model.CheckDoneReducer;
-import ru.noties.todo.app.model.ClearDoneAction;
-import ru.noties.todo.app.model.ClearDoneReducer;
-import ru.noties.todo.app.model.CloseAccountAction;
-import ru.noties.todo.app.model.CloseAccountReducer;
-import ru.noties.todo.app.model.CloseConfirmAction;
-import ru.noties.todo.app.model.CloseConfirmReducer;
-import ru.noties.todo.app.model.ConfirmClearDoneAction;
-import ru.noties.todo.app.model.ConfirmClearDoneReducer;
-import ru.noties.todo.app.model.CountDoneAction;
-import ru.noties.todo.app.model.CountDoneReducer;
-import ru.noties.todo.app.model.ModifyTodoAction;
-import ru.noties.todo.app.model.ModifyTodoMiddleware;
-import ru.noties.todo.app.model.OpenAccountAction;
-import ru.noties.todo.app.model.OpenAccountReducer;
-import ru.noties.todo.app.model.TodosState;
-import ru.noties.todo.app.model.ToggleAllDoneAction;
-import ru.noties.todo.app.model.ToggleAllDoneReducer;
-import ru.noties.todo.app.model.ToggleTodoAction;
-import ru.noties.todo.app.model.ToggleTodoReducer;
+import ru.noties.todo.app.navigation.core.NavigationState;
+import ru.noties.todo.app.account.actions.AccountAuthStateChangedAction;
+import ru.noties.todo.app.account.actions.AccountEmailChangedAction;
+import ru.noties.todo.app.account.reducers.AccountEmailChangedReducer;
+import ru.noties.todo.app.todo.core.AddTodoAction;
+import ru.noties.todo.app.todo.core.AddTodoReducer;
+import ru.noties.todo.app.appbar.actions.AppBarCheckDoneAction;
+import ru.noties.todo.app.appbar.reducers.AppBarCheckDoneReducer;
+import ru.noties.todo.app.todo.core.ClearDoneAction;
+import ru.noties.todo.app.todo.core.ClearDoneReducer;
+import ru.noties.todo.app.navigation.core.NavigationCloseAccountAction;
+import ru.noties.todo.app.navigation.core.NavigationCloseAccountReducer;
+import ru.noties.todo.app.navigation.confirm.ConfirmCloseAction;
+import ru.noties.todo.app.navigation.confirm.ConfirmCloseReducer;
+import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneAction;
+import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneReducer;
+import ru.noties.todo.app.appbar.actions.AppBarCountDoneAction;
+import ru.noties.todo.app.appbar.reducers.AppBarCountDoneReducer;
+import ru.noties.todo.app.todo.core.ModifyTodoAction;
+import ru.noties.todo.app.todo.core.ModifyTodoMiddleware;
+import ru.noties.todo.app.navigation.core.NavigationOpenAccountAction;
+import ru.noties.todo.app.navigation.core.NavigationOpenAccountReducer;
+import ru.noties.todo.app.todo.core.TodosState;
+import ru.noties.todo.app.todo.core.ToggleAllDoneAction;
+import ru.noties.todo.app.todo.core.ToggleAllDoneReducer;
+import ru.noties.todo.app.todo.core.ToggleTodoAction;
+import ru.noties.todo.app.todo.core.ToggleTodoReducer;
 import ru.noties.todo.sample.R;
 import ru.noties.todo.state.StatePersistence;
 import ru.noties.todo.state.StateSerializer;
@@ -112,15 +109,15 @@ class AppStore {
                 .add(InputAction.class, new InputReducer())
                 .add(AddTodoAction.class, new AddTodoReducer())
                 .add(ToggleTodoAction.class, new ToggleTodoReducer())
-                .add(CheckDoneAction.class, new CheckDoneReducer())
+                .add(AppBarCheckDoneAction.class, new AppBarCheckDoneReducer())
                 .add(ToggleAllDoneAction.class, new ToggleAllDoneReducer())
                 .add(ConfirmClearDoneAction.class, new ConfirmClearDoneReducer(application.getResources()))
                 .add(ClearDoneAction.class, new ClearDoneReducer())
-                .add(OpenAccountAction.class, new OpenAccountReducer())
-                .add(CloseAccountAction.class, new CloseAccountReducer())
+                .add(NavigationOpenAccountAction.class, new NavigationOpenAccountReducer())
+                .add(NavigationCloseAccountAction.class, new NavigationCloseAccountReducer())
                 .add(AccountEmailChangedAction.class, new AccountEmailChangedReducer())
-                .add(CountDoneAction.class, new CountDoneReducer())
-                .add(CloseConfirmAction.class, new CloseConfirmReducer())
+                .add(AppBarCountDoneAction.class, new AppBarCountDoneReducer())
+                .add(ConfirmCloseAction.class, new ConfirmCloseReducer())
                 .add(ScrollAction.class, new ScrollReducer())
                 .add(FirebaseSyncAction.class, new FirebaseSyncReducer())
                 .add(AccountAuthStateChangedAction.class, new Reducer<AccountAuthStateChangedAction>() {

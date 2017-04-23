@@ -24,7 +24,7 @@ import dedux.State;
 import dedux.Store;
 import dedux.Subscription;
 import ru.noties.debug.Debug;
-import ru.noties.todo.app.model.AccountAuthStateChangedAction;
+import ru.noties.todo.app.account.actions.AccountAuthStateChangedAction;
 import ru.noties.todo.state.StateSerializer;
 import ru.noties.todo.state.action.FirebaseSyncAction;
 

@@ -25,13 +25,13 @@
 
         </FrameLayout>
 
-        <ru.noties.todo.app.components.input.InputComponent
+        <ru.noties.todo.app.todo.input.InputComponent
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
 
-    <ru.noties.todo.app.components.appbar.AppBarComponent
+    <ru.noties.todo.app.appbar.components.AppBarComponent
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
