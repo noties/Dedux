@@ -13,7 +13,7 @@
             android:layout_height="0px"
             android:layout_weight="1">
 
-            <ru.noties.tddd.app.components.list.ListComponent
+            <ru.noties.todo.app.components.list.ListComponent
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
@@ -25,13 +25,13 @@
 
         </FrameLayout>
 
-        <ru.noties.tddd.app.components.input.InputComponent
+        <ru.noties.todo.app.components.input.InputComponent
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
     </LinearLayout>
 
-    <ru.noties.tddd.app.components.appbar.AppBarComponent
+    <ru.noties.todo.app.components.appbar.AppBarComponent
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

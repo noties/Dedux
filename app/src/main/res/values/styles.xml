@@ -1,9 +1,11 @@
 <resources>
 
-    <style name="AppThemeBase" parent="android:Theme.Holo" />
+    <style name="AppThemeBase" parent="android:Theme.Holo.Light.NoActionBar" />
 
     <style name="AppTheme" parent="AppThemeBase" />
 
     <style name="ThemeWhite" />
+
+    <style name="DialogTheme" parent="android:Theme.Holo.Light.Dialog.NoActionBar"/>
 
 </resources>

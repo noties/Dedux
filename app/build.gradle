@@ -45,19 +45,43 @@ android {
 }
 
 configurations {
+
+    // Google play services heavily rely on it, we - don't.
+    // I would just add a compile `google-play-services-basement` and exclude
+    // dependency from there, but there is no such artifact available
     compile.exclude group: 'com.android.support', module: 'support-v4'
+//    compile.exclude group: 'com.android.support', module: 'support-compat' //cannot remove this one
+    compile.exclude group: 'com.android.support', module: 'support-media-compat'
+
+    // Sure, we could include some properties in our manifest file to disable
+    // this feature, but we do not need it bundled with our app.
+    // Great that analytics are included by default and there is no opt-out
+    compile.exclude group: 'com.google.firebase', 'module': 'firebase-analytics'
 }
 
 dependencies {
 
-    compile project(':core')
+    compile project(':dedux')
 
     compile 'ru.noties:debug:3.0.0@jar'
     compile 'ru.noties:vt:1.0.0'
 
     compile 'com.google.code.gson:gson:2.8.0'
+
     compile "com.android.support:support-annotations:$SUPPORT_VERSION"
+
+    // this adds also: `support-annotations`, `support-compat`, `support-core-ui`
     compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
+
+    // Dear Lord, I had to add this dependency because on JB device
+    // we will be crashed by VerifyError (from GoogleApiClient.Builder)
+    // as it's requires FragmentActivity to be present... nice coupling
+    // and completely reasonable thing from Google side.
+    // Once you have added a smallest support or other google artifact don't expect
+    // to end up with it only
+    compile "com.android.support:support-fragment:$SUPPORT_VERSION"
+
+    // Dear Lord, I had to add this dependency because Firebase & GPS needs WakefulBroadcastReceiver
     compile "com.android.support:support-core-utils:$SUPPORT_VERSION"
 
     compile "com.google.firebase:firebase-auth:$FIREBASE_VERSION"
@@ -65,4 +89,6 @@ dependencies {
 }
 
 
+// Feels like a breeze, I haven't tried it, but I have a feeling that it works only if it's here
+// where you can easily find it
 apply plugin: 'com.google.gms.google-services'

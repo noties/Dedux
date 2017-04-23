@@ -11,4 +11,6 @@
         <item name="android:colorAccent">@color/colorWhite</item>
     </style>
 
+    <style name="DialogTheme" parent="android:Theme.Material.Light.Dialog.NoActionBar"/>
+
 </resources>

@@ -8,7 +8,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
-    <ru.noties.tddd.app.components.input.InputEditText
+    <ru.noties.todo.app.components.input.InputEditText
         android:id="@+id/input_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -16,8 +16,9 @@
         android:layout_marginLeft="8dip"
         android:layout_marginRight="8dip"
         android:layout_marginTop="4dip"
+        android:hint="@string/input_hint"
         android:imeOptions="actionGo"
-        android:inputType="text|textShortMessage|textCapSentences"
+        android:inputType="text|textCapSentences"
         android:maxLines="1"
         android:paddingLeft="8dip"
         android:paddingRight="8dip" />

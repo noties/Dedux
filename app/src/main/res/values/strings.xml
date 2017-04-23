@@ -1,8 +1,8 @@
 <resources>
 
-    <string name="app_name">TD;DD</string>
+    <string name="app_name">//\u00a0TODO</string>
 
-    <string name="app_bar_title">TD;DD</string>
+    <string name="input_hint">\u00a0//\u00a0TODO</string>
 
     <string name="account_title">Account</string>
     <string name="account_email_hint">E-mail</string>
