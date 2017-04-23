@@ -1,25 +1,25 @@
 package ru.noties.todo.state.action;
 
-import java.util.List;
+import java.util.Map;
 
 import dedux.Action;
 
 public class FirebaseSyncAction implements Action {
 
-    private final List<Object> list;
+    private final Map<String, Object> map;
 
-    public FirebaseSyncAction(List<Object> list) {
-        this.list = list;
+    public FirebaseSyncAction(Map<String, Object> map) {
+        this.map = map;
     }
 
-    public List<Object> list() {
-        return list;
+    public Map<String, Object> map() {
+        return map;
     }
 
     @Override
     public String toString() {
         return "FirebaseSyncAction{" +
-                "list=" + list +
+                "map=" + map +
                 '}';
     }
 }

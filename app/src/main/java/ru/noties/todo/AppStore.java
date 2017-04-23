@@ -16,6 +16,7 @@ import javax.annotation.Nonnull;
 import dedux.Action;
 import dedux.Middleware;
 import dedux.MiddlewareBuilder;
+import dedux.MutableState;
 import dedux.Reducer;
 import dedux.ReducerBuilder;
 import dedux.Store;
@@ -122,6 +123,12 @@ class AppStore {
                 .add(CloseConfirmAction.class, new CloseConfirmReducer())
                 .add(ScrollAction.class, new ScrollReducer())
                 .add(FirebaseSyncAction.class, new FirebaseSyncReducer())
+                .add(AccountAuthStateChangedAction.class, new Reducer<AccountAuthStateChangedAction>() {
+                    @Override
+                    public void reduce(@Nonnull MutableState state, @Nonnull AccountAuthStateChangedAction accountAuthStateChangedAction) {
+                        // temp one
+                    }
+                })
                 .build();
     }
 

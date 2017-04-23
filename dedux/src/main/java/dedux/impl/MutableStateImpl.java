@@ -50,6 +50,15 @@ public class MutableStateImpl implements MutableState {
         get((Class<T>) t.getClass()).set(t);
     }
 
+    @Override
+    public void set(@Nonnull String className, @Nullable Object value) {
+        final Class cl = stateClass(className);
+        if (cl != null) {
+            //noinspection unchecked
+            get(cl).set(value);
+        }
+    }
+
     @Nonnull
     @Override
     public Map<String, Object> state() {

@@ -1,6 +1,7 @@
 package dedux;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 public interface MutableState extends State {
 
@@ -14,6 +15,8 @@ public interface MutableState extends State {
     // helper function == `get(SomeClass.class).set(new SomeClass(123L))`
     // NB, DOES NOT ALLOW NULL, if NULL value must be set use `get(*.class).set(null)`
     <T> void set(@Nonnull T t);
+
+    void set(@Nonnull String className, @Nullable Object value);
 
     Subscription subscribe(@Nonnull Consumer<MutableState> consumer);
 }

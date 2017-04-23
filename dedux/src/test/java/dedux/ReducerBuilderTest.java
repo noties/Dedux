@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -178,6 +179,11 @@ public class ReducerBuilderTest {
 
         @Override
         public <T> void set(@Nonnull T t) {
+
+        }
+
+        @Override
+        public void set(@Nonnull String className, @Nullable Object value) {
 
         }
 

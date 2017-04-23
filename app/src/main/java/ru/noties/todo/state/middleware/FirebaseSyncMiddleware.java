@@ -10,8 +10,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
@@ -100,8 +99,8 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
 
     private void onNewValueObtained(Store store, String value) {
         executor.execute(() -> {
-            final List<Object> list = stateSerializer.fromJson(value);
-            store.dispatch(new FirebaseSyncAction(list));
+            final Map<String, Object> map = stateSerializer.fromJson(value);
+            store.dispatch(new FirebaseSyncAction(map));
         });
     }
 
@@ -112,14 +111,15 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
             if (firebaseHelper != null) {
 
                 final Map<String, Object> map = state.state();
-                final List<Object> list = new ArrayList<>(map.size());
-                for (Map.Entry<String, Object> entry: map.entrySet()) {
+                final Map<String, Object> out = new HashMap<>();
+
+                for (Map.Entry<String, Object> entry : map.entrySet()) {
                     if (acceptedKeys.contains(entry.getKey())) {
-                        list.add(entry.getValue());
+                        out.put(entry.getKey(), entry.getValue());
                     }
                 }
 
-                final String json = stateSerializer.toJson(list);
+                final String json = stateSerializer.toJson(out);
                 firebaseHelper.persist(json);
             }
         });

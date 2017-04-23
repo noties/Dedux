@@ -28,41 +28,32 @@ public class StateSerializer {
             .registerTypeAdapter(LoadedState.class, new LoadedStateJsonDeserializer())
             .create();
 
+    // we need to accept Map<String, Object> because
+    // no value (aka NULL) is a perfectly valid value, but we cannot ask for a class of a null
+    // so we need to introduce a standalone key
+
     @Nullable
-    public String toJson(@Nullable List<Object> objects) {
-
-        final String out;
-        if (CollectionUtils.isEmpty(objects)) {
-            out = null;
-        } else {
-
-            final Map<String, Object> map = new HashMap<>(objects.size());
-            for (Object o: objects) {
-                map.put(o.getClass().getName(), o);
-            }
-
-            out = gson.toJson(map);
-        }
-        return out;
+    public String toJson(@Nonnull Map<String, Object> map) {
+        return gson.toJson(map);
     }
 
     @Nonnull
-    public List<Object> fromJson(@Nullable String json) {
-        final List<Object> out;
+    public Map<String, Object> fromJson(@Nullable String json) {
+        final Map<String, Object> map;
         if (TextUtils.isEmpty(json)) {
             //noinspection unchecked
-            out = Collections.EMPTY_LIST;
+            map = Collections.EMPTY_MAP;
         } else {
             final LoadedState loadedState = gson.fromJson(json, LoadedState.class);
             if (loadedState == null
-                    || CollectionUtils.isEmpty(loadedState.objects)) {
+                    || CollectionUtils.isEmpty(loadedState.map)) {
                 //noinspection unchecked
-                out = Collections.EMPTY_LIST;
+                map = Collections.EMPTY_MAP;
             } else {
-                out = loadedState.objects;
+                map = loadedState.map;
             }
         }
-        return out;
+        return map;
     }
 
     private static Class<?> parseType(String type) {
@@ -74,9 +65,9 @@ public class StateSerializer {
     }
 
     private static class LoadedState {
-        final List<Object> objects;
-        LoadedState(List<Object> objects) {
-            this.objects = objects;
+        final Map<String, Object> map;
+        LoadedState(Map<String, Object> map) {
+            this.map = map;
         }
     }
 
@@ -91,13 +82,13 @@ public class StateSerializer {
             final LoadedState state;
             // iterate keys and parse values
             if (jsonElement.isJsonObject()) {
-                final List<Object> list = new ArrayList<>();
-                state = new LoadedState(list);
+                final Map<String, Object> map = new HashMap<>();
+                state = new LoadedState(map);
                 final JsonObject jsonObject = (JsonObject) jsonElement;
                 for (Map.Entry<String, JsonElement> entry: jsonObject.entrySet()) {
                     final Class<?> cl = parseType(entry.getKey());
                     if (cl != null) {
-                        list.add(jsonDeserializationContext.deserialize(entry.getValue(), cl));
+                        map.put(cl.getName(), jsonDeserializationContext.deserialize(entry.getValue(), cl));
                     }
                 }
             } else {

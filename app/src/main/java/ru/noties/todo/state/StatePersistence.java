@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 import android.text.TextUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +17,7 @@ import javax.annotation.Nullable;
 import dedux.PreloadedState;
 import dedux.Store;
 import dedux.Subscription;
+import ru.noties.debug.Debug;
 import ru.noties.todo.utils.CollectionUtils;
 
 public class StatePersistence {
@@ -51,11 +51,11 @@ public class StatePersistence {
             }
         }
 
-        final List<Object> persisted = persisted();
-        if (!CollectionUtils.isEmpty(persisted)) {
-            for (Object o: persisted) {
-                preloadedState.add(o);
-            }
+        final Map<String, Object> map = persisted();
+        for (Object o: map.values()) {
+            // we persist nulls, and accept them, but for initial state we do not need to set them
+            // (as by default they are null)
+            preloadedState.add(o);
         }
 
         return preloadedState;
@@ -82,27 +82,22 @@ public class StatePersistence {
         });
     }
 
-    private void persist(@Nullable Map<String, Object> state) {
-        final List<Object> objects;
-        if (CollectionUtils.isEmpty(state)) {
-            objects = null;
-        } else {
-            objects = new ArrayList<>(state.values());
-        }
-        final String serialized = stateSerializer.toJson(objects);
+    private void persist(Map<String, Object> state) {
+        Debug.i(state);
+        final String serialized = stateSerializer.toJson(state);
         preferences.edit().putString(KEY, serialized).apply();
     }
 
     @Nonnull
-    private List<Object> persisted() {
-        final List<Object> out;
+    private Map<String, Object> persisted() {
+        final Map<String, Object> map;
         final String serialized = preferences.getString(KEY, null);
         if (TextUtils.isEmpty(serialized)) {
             //noinspection unchecked
-            out = Collections.EMPTY_LIST;
+            map = Collections.EMPTY_MAP;
         } else {
-            out = stateSerializer.fromJson(serialized);
+            map = stateSerializer.fromJson(serialized);
         }
-        return out;
+        return map;
     }
 }
