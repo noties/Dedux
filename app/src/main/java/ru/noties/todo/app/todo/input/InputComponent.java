@@ -10,11 +10,12 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import ru.noties.todo.app.ComponentHelper;
-import ru.noties.todo.core.TextWatcherAdapter;
 import ru.noties.todo.app.todo.core.AddTodoAction;
+import ru.noties.todo.core.InputEditText;
+import ru.noties.todo.core.TextWatcherAdapter;
 import ru.noties.todo.sample.R;
 import ru.noties.todo.utils.KeyboardUtils;
 import ru.noties.todo.utils.StringUtils;
@@ -125,7 +126,7 @@ public class InputComponent extends FrameLayout {
         }
     }
 
-    private void render(@Nullable InputState state) {
+    private void render(@Nonnull InputState state) {
 
         selfChange = true;
 
@@ -138,9 +139,9 @@ public class InputComponent extends FrameLayout {
         selfChange = false;
     }
 
-    private void renderFocus(@Nullable InputState state) {
+    private void renderFocus(@Nonnull InputState state) {
 
-        final boolean hasFocus = state != null && state.hasFocus();
+        final boolean hasFocus = state.hasFocus();
 
         if (hasFocus) {
             editText.requestFocus();
@@ -151,11 +152,9 @@ public class InputComponent extends FrameLayout {
         }
     }
 
-    private void renderText(@Nullable InputState state) {
+    private void renderText(@Nonnull InputState state) {
 
-        final String text = state != null
-                ? state.currentInput()
-                : null;
+        final String text = state.currentInput();
 
         if (!TextUtils.equals(text, editText.getText())) {
 
@@ -167,15 +166,11 @@ public class InputComponent extends FrameLayout {
         }
     }
 
-    private void renderSelection(@Nullable InputState state) {
+    private void renderSelection(@Nonnull InputState state) {
 
-        final int s = state != null
-                ? state.selectionStart()
-                : 0;
+        final int s = state.selectionStart();
 
-        final int e = state != null
-                ? state.selectionEnd()
-                : 0;
+        final int e = state.selectionEnd();
 
         final int currentS = editText.getSelectionStart();
         final int currentE = editText.getSelectionEnd();

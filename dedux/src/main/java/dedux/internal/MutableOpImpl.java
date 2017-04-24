@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import dedux.Consumer;
 import dedux.Converter;
@@ -66,17 +65,23 @@ public class MutableOpImpl<T> implements MutableOp<T> {
 
     @Override
     public void set(@Nonnull T t) {
+        // the thing is...we most likely need to `skip` notification if value is the same
         synchronized (lock) {
             this.value = t;
         }
+
         notifySubscribers();
     }
 
     private void notifySubscribers() {
         final SubscriptionFlag flag = new SubscriptionFlag();
         synchronized (lock) {
+
             final T value = this.value;
-            final Iterator<Map.Entry<Subscription, Consumer<T>>> iterator = map.entrySet().iterator();
+
+            final Iterator<Map.Entry<Subscription, Consumer<T>>> iterator = new HashMap<>(map)
+                    .entrySet().iterator();
+
             Map.Entry<Subscription, Consumer<T>> entry;
             while (iterator.hasNext()) {
                 entry = iterator.next();

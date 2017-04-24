@@ -8,7 +8,7 @@
         android:focusable="true"
         android:focusableInTouchMode="true" />
 
-    <ru.noties.todo.app.todo.input.InputEditText
+    <ru.noties.todo.core.InputEditText
         android:id="@+id/input_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -17,7 +17,7 @@
         android:layout_marginRight="8dip"
         android:layout_marginTop="4dip"
         android:hint="@string/input_hint"
-        android:imeOptions="actionGo"
+        android:imeOptions="actionGo|flagNoExtractUi"
         android:inputType="text|textCapSentences"
         android:maxLines="1"
         android:paddingLeft="8dip"

@@ -10,12 +10,12 @@ import android.widget.FrameLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import ru.noties.todo.app.ComponentHelper;
+import ru.noties.todo.app.todo.core.Todo;
 import ru.noties.todo.app.todo.core.TodosState;
 import ru.noties.todo.app.todo.core.ToggleTodoAction;
-import ru.noties.todo.app.todo.core.Todo;
 import ru.noties.todo.sample.R;
 import ru.noties.todo.utils.CollectionUtils;
 import ru.noties.todo.utils.ViewUtils;
@@ -93,18 +93,18 @@ public class ListComponent extends FrameLayout {
         }
     }
 
-    private void render(@Nullable TodosState state) {
+    private void render(@Nonnull TodosState state) {
 
         adapter.setItems(createItems(state));
 
-        final boolean scrollToLast = state != null && state.scrollToLast();
+        final boolean scrollToLast = state.scrollToLast();
         if (scrollToLast) {
             recyclerView.post(() -> recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1));
         }
     }
 
-    private void renderScroll(@Nullable ListScrollState state) {
-        if (state != null && !selfChange) {
+    private void renderScroll(@Nonnull ListScrollState state) {
+        if (!selfChange) {
             layoutManager.scrollToPositionWithOffset(state.position(), state.offset());
         }
     }

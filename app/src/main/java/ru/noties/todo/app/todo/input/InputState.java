@@ -1,10 +1,10 @@
 package ru.noties.todo.app.todo.input;
 
-import ru.noties.todo.state.BaseState;
+import dedux.StateItemBase;
 
-public class InputState extends BaseState {
+public class InputState extends StateItemBase {
 
-    private boolean hasFocus;
+    private boolean hasFocus = true;
     private String currentInput;
     private int selectionStart;
     private int selectionEnd;

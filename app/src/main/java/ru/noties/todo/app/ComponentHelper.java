@@ -6,14 +6,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import dedux.CompositeSubscription;
+import dedux.StateItemBase;
 import dedux.Store;
 import ru.noties.todo.StoreHolder;
-import ru.noties.todo.state.BaseState;
 
 public class ComponentHelper {
 
-    public interface OnNewStateListener<T extends BaseState> {
-        void onNewState(@Nullable T t);
+    public interface OnNewStateListener<T extends StateItemBase> {
+        void onNewState(@Nonnull T t);
     }
 
     @Nullable
@@ -44,11 +44,11 @@ public class ComponentHelper {
     private final Store store;
     private CompositeSubscription subscription;
 
-    private ComponentHelper(@Nonnull Store store) {
+    ComponentHelper(@Nonnull Store store) {
         this.store = store;
     }
 
-    public <T extends BaseState> void attach(@Nonnull Class<T> stateType, @Nonnull OnNewStateListener<T> listener) {
+    public <T extends StateItemBase> void attach(@Nonnull Class<T> stateType, @Nonnull OnNewStateListener<T> listener) {
 
         if (subscription == null
                 || subscription.isUnsubscribed()) {

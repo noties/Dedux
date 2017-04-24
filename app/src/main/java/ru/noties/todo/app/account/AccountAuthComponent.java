@@ -4,15 +4,16 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.sample.R;
 import ru.noties.todo.utils.ViewUtils;
 
-public class AccountAuthComponent extends LinearLayout {
+public class AccountAuthComponent extends FrameLayout {
 
     private ComponentHelper helper;
 
@@ -38,8 +39,6 @@ public class AccountAuthComponent extends LinearLayout {
             }
         }
 
-        setOrientation(VERTICAL);
-
         inflate(context, R.layout.view_account, this);
 
         container = ViewUtils.findView(this, R.id.account_container);
@@ -62,15 +61,15 @@ public class AccountAuthComponent extends LinearLayout {
         }
     }
 
-    private void render(@Nullable AccountAuthState state) {
+    private void render(@Nonnull AccountAuthState state) {
 
-        final boolean came = state != null && state.isLoggedIn();
+        final boolean came = state.isLoggedIn();
 
         if (prevLoggedIn == null
                 || prevLoggedIn != came) {
 
             final View view = came
-                    ? null // todo
+                    ? new TextView(getContext()) // todo
                     : new AccountInputComponent(getContext());
 
             container.removeAllViews();

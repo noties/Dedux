@@ -1,31 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minWidth="300dip"
+    android:orientation="vertical"
+    android:paddingBottom="8dip">
 
     <TextView
+        android:id="@+id/confirm_title"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
-        android:gravity="center"
+        android:layout_marginLeft="24dip"
+        android:layout_marginRight="24dip"
+        android:gravity="left|center_vertical"
         android:text="@string/account_title"
-        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textStyle="bold" />
 
     <FrameLayout
+        android:id="@+id/account_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="8dip" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/app_bar_shadow_height"
-            android:background="@drawable/bg_app_bar_shadow" />
-
-        <FrameLayout
-            android:id="@+id/account_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="16dip"
-            android:paddingRight="16dip"
-            android:paddingBottom="12dip"/>
-
-    </FrameLayout>
-
-</merge>
+</LinearLayout>

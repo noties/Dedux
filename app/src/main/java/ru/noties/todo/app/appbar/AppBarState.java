@@ -1,8 +1,8 @@
 package ru.noties.todo.app.appbar;
 
-import ru.noties.todo.state.BaseState;
+import dedux.StateItemBase;
 
-public class AppBarState extends BaseState {
+public class AppBarState extends StateItemBase {
 
     private String title;
     private boolean loggedIn;

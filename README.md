@@ -22,6 +22,9 @@ phone has turned off... and you have lost everything
 // nb, reducerBuilder, will match first reducer
 // nb, middlewareBuilder will create a list of all middlewares that `isAssignable` from action class
 
+// todo, threading mechanism... dispatch thread (for action)
+// reducer thread...
+
 
 ## Licence
 ```

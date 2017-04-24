@@ -7,7 +7,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import ru.noties.todo.app.AppComponent;
 import ru.noties.todo.app.ComponentHelper;
@@ -34,7 +34,6 @@ public class NavigationComponent extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attributeSet) {
-
         helper = ComponentHelper.install(context);
         if (helper == null
                 && !isInEditMode()) {
@@ -64,13 +63,13 @@ public class NavigationComponent extends FrameLayout {
         }
     }
 
-    private void render(@Nullable NavigationState state) {
+    private void render(@Nonnull NavigationState state) {
         renderApp(state);
         renderAccount(state);
         renderConfirmClearDoneAction(state);
     }
 
-    private void renderApp(@Nullable NavigationState state) {
+    private void renderApp(@Nonnull NavigationState state) {
         // in order to make this component `dump` we should follow the directions that came from state
         // but as we have decided to always show app & use a accountDialog for account
         // we will always render app
@@ -79,9 +78,9 @@ public class NavigationComponent extends FrameLayout {
         }
     }
 
-    private void renderAccount(@Nullable NavigationState state) {
+    private void renderAccount(@Nonnull NavigationState state) {
 
-        final boolean show = state != null && state.showAccount();
+        final boolean show = state.showAccount();
 
         if (show) {
             if (accountDialog == null
@@ -91,12 +90,18 @@ public class NavigationComponent extends FrameLayout {
                 dialog.setOnDismissListener(di -> {
                     helper.store().dispatch(new NavigationCloseAccountAction());
                 });
+                this.accountDialog = dialog;
+                this.accountDialog.show();
+
                 final Window window = dialog.getWindow();
                 if (window != null) {
                     window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                    final WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+                    params.copyFrom(window.getAttributes());
+                    params.width = WindowManager.LayoutParams.MATCH_PARENT;
+                    params.height = LayoutParams.WRAP_CONTENT;
+                    window.setAttributes(params);
                 }
-                this.accountDialog = dialog;
-                this.accountDialog.show();
             }
         } else {
             if (accountDialog != null
@@ -107,9 +112,9 @@ public class NavigationComponent extends FrameLayout {
         }
     }
 
-    private void renderConfirmClearDoneAction(@Nullable NavigationState state) {
+    private void renderConfirmClearDoneAction(@Nonnull NavigationState state) {
 
-        final boolean showConfirm = state != null && state.showConfirm();
+        final boolean showConfirm = state.showConfirm();
 
         if (showConfirm) {
             if (confirmDialog == null
@@ -119,6 +124,15 @@ public class NavigationComponent extends FrameLayout {
                 dialog.setOnDismissListener(di -> helper.store().dispatch(new ConfirmAction()));
                 this.confirmDialog = dialog;
                 this.confirmDialog.show();
+
+                final Window window = dialog.getWindow();
+                if (window != null) {
+                    final WindowManager.LayoutParams params = new WindowManager.LayoutParams();
+                    params.copyFrom(window.getAttributes());
+                    params.width = WindowManager.LayoutParams.MATCH_PARENT;
+                    params.height = LayoutParams.WRAP_CONTENT;
+                    window.setAttributes(params);
+                }
             }
         } else {
             if (confirmDialog != null

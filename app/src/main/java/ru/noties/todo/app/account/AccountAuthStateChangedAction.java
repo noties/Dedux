@@ -4,20 +4,20 @@ import dedux.Action;
 
 public class AccountAuthStateChangedAction implements Action {
 
-    private final boolean isAuthernticated;
+    private final boolean isAuthenticated;
 
-    public AccountAuthStateChangedAction(boolean isAuthernticated) {
-        this.isAuthernticated = isAuthernticated;
+    public AccountAuthStateChangedAction(boolean isAuthenticated) {
+        this.isAuthenticated = isAuthenticated;
     }
 
-    public boolean isAuthernticated() {
-        return isAuthernticated;
+    public boolean isAuthenticated() {
+        return isAuthenticated;
     }
 
     @Override
     public String toString() {
         return "AccountAuthStateChangedAction{" +
-                "isAuthernticated=" + isAuthernticated +
+                "isAuthenticated=" + isAuthenticated +
                 '}';
     }
 }

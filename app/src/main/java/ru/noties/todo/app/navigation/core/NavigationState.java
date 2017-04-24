@@ -1,10 +1,10 @@
 package ru.noties.todo.app.navigation.core;
 
-import ru.noties.todo.state.BaseState;
+import dedux.StateItemBase;
 
-public class NavigationState extends BaseState {
+public class NavigationState extends StateItemBase {
 
-    private boolean showApp;
+    private boolean showApp = true;
     private boolean showAccount;
     private boolean showConfirm;
 

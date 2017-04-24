@@ -6,13 +6,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import ru.noties.todo.app.ComponentHelper;
-import ru.noties.todo.core.IconView;
 import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneAction;
 import ru.noties.todo.app.navigation.core.NavigationOpenAccountAction;
 import ru.noties.todo.app.todo.core.ToggleAllDoneAction;
+import ru.noties.todo.core.IconView;
 import ru.noties.todo.sample.R;
 import ru.noties.todo.utils.ViewUtils;
 
@@ -72,7 +72,7 @@ public class AppBarComponent extends LinearLayout {
         }
     }
 
-    private void render(@Nullable AppBarState state) {
+    private void render(@Nonnull AppBarState state) {
         renderTitle(state);
         renderAccount(state);
         renderClear(state);
@@ -80,25 +80,21 @@ public class AppBarComponent extends LinearLayout {
         renderCountDone(state);
     }
 
-    private void renderTitle(@Nullable AppBarState state) {
-
-        final CharSequence cs = state != null
-                ? state.title()
-                : null;
-
-        title.setText(cs);
+    private void renderTitle(@Nonnull AppBarState state) {
+        title.setText(state.title());
     }
 
-    private void renderAccount(@Nullable AppBarState state) {
-        final int colorRes = state != null && state.loggedIn()
+    private void renderAccount(@Nonnull AppBarState state) {
+        final int colorRes = state.loggedIn()
                 ? R.color.colorAccent
                 : R.color.colorWhite;
         filter.setColorRes(colorRes);
         filter.setOnClickListener(v -> helper.store().dispatch(new NavigationOpenAccountAction()));
     }
 
-    private void renderClear(@Nullable AppBarState state) {
-        final boolean visible = state != null && state.clearEnabled();
+    private void renderClear(@Nonnull AppBarState state) {
+
+        final boolean visible = state.clearEnabled();
 
         ViewUtils.setVisible(clear, visible, INVISIBLE);
 
@@ -111,9 +107,9 @@ public class AppBarComponent extends LinearLayout {
         clear.setOnClickListener(listener);
     }
 
-    private void renderAllDone(@Nullable AppBarState state) {
+    private void renderAllDone(@Nonnull AppBarState state) {
 
-        final boolean enabled = state != null && state.toggleDoneEnabled();
+        final boolean enabled = state.toggleDoneEnabled();
         ViewUtils.setVisible(action, enabled, INVISIBLE);
 
         final boolean allDone = enabled && state.allDone();
@@ -129,11 +125,9 @@ public class AppBarComponent extends LinearLayout {
         // everything is displayed correctly
     }
 
-    private void renderCountDone(@Nullable AppBarState state) {
+    private void renderCountDone(@Nonnull AppBarState state) {
 
-        final int done = state != null
-                ? state.doneCount()
-                : 0;
+        final int done = state.doneCount();
 
         final boolean visible = done > 0;
 

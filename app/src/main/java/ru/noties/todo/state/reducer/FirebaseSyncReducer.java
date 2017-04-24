@@ -4,10 +4,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import dedux.Action;
 import dedux.MutableState;
 import dedux.Reducer;
-import dedux.State;
 import dedux.StateItem;
 import ru.noties.todo.state.action.FirebaseSyncAction;
 
@@ -16,15 +14,9 @@ public class FirebaseSyncReducer implements Reducer<FirebaseSyncAction> {
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull FirebaseSyncAction firebaseSyncAction) {
 
-        final Map<String, Object> map = firebaseSyncAction.map();
-        for (Map.Entry<String, Object> entry: map.entrySet()) {
-            state.set(entry.getKey(), entry.getValue());
+        final Map<Class<? extends StateItem>, StateItem> map = firebaseSyncAction.map();
+        for (Map.Entry<Class<? extends StateItem>, StateItem> entry : map.entrySet()) {
+            state.set(entry.getValue());
         }
-    }
-
-    @Nonnull
-    @Override
-    public StateItem reduce(@Nonnull State state, @Nonnull Action action) {
-        return null;
     }
 }

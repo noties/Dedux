@@ -1,4 +1,4 @@
-package ru.noties.todo.app.todo.input;
+package ru.noties.todo.core;
 
 import android.content.Context;
 import android.util.AttributeSet;

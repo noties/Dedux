@@ -5,7 +5,7 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import javax.annotation.Nullable;
+import javax.annotation.Nonnull;
 
 import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.sample.R;
@@ -62,7 +62,7 @@ public class ConfirmComponent extends FrameLayout {
         }
     }
 
-    private void render(@Nullable ConfirmState state) {
+    private void render(@Nonnull ConfirmState state) {
         renderTitle(state);
         renderMessage(state);
         renderConfirm(state);

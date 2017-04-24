@@ -2,9 +2,9 @@ package ru.noties.todo.app.todo.core;
 
 import java.util.List;
 
-import ru.noties.todo.state.BaseState;
+import dedux.StateItemBase;
 
-public class TodosState extends BaseState {
+public class TodosState extends StateItemBase {
 
     private List<Todo> todos;
     private boolean scrollToLast;

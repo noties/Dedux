@@ -49,7 +49,7 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
 
         handler.removeCallbacksAndMessages(null);
 
-        if (action.isAuthernticated()) {
+        if (action.isAuthenticated()) {
 
             if (firebaseHelper == null) {
                 firebaseHelper = createFirebaseHelper(store);
@@ -103,7 +103,7 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
     private void onNewValueObtained(Store store, String value) {
         executor.execute(() -> {
             final Map<Class<? extends StateItem>, StateItem> map = stateSerializer.fromJson(value);
-            store.dispatch(new FirebaseSyncAction(map));
+            handler.post(() -> store.dispatch(new FirebaseSyncAction(map)));
         });
     }
 

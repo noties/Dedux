@@ -1,8 +1,8 @@
 package ru.noties.todo.app.todo.list;
 
-import ru.noties.todo.state.BaseState;
+import dedux.StateItemBase;
 
-public class ListScrollState extends BaseState {
+public class ListScrollState extends StateItemBase {
 
     private int position;
     private int offset;

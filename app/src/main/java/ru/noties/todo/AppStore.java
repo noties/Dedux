@@ -15,46 +15,48 @@ import javax.annotation.Nullable;
 import dedux.Action;
 import dedux.Middleware;
 import dedux.MiddlewareBuilder;
-import dedux.MutableState;
 import dedux.Reducer;
 import dedux.ReducerBuilder;
+import dedux.StateItem;
 import dedux.Store;
 import dedux.StoreBuilder;
 import ru.noties.debug.Debug;
-import ru.noties.todo.app.account.AccountAuthState;
-import ru.noties.todo.app.appbar.AppBarState;
-import ru.noties.todo.app.navigation.confirm.ConfirmAction;
-import ru.noties.todo.app.navigation.confirm.ConfirmMiddleware;
-import ru.noties.todo.app.todo.input.InputAction;
-import ru.noties.todo.app.todo.input.InputReducer;
-import ru.noties.todo.app.todo.input.InputState;
-import ru.noties.todo.app.navigation.core.NavigationState;
+import ru.noties.todo.app.account.AccountAuthAction;
+import ru.noties.todo.app.account.AccountAuthReducer;
 import ru.noties.todo.app.account.AccountAuthStateChangedAction;
+import ru.noties.todo.app.account.AccountAuthStateChangedReducer;
 import ru.noties.todo.app.account.AccountEmailChangedAction;
 import ru.noties.todo.app.account.AccountEmailChangedReducer;
-import ru.noties.todo.app.todo.core.AddTodoAction;
-import ru.noties.todo.app.todo.core.AddTodoReducer;
+import ru.noties.todo.app.account.AccountLogInAction;
+import ru.noties.todo.app.account.AccountLogInMiddleware;
 import ru.noties.todo.app.appbar.AppBarCheckDoneAction;
 import ru.noties.todo.app.appbar.AppBarCheckDoneReducer;
-import ru.noties.todo.app.todo.core.ClearDoneAction;
-import ru.noties.todo.app.todo.core.ClearDoneReducer;
-import ru.noties.todo.app.navigation.core.NavigationCloseAccountAction;
-import ru.noties.todo.app.navigation.core.NavigationCloseAccountReducer;
-import ru.noties.todo.app.navigation.confirm.ConfirmCloseAction;
-import ru.noties.todo.app.navigation.confirm.ConfirmCloseReducer;
-import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneAction;
-import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneReducer;
 import ru.noties.todo.app.appbar.AppBarCountDoneAction;
 import ru.noties.todo.app.appbar.AppBarCountDoneReducer;
-import ru.noties.todo.app.todo.core.ModifyTodoAction;
-import ru.noties.todo.app.todo.core.ModifyTodoMiddleware;
+import ru.noties.todo.app.appbar.AppBarState;
+import ru.noties.todo.app.navigation.confirm.ConfirmAction;
+import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneAction;
+import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneReducer;
+import ru.noties.todo.app.navigation.confirm.ConfirmCloseAction;
+import ru.noties.todo.app.navigation.confirm.ConfirmCloseReducer;
+import ru.noties.todo.app.navigation.confirm.ConfirmMiddleware;
+import ru.noties.todo.app.navigation.core.NavigationCloseAccountAction;
+import ru.noties.todo.app.navigation.core.NavigationCloseAccountReducer;
 import ru.noties.todo.app.navigation.core.NavigationOpenAccountAction;
 import ru.noties.todo.app.navigation.core.NavigationOpenAccountReducer;
+import ru.noties.todo.app.todo.core.AddTodoAction;
+import ru.noties.todo.app.todo.core.AddTodoReducer;
+import ru.noties.todo.app.todo.core.ClearDoneAction;
+import ru.noties.todo.app.todo.core.ClearDoneReducer;
+import ru.noties.todo.app.todo.core.ModifyTodoAction;
+import ru.noties.todo.app.todo.core.ModifyTodoMiddleware;
 import ru.noties.todo.app.todo.core.TodosState;
 import ru.noties.todo.app.todo.core.ToggleAllDoneAction;
 import ru.noties.todo.app.todo.core.ToggleAllDoneReducer;
 import ru.noties.todo.app.todo.core.ToggleTodoAction;
 import ru.noties.todo.app.todo.core.ToggleTodoReducer;
+import ru.noties.todo.app.todo.input.InputAction;
+import ru.noties.todo.app.todo.input.InputReducer;
 import ru.noties.todo.app.todo.list.ScrollAction;
 import ru.noties.todo.app.todo.list.ScrollReducer;
 import ru.noties.todo.sample.R;
@@ -90,18 +92,15 @@ class AppStore {
 
         // check if we are authenticated and dispatch event
         final boolean isAuthenticated = FirebaseAuth.getInstance().getCurrentUser() != null;
+        Debug.i("isAuthenticated: %s", isAuthenticated);
         store.dispatch(new AccountAuthStateChangedAction(isAuthenticated));
 
         return store;
     }
 
-    private List<Object> initialState() {
-        final List<Object> list = new ArrayList<>();
+    private List<? extends StateItem> initialState() {
+        final List<StateItem> list = new ArrayList<>();
         list.add(new AppBarState().title(application.getString(R.string.app_name)));
-        list.add(new InputState().hasFocus(true));
-        list.add(new TodosState());
-        list.add(new NavigationState().showApp(true).showAccount(false));
-        list.add(new AccountAuthState());
         return list;
     }
 
@@ -121,12 +120,8 @@ class AppStore {
                 .add(ConfirmCloseAction.class, new ConfirmCloseReducer())
                 .add(ScrollAction.class, new ScrollReducer())
                 .add(FirebaseSyncAction.class, new FirebaseSyncReducer())
-                .add(AccountAuthStateChangedAction.class, new Reducer<AccountAuthStateChangedAction>() {
-                    @Override
-                    public void reduce(@Nonnull MutableState state, @Nonnull AccountAuthStateChangedAction accountAuthStateChangedAction) {
-                        // temp one
-                    }
-                })
+                .add(AccountAuthAction.class, new AccountAuthReducer())
+                .add(AccountAuthStateChangedAction.class, new AccountAuthStateChangedReducer())
                 .build();
     }
 
@@ -139,12 +134,13 @@ class AppStore {
                 .add(ModifyTodoAction.class, new ModifyTodoMiddleware())
                 .add(ConfirmAction.class, new ConfirmMiddleware())
                 .add(AccountAuthStateChangedAction.class, new FirebaseSyncMiddleware(stateSerializer, firebaseAcceptedKeys()))
+                .add(AccountLogInAction.class, new AccountLogInMiddleware(application.getResources()))
                 .build();
     }
 
     // if `null` is returned then all the states will be persisted to firebase
     @Nullable
-    private static Set<String> firebaseAcceptedKeys() {
+    private static Set<Class<? extends StateItem>> firebaseAcceptedKeys() {
         // we can change the states that we accept here,
         // to even include all of them, so with synchronization
         // all the app state will be synchronized (appBar, scroll, input, etc)
@@ -153,7 +149,7 @@ class AppStore {
         // but saving all possible state will let us to have a continuous experience between
         // different devices and/or different platforms
         return Collections.unmodifiableSet(
-                Collections.singleton(TodosState.class.getName())
+                Collections.singleton(TodosState.class)
         );
     }
 }

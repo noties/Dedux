@@ -1,8 +1,8 @@
 package ru.noties.todo.app.navigation.confirm;
 
-import ru.noties.todo.state.BaseState;
+import dedux.StateItemBase;
 
-public class ConfirmState extends BaseState {
+public class ConfirmState extends StateItemBase {
 
     private String title;
     private String message;
