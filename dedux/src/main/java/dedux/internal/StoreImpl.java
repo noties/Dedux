@@ -22,7 +22,7 @@ import dedux.Subscription;
 public class StoreImpl implements Store {
 
     private final MutableState state;
-    private final Reducer<Action, StateItem> reducer;
+    private final Reducer<Action> reducer;
     private final Middleware<Action> middleware;
     private final MutableOp<State> op;
 
@@ -33,7 +33,7 @@ public class StoreImpl implements Store {
 
     // we allow only Reducer<Action>, as we should handle all actions
     public StoreImpl(
-            @Nonnull Reducer<Action, StateItem> reducer,
+            @Nonnull Reducer<Action> reducer,
             @Nullable Middleware<Action> middleware,
             @Nullable PreloadedState preloadedState
     ) {
@@ -65,8 +65,7 @@ public class StoreImpl implements Store {
         middleware.apply(immutableStore, action, new Middleware.Next() {
             @Override
             public void next() {
-                final StateItem stateItem = reducer.reduce(immutableState, action);
-                state.set(stateItem);
+                reducer.reduce(state, action);
             }
         });
     }

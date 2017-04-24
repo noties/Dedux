@@ -3,16 +3,18 @@ package ru.noties.todo.state.action;
 import java.util.Map;
 
 import dedux.Action;
+import dedux.State;
+import dedux.StateItem;
 
 public class FirebaseSyncAction implements Action {
 
-    private final Map<String, Object> map;
+    private final Map<Class<? extends StateItem>, StateItem> map;
 
-    public FirebaseSyncAction(Map<String, Object> map) {
+    public FirebaseSyncAction(Map<Class<? extends StateItem>, StateItem> map) {
         this.map = map;
     }
 
-    public Map<String, Object> map() {
+    public Map<Class<? extends StateItem>, StateItem> map() {
         return map;
     }
 

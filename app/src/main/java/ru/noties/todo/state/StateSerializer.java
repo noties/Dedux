@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import dedux.StateItem;
 import ru.noties.todo.utils.CollectionUtils;
 
 public class StateSerializer {
@@ -33,13 +34,17 @@ public class StateSerializer {
     // so we need to introduce a standalone key
 
     @Nullable
-    public String toJson(@Nonnull Map<String, Object> map) {
-        return gson.toJson(map);
+    public String toJson(@Nonnull Map<Class<? extends StateItem>, StateItem> map) {
+        final Map<String, Object> out = new HashMap<>(map.size());
+        for (Map.Entry<Class<? extends StateItem>, StateItem> entry: map.entrySet()) {
+            out.put(entry.getKey().getName(), entry.getValue());
+        }
+        return gson.toJson(out);
     }
 
     @Nonnull
-    public Map<String, Object> fromJson(@Nullable String json) {
-        final Map<String, Object> map;
+    public Map<Class<? extends StateItem>, StateItem> fromJson(@Nullable String json) {
+        final Map<Class<? extends StateItem>, StateItem> map;
         if (TextUtils.isEmpty(json)) {
             //noinspection unchecked
             map = Collections.EMPTY_MAP;
@@ -56,17 +61,23 @@ public class StateSerializer {
         return map;
     }
 
-    private static Class<?> parseType(String type) {
+    private static Class<? extends StateItem> parseType(String type) {
         try {
-            return Class.forName(type);
+            final Class<?> cl = Class.forName(type);
+            if (StateItem.class.isAssignableFrom(cl)) {
+                //noinspection unchecked
+                return (Class<? extends StateItem>) cl;
+            } else {
+                return null;
+            }
         } catch (ClassNotFoundException e) {
             return null;
         }
     }
 
     private static class LoadedState {
-        final Map<String, Object> map;
-        LoadedState(Map<String, Object> map) {
+        final Map<Class<? extends StateItem>, StateItem> map;
+        LoadedState(Map<Class<? extends StateItem>, StateItem> map) {
             this.map = map;
         }
     }
@@ -82,13 +93,13 @@ public class StateSerializer {
             final LoadedState state;
             // iterate keys and parse values
             if (jsonElement.isJsonObject()) {
-                final Map<String, Object> map = new HashMap<>();
+                final Map<Class<? extends StateItem>, StateItem> map = new HashMap<>();
                 state = new LoadedState(map);
                 final JsonObject jsonObject = (JsonObject) jsonElement;
                 for (Map.Entry<String, JsonElement> entry: jsonObject.entrySet()) {
-                    final Class<?> cl = parseType(entry.getKey());
+                    final Class<? extends StateItem> cl = parseType(entry.getKey());
                     if (cl != null) {
-                        map.put(cl.getName(), jsonDeserializationContext.deserialize(entry.getValue(), cl));
+                        map.put(cl, jsonDeserializationContext.deserialize(entry.getValue(), cl));
                     }
                 }
             } else {

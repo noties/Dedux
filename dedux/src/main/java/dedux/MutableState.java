@@ -15,10 +15,6 @@ public interface MutableState extends State {
     // NB, DOES NOT ALLOW NULL, if NULL value must be set use `get(*.class).set(null)`
     <S extends StateItem> void set(@Nonnull S s);
 
-//    // allows NULL as values
-//    <S extends StateItem> void set(@Nonnull Class<S> cl, @Nullable S value);
-//
-//
     @Nonnull
     Subscription subscribe(@Nonnull Consumer<MutableState> consumer);
 }

@@ -21,6 +21,7 @@ import javax.annotation.Nullable;
 
 import dedux.Middleware;
 import dedux.State;
+import dedux.StateItem;
 import dedux.Store;
 import dedux.Subscription;
 import ru.noties.debug.Debug;
@@ -33,12 +34,12 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
     private final StateSerializer stateSerializer;
     private final Handler handler = new Handler();
     private final Executor executor = Executors.newSingleThreadExecutor();
-    private final Set<String> acceptedKeys;
+    private final Set<Class<? extends StateItem>> acceptedKeys;
 
     private FirebaseHelper firebaseHelper;
     private Subscription subscription;
 
-    public FirebaseSyncMiddleware(StateSerializer stateSerializer, @Nullable Set<String> acceptedKeys) {
+    public FirebaseSyncMiddleware(StateSerializer stateSerializer, @Nullable Set<Class<? extends StateItem>> acceptedKeys) {
         this.stateSerializer = stateSerializer;
         this.acceptedKeys = acceptedKeys;
     }
@@ -101,7 +102,7 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
 
     private void onNewValueObtained(Store store, String value) {
         executor.execute(() -> {
-            final Map<String, Object> map = stateSerializer.fromJson(value);
+            final Map<Class<? extends StateItem>, StateItem> map = stateSerializer.fromJson(value);
             store.dispatch(new FirebaseSyncAction(map));
         });
     }
@@ -112,20 +113,14 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
 
             if (firebaseHelper != null) {
 
-                final Map<String, Object> map = state.state();
-                final Map<String, Object> out;
+                final Map<Class<? extends StateItem>, StateItem> map = state.state();
+                final Map<Class<? extends StateItem>, StateItem> out = new HashMap<>();
 
-                // if `acceptedKeys` are not null, then filter states
-                if (acceptedKeys != null) {
-                    out = new HashMap<>();
-                    for (Map.Entry<String, Object> entry : map.entrySet()) {
-                        if (acceptedKeys.contains(entry.getKey())) {
-                            out.put(entry.getKey(), entry.getValue());
-                        }
+                final boolean hasFilter = acceptedKeys != null;
+                for (Map.Entry<Class<? extends StateItem>, StateItem> entry : map.entrySet()) {
+                    if (!hasFilter || acceptedKeys.contains(entry.getKey())) {
+                        out.put(entry.getKey(), entry.getValue());
                     }
-                } else {
-                    // else we won't filter anything and persist everything
-                    out = new HashMap<>(map);
                 }
 
                 final String json = stateSerializer.toJson(out);

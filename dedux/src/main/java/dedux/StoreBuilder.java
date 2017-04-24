@@ -23,7 +23,7 @@ public class StoreBuilder {
         return this;
     }
 
-    public Store build(@Nonnull Reducer<Action, StateItem> reducer) {
+    public Store build(@Nonnull Reducer<Action> reducer) {
         return new StoreImpl(reducer, middleware, preloadedState);
     }
 }
