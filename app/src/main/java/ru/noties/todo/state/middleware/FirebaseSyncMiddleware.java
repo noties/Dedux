@@ -24,7 +24,7 @@ import dedux.State;
 import dedux.Store;
 import dedux.Subscription;
 import ru.noties.debug.Debug;
-import ru.noties.todo.app.account.actions.AccountAuthStateChangedAction;
+import ru.noties.todo.app.account.AccountAuthStateChangedAction;
 import ru.noties.todo.state.StateSerializer;
 import ru.noties.todo.state.action.FirebaseSyncAction;
 
@@ -38,7 +38,7 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
     private FirebaseHelper firebaseHelper;
     private Subscription subscription;
 
-    public FirebaseSyncMiddleware(StateSerializer stateSerializer, @Nonnull Set<String> acceptedKeys) {
+    public FirebaseSyncMiddleware(StateSerializer stateSerializer, @Nullable Set<String> acceptedKeys) {
         this.stateSerializer = stateSerializer;
         this.acceptedKeys = acceptedKeys;
     }
@@ -92,6 +92,8 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
         if (user == null) {
             helper = null;
         } else {
+            // we are using auth with email and password, so a user not having an email is weird
+            //noinspection ConstantConditions
             helper = new FirebaseHelper(FirebaseKey.createKey(user.getEmail()), s -> onNewValueObtained(store, s));
         }
         return helper;
@@ -111,12 +113,19 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
             if (firebaseHelper != null) {
 
                 final Map<String, Object> map = state.state();
-                final Map<String, Object> out = new HashMap<>();
+                final Map<String, Object> out;
 
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    if (acceptedKeys.contains(entry.getKey())) {
-                        out.put(entry.getKey(), entry.getValue());
+                // if `acceptedKeys` are not null, then filter states
+                if (acceptedKeys != null) {
+                    out = new HashMap<>();
+                    for (Map.Entry<String, Object> entry : map.entrySet()) {
+                        if (acceptedKeys.contains(entry.getKey())) {
+                            out.put(entry.getKey(), entry.getValue());
+                        }
                     }
+                } else {
+                    // else we won't filter anything and persist everything
+                    out = new HashMap<>(map);
                 }
 
                 final String json = stateSerializer.toJson(out);
@@ -174,12 +183,22 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
         }
     }
 
+    // From firebase docs:
     // If you create your own keys, they must be UTF-8 encoded, can be a maximum of 768 bytes,
     // and cannot contain ., $, #, [, ], /, or ASCII control characters 0-31 or 127
     private static class FirebaseKey {
 
+        // we cannot just substitute non-letters & non-chars with `_` (underscore)
+        // mail.mail@mail.mail -> mail_mail_mail_mail
+        // mail@mail.mail.mail -> mail_mail_mail_mail
+        // so, we will attach initial input source hashCode (to enforce uniqueness)
         static String createKey(@Nonnull String in) {
+
             final StringBuilder builder = new StringBuilder();
+
+            builder.append(in.hashCode());
+            builder.append('_');
+
             char c;
             for (int i = 0, length = in.length(); i < length; i++) {
                 c = in.charAt(i);
@@ -189,6 +208,7 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
                     builder.append(c);
                 }
             }
+
             return builder.toString();
         }
 

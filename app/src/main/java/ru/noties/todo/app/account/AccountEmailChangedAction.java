@@ -1,4 +1,4 @@
-package ru.noties.todo.app.account.actions;
+package ru.noties.todo.app.account;
 
 import dedux.Action;
 

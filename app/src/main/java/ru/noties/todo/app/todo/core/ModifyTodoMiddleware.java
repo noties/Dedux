@@ -4,8 +4,8 @@ import javax.annotation.Nonnull;
 
 import dedux.Middleware;
 import dedux.Store;
-import ru.noties.todo.app.appbar.actions.AppBarCheckDoneAction;
-import ru.noties.todo.app.appbar.actions.AppBarCountDoneAction;
+import ru.noties.todo.app.appbar.AppBarCheckDoneAction;
+import ru.noties.todo.app.appbar.AppBarCountDoneAction;
 
 public class ModifyTodoMiddleware implements Middleware<ModifyTodoAction> {
 

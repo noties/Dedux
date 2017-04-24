@@ -1,4 +1,4 @@
-package ru.noties.todo.app.appbar.actions;
+package ru.noties.todo.app.appbar;
 
 import dedux.Action;
 

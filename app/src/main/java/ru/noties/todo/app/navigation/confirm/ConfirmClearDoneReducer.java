@@ -6,7 +6,7 @@ import javax.annotation.Nonnull;
 
 import dedux.MutableState;
 import dedux.Reducer;
-import ru.noties.todo.app.appbar.state.AppBarState;
+import ru.noties.todo.app.appbar.AppBarState;
 import ru.noties.todo.app.navigation.core.NavigationState;
 import ru.noties.todo.sample.R;
 

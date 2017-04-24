@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import dedux.Action;
 import dedux.Middleware;
@@ -20,21 +21,21 @@ import dedux.ReducerBuilder;
 import dedux.Store;
 import dedux.StoreBuilder;
 import ru.noties.debug.Debug;
-import ru.noties.todo.app.account.state.AccountAuthState;
-import ru.noties.todo.app.appbar.state.AppBarState;
+import ru.noties.todo.app.account.AccountAuthState;
+import ru.noties.todo.app.appbar.AppBarState;
 import ru.noties.todo.app.navigation.confirm.ConfirmAction;
 import ru.noties.todo.app.navigation.confirm.ConfirmMiddleware;
 import ru.noties.todo.app.todo.input.InputAction;
 import ru.noties.todo.app.todo.input.InputReducer;
 import ru.noties.todo.app.todo.input.InputState;
 import ru.noties.todo.app.navigation.core.NavigationState;
-import ru.noties.todo.app.account.actions.AccountAuthStateChangedAction;
-import ru.noties.todo.app.account.actions.AccountEmailChangedAction;
-import ru.noties.todo.app.account.reducers.AccountEmailChangedReducer;
+import ru.noties.todo.app.account.AccountAuthStateChangedAction;
+import ru.noties.todo.app.account.AccountEmailChangedAction;
+import ru.noties.todo.app.account.AccountEmailChangedReducer;
 import ru.noties.todo.app.todo.core.AddTodoAction;
 import ru.noties.todo.app.todo.core.AddTodoReducer;
-import ru.noties.todo.app.appbar.actions.AppBarCheckDoneAction;
-import ru.noties.todo.app.appbar.reducers.AppBarCheckDoneReducer;
+import ru.noties.todo.app.appbar.AppBarCheckDoneAction;
+import ru.noties.todo.app.appbar.AppBarCheckDoneReducer;
 import ru.noties.todo.app.todo.core.ClearDoneAction;
 import ru.noties.todo.app.todo.core.ClearDoneReducer;
 import ru.noties.todo.app.navigation.core.NavigationCloseAccountAction;
@@ -43,8 +44,8 @@ import ru.noties.todo.app.navigation.confirm.ConfirmCloseAction;
 import ru.noties.todo.app.navigation.confirm.ConfirmCloseReducer;
 import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneAction;
 import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneReducer;
-import ru.noties.todo.app.appbar.actions.AppBarCountDoneAction;
-import ru.noties.todo.app.appbar.reducers.AppBarCountDoneReducer;
+import ru.noties.todo.app.appbar.AppBarCountDoneAction;
+import ru.noties.todo.app.appbar.AppBarCountDoneReducer;
 import ru.noties.todo.app.todo.core.ModifyTodoAction;
 import ru.noties.todo.app.todo.core.ModifyTodoMiddleware;
 import ru.noties.todo.app.navigation.core.NavigationOpenAccountAction;
@@ -141,12 +142,16 @@ class AppStore {
                 .build();
     }
 
-    @Nonnull
+    // if `null` is returned then all the states will be persisted to firebase
+    @Nullable
     private static Set<String> firebaseAcceptedKeys() {
         // we can change the states that we accept here,
         // to even include all of them, so with synchronization
         // all the app state will be synchronized (appBar, scroll, input, etc)
         // but it can lead to weird experience (if app is used by multiple people)
+        //
+        // but saving all possible state will let us to have a continuous experience between
+        // different devices and/or different platforms
         return Collections.unmodifiableSet(
                 Collections.singleton(TodosState.class.getName())
         );

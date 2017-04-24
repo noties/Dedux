@@ -7,7 +7,7 @@ import javax.annotation.Nonnull;
 
 import dedux.MutableState;
 import dedux.Reducer;
-import ru.noties.todo.app.appbar.state.AppBarState;
+import ru.noties.todo.app.appbar.AppBarState;
 import ru.noties.todo.utils.CollectionUtils;
 
 public class ToggleAllDoneReducer implements Reducer<ToggleAllDoneAction> {

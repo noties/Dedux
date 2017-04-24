@@ -31,7 +31,7 @@
 
     </LinearLayout>
 
-    <ru.noties.todo.app.appbar.components.AppBarComponent
+    <ru.noties.todo.app.appbar.AppBarComponent
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -1,4 +1,4 @@
-package ru.noties.todo.app.appbar.reducers;
+package ru.noties.todo.app.appbar;
 
 import java.util.List;
 
@@ -6,8 +6,6 @@ import javax.annotation.Nonnull;
 
 import dedux.MutableState;
 import dedux.Reducer;
-import ru.noties.todo.app.appbar.actions.AppBarCountDoneAction;
-import ru.noties.todo.app.appbar.state.AppBarState;
 import ru.noties.todo.app.todo.core.TodosState;
 import ru.noties.todo.app.todo.core.Todo;
 import ru.noties.todo.utils.CollectionUtils;

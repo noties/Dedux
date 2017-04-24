@@ -11,7 +11,7 @@ import javax.annotation.Nullable;
 
 import ru.noties.todo.app.AppComponent;
 import ru.noties.todo.app.ComponentHelper;
-import ru.noties.todo.app.account.components.AccountAuthComponent;
+import ru.noties.todo.app.account.AccountAuthComponent;
 import ru.noties.todo.app.navigation.confirm.ConfirmAction;
 import ru.noties.todo.app.navigation.confirm.ConfirmComponent;
 import ru.noties.todo.sample.R;

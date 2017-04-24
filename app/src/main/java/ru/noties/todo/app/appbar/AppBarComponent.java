@@ -1,4 +1,4 @@
-package ru.noties.todo.app.appbar.components;
+package ru.noties.todo.app.appbar;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import javax.annotation.Nullable;
 
-import ru.noties.todo.app.appbar.state.AppBarState;
 import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.core.IconView;
 import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneAction;

@@ -1,4 +1,4 @@
-package ru.noties.todo.app.appbar.state;
+package ru.noties.todo.app.appbar;
 
 import ru.noties.todo.state.BaseState;
 

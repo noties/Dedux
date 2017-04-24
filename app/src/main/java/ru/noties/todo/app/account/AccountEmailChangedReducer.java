@@ -1,11 +1,9 @@
-package ru.noties.todo.app.account.reducers;
+package ru.noties.todo.app.account;
 
 import javax.annotation.Nonnull;
 
 import dedux.MutableState;
 import dedux.Reducer;
-import ru.noties.todo.app.account.actions.AccountEmailChangedAction;
-import ru.noties.todo.app.account.state.AccountAuthState;
 
 public class AccountEmailChangedReducer implements Reducer<AccountEmailChangedAction> {
     @Override

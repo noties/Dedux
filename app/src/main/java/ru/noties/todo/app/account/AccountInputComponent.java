@@ -1,4 +1,4 @@
-package ru.noties.todo.app.account.components;
+package ru.noties.todo.app.account;
 
 import android.content.Context;
 import android.text.Editable;
@@ -10,9 +10,7 @@ import android.widget.LinearLayout;
 import javax.annotation.Nullable;
 
 import ru.noties.todo.app.ComponentHelper;
-import ru.noties.todo.app.account.state.AccountAuthState;
 import ru.noties.todo.core.TextWatcherAdapter;
-import ru.noties.todo.app.account.actions.AccountEmailChangedAction;
 import ru.noties.todo.sample.R;
 import ru.noties.todo.utils.ViewUtils;
 

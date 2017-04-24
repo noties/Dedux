@@ -1,4 +1,4 @@
-package ru.noties.todo.app.account.state;
+package ru.noties.todo.app.account;
 
 import ru.noties.todo.state.BaseState;
 
