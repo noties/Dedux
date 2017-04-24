@@ -25,6 +25,8 @@ import ru.noties.todo.app.account.AccountAuthAction;
 import ru.noties.todo.app.account.AccountAuthReducer;
 import ru.noties.todo.app.account.AccountAuthStateChangedAction;
 import ru.noties.todo.app.account.AccountAuthStateChangedReducer;
+import ru.noties.todo.app.account.AccountClearInputErrorAction;
+import ru.noties.todo.app.account.AccountClearInputErrorReducer;
 import ru.noties.todo.app.account.AccountEmailChangedAction;
 import ru.noties.todo.app.account.AccountEmailChangedReducer;
 import ru.noties.todo.app.account.AccountLogInAction;
@@ -122,6 +124,7 @@ class AppStore {
                 .add(FirebaseSyncAction.class, new FirebaseSyncReducer())
                 .add(AccountAuthAction.class, new AccountAuthReducer())
                 .add(AccountAuthStateChangedAction.class, new AccountAuthStateChangedReducer())
+                .add(AccountClearInputErrorAction.class, new AccountClearInputErrorReducer())
                 .build();
     }
 

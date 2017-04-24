@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import javax.annotation.Nonnull;
 
-import ru.noties.debug.Debug;
 import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.app.navigation.core.NavigationCloseAccountAction;
 import ru.noties.todo.core.InputEditText;
@@ -82,11 +81,11 @@ public class AccountInputComponent extends FrameLayout {
                 @Override
                 public void afterTextChanged(Editable s) {
                     if (!selfChange) {
-                        email.setError(null);
                         final String email = TextUtils.isEmpty(s)
                                 ? null
                                 : s.toString();
                         helper.store().dispatch(new AccountEmailChangedAction(email));
+                        helper.store().dispatch(new AccountClearInputErrorAction(true, false));
                     }
                 }
             });
@@ -95,7 +94,7 @@ public class AccountInputComponent extends FrameLayout {
                 @Override
                 public void afterTextChanged(Editable s) {
                     if (!selfChange) {
-                        password.setError(null);
+                        helper.store().dispatch(new AccountClearInputErrorAction(false, true));
                     }
                 }
             });
@@ -163,8 +162,6 @@ public class AccountInputComponent extends FrameLayout {
     private void renderSignUpFirst(@Nonnull AccountAuthState state) {
 
         final boolean visible = state.signUpFirst();
-
-        Debug.i(visible);
 
         if (visible) {
             errorText.setText(R.string.account_log_in_error_sign_up_first_text);
