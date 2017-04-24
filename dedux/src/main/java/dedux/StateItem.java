@@ -25,7 +25,7 @@ public interface StateItem {
     //
     // so, 2 methods are added for convenience, so we don't have to override `clone` method
     // in all of siblings of `StateItem`
-    
+
     @Nonnull
     <S extends StateItem> S clone(@Nonnull Apply<? super S > apply);
 

@@ -65,7 +65,7 @@ public class StoreImpl implements Store {
         middleware.apply(immutableStore, action, new Middleware.Next() {
             @Override
             public void next() {
-                final StateItem stateItem = reducer.reduce(state, action);
+                final StateItem stateItem = reducer.reduce(immutableState, action);
                 state.set(stateItem);
             }
         });
