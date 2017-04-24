@@ -1,4 +1,4 @@
-package dedux.impl;
+package dedux.internal;
 
 
 import java.util.Map;
@@ -15,13 +15,14 @@ import dedux.Op;
 import dedux.PreloadedState;
 import dedux.Reducer;
 import dedux.State;
+import dedux.StateItem;
 import dedux.Store;
 import dedux.Subscription;
 
 public class StoreImpl implements Store {
 
     private final MutableState state;
-    private final Reducer<Action> reducer;
+    private final Reducer<Action, StateItem> reducer;
     private final Middleware<Action> middleware;
     private final MutableOp<State> op;
 
@@ -32,7 +33,7 @@ public class StoreImpl implements Store {
 
     // we allow only Reducer<Action>, as we should handle all actions
     public StoreImpl(
-            @Nonnull Reducer<Action> reducer,
+            @Nonnull Reducer<Action, StateItem> reducer,
             @Nullable Middleware<Action> middleware,
             @Nullable PreloadedState preloadedState
     ) {
@@ -44,7 +45,7 @@ public class StoreImpl implements Store {
 
         this.state.subscribe(new Consumer<MutableState>() {
             @Override
-            public void apply(@Nonnull Subscription subscription, @Nullable MutableState state) {
+            public void apply(@Nonnull Subscription subscription, @Nonnull MutableState state) {
                 op.set(state);
             }
         });
@@ -64,15 +65,18 @@ public class StoreImpl implements Store {
         middleware.apply(immutableStore, action, new Middleware.Next() {
             @Override
             public void next() {
-                reducer.reduce(state, action);
+                final StateItem stateItem = reducer.reduce(state, action);
+                state.set(stateItem);
             }
         });
     }
 
+    @Nonnull
     @Override
     public Subscription subscribe(@Nonnull Consumer<State> consumer) {
         return op.subscribe(consumer);
     }
+
 
     private static class MiddlewareNoOp implements Middleware<Action> {
 
@@ -81,6 +85,7 @@ public class StoreImpl implements Store {
             next.next();
         }
     }
+
 
     private class ImmutableStore implements Store {
 
@@ -95,6 +100,7 @@ public class StoreImpl implements Store {
             StoreImpl.this.dispatch(action);
         }
 
+        @Nonnull
         @Override
         public Subscription subscribe(@Nonnull Consumer<State> consumer) {
             return StoreImpl.this.subscribe(consumer);
@@ -103,14 +109,15 @@ public class StoreImpl implements Store {
 
     private class ImmutableState implements State {
 
+        @Nonnull
         @Override
-        public <R> Op<R> get(@Nonnull Class<R> cl) {
+        public <S extends StateItem> Op<S> get(@Nonnull Class<S> cl) {
             return StoreImpl.this.state.get(cl);
         }
 
         @Nonnull
         @Override
-        public Map<String, Object> state() {
+        public Map<Class<? extends StateItem>, StateItem> state() {
             return StoreImpl.this.state.state();
         }
     }

@@ -1,4 +1,4 @@
-package dedux.impl;
+package dedux.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,12 +24,13 @@ public class MutableOpImpl<T> implements MutableOp<T> {
     private final Object lock = new Object();
     private T value;
 
-    public MutableOpImpl(@Nullable T t) {
+    public MutableOpImpl(@Nonnull T t) {
         this.value = t;
         this.map = new HashMap<>(3, .75F);
     }
 
     @Override
+    @Nonnull
     public T get() {
         synchronized (lock) {
             return value;
@@ -64,7 +65,7 @@ public class MutableOpImpl<T> implements MutableOp<T> {
     }
 
     @Override
-    public void set(T t) {
+    public void set(@Nonnull T t) {
         synchronized (lock) {
             this.value = t;
         }

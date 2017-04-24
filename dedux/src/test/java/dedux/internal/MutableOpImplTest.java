@@ -1,4 +1,4 @@
-package dedux.impl;
+package dedux.internal;
 
 import org.junit.Test;
 
@@ -14,7 +14,10 @@ import dedux.MutableOp;
 import dedux.Op;
 import dedux.Subscription;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MutableOpImplTest {
 
@@ -26,8 +29,8 @@ public class MutableOpImplTest {
 
     @Test
     public void set_called_get_returns() {
-        final MutableOp<String> op = new MutableOpImpl<>(null);
-        assertNull(op.get());
+        final MutableOp<String> op = new MutableOpImpl<>("initial");
+        assertEquals("initial", op.get());
         op.set("yo");
         assertEquals("yo", op.get());
     }
@@ -37,7 +40,7 @@ public class MutableOpImplTest {
         final MutableOp<String> op = new MutableOpImpl<>("123");
         final Integer integer = op.to(new Converter<Op<String>, Integer>() {
             @Override
-            public Integer apply(Op<String> stringOp) {
+            public Integer apply(@Nonnull Op<String> stringOp) {
                 return Integer.parseInt(stringOp.get());
             }
         });

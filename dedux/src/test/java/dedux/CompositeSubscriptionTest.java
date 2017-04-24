@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import javax.annotation.Nonnull;
 
-import dedux.impl.SubscriptionNoOp;
+import dedux.internal.SubscriptionNoOp;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -31,7 +31,7 @@ public class CompositeSubscriptionTest {
     public void returns_not_null() {
         assertNotNull(subscription.compose(new Consumer<Object>() {
             @Override
-            public void apply(@Nonnull Subscription subscription, Object o) {
+            public void apply(@Nonnull Subscription subscription, @Nonnull Object o) {
 
             }
         }));
@@ -56,9 +56,9 @@ public class CompositeSubscriptionTest {
         assertTrue(subscription.isUnsubscribed());
 
         try {
-            subscription.compose(new Consumer<java.lang.Object>() {
+            subscription.compose(new Consumer<Object>() {
                 @Override
-                public void apply(@Nonnull Subscription subscription, Object o) {
+                public void apply(@Nonnull Subscription subscription, @Nonnull Object o) {
 
                 }
             });
@@ -73,7 +73,7 @@ public class CompositeSubscriptionTest {
     public void subscription_unsubscribed_not_added() {
         subscription.compose(new Consumer<Object>() {
             @Override
-            public void apply(@Nonnull Subscription subscription, Object o) {
+            public void apply(@Nonnull Subscription subscription, @Nonnull Object o) {
                 subscription.unsubscribe();
             }
         });
@@ -85,7 +85,7 @@ public class CompositeSubscriptionTest {
     public void subscription_not_added_before_applied() {
         subscription.compose(new Consumer<Object>() {
             @Override
-            public void apply(@Nonnull Subscription subscription, Object o) {
+            public void apply(@Nonnull Subscription subscription, @Nonnull Object o) {
 
             }
         });
@@ -97,12 +97,12 @@ public class CompositeSubscriptionTest {
     public void subscription_added() {
         final Consumer<Object> action = subscription.compose(new Consumer<Object>() {
             @Override
-            public void apply(@Nonnull Subscription subscription, Object o) {
+            public void apply(@Nonnull Subscription subscription, @Nonnull Object o) {
 
             }
         });
         final SubscriptionNoOp noOp = new SubscriptionNoOp();
-        action.apply(noOp, null);
+        action.apply(noOp, new Object());
         assertEquals(1, subscription.subscriptions().size());
     }
 
@@ -110,12 +110,12 @@ public class CompositeSubscriptionTest {
     public void subscription_unsubscribed_applied_action() {
         final Consumer<Object> action = subscription.compose(new Consumer<Object>() {
             @Override
-            public void apply(@Nonnull Subscription subscription, Object o) {
+            public void apply(@Nonnull Subscription subscription, @Nonnull Object o) {
                 // first we unsubscribe our main composite subscription
                 subscription.unsubscribe();
             }
         });
-        action.apply(new SubscriptionNoOp(), null);
+        action.apply(new SubscriptionNoOp(), new Object());
 
         assertEquals(0, subscription.subscriptions().size());
     }

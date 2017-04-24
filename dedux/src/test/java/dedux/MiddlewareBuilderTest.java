@@ -113,6 +113,7 @@ public class MiddlewareBuilderTest {
         @Nonnull
         @Override
         public State state() {
+            //noinspection ConstantConditions
             return null;
         }
 
@@ -121,8 +122,10 @@ public class MiddlewareBuilderTest {
 
         }
 
+        @Nonnull
         @Override
         public Subscription subscribe(@Nonnull Consumer<State> consumer) {
+            //noinspection ConstantConditions
             return null;
         }
     }

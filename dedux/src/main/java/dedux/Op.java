@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 public interface Op<T> {
 
+    @Nonnull
     T get();
 
     Subscription subscribe(@Nonnull Consumer<T> consumer);

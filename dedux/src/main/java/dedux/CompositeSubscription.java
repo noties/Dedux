@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import dedux.impl.SubscriptionNoOp;
+import dedux.internal.SubscriptionNoOp;
 
 @SuppressWarnings("WeakerAccess")
 public class CompositeSubscription implements Subscription {
@@ -24,7 +24,7 @@ public class CompositeSubscription implements Subscription {
 
             return new Consumer<T>() {
                 @Override
-                public void apply(@Nonnull Subscription subscription, T t) {
+                public void apply(@Nonnull Subscription subscription, @Nonnull T t) {
 
                     synchronized (lock) {
                         if (!isUnsubscribed) {

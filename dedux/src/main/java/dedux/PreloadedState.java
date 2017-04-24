@@ -7,19 +7,14 @@ import javax.annotation.Nonnull;
 
 public class PreloadedState {
 
-    private final Map<String, Object> map = new HashMap<>();
+    private final Map<Class<? extends StateItem>, StateItem> map = new HashMap<>();
 
-    public <T> PreloadedState add(@Nonnull T object) {
-        map.put(object.getClass().getName(), object);
+    public <S extends StateItem> PreloadedState add(@Nonnull S stateItem) {
+        map.put(stateItem.getClass(), stateItem);
         return this;
     }
 
-    public <T> PreloadedState add(@Nonnull String key, T object) {
-        map.put(key, object);
-        return this;
-    }
-
-    public Map<String, Object> build() {
+    public Map<Class<? extends StateItem>, StateItem> build() {
         return new HashMap<>(map);
     }
 }

@@ -1,4 +1,4 @@
-package dedux.impl;
+package dedux.internal;
 
 import javax.annotation.concurrent.NotThreadSafe;
 

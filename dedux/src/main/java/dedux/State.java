@@ -6,8 +6,9 @@ import javax.annotation.Nonnull;
 
 public interface State {
 
-    <R> Op<R> get(@Nonnull Class<R> cl);
+    @Nonnull
+    <S extends StateItem> Op<S> get(@Nonnull Class<S> cl);
 
     @Nonnull
-    Map<String, Object> state();
+    Map<Class<? extends StateItem>, StateItem> state();
 }

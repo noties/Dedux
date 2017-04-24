@@ -9,5 +9,6 @@ public interface Store {
 
     void dispatch(@Nonnull Action action);
 
+    @Nonnull
     Subscription subscribe(@Nonnull Consumer<State> consumer);
 }

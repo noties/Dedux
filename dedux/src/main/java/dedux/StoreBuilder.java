@@ -2,7 +2,7 @@ package dedux;
 
 import javax.annotation.Nonnull;
 
-import dedux.impl.StoreImpl;
+import dedux.internal.StoreImpl;
 
 @SuppressWarnings("WeakerAccess")
 public class StoreBuilder {
@@ -23,7 +23,7 @@ public class StoreBuilder {
         return this;
     }
 
-    public Store build(@Nonnull Reducer<Action> reducer) {
+    public Store build(@Nonnull Reducer<Action, StateItem> reducer) {
         return new StoreImpl(reducer, middleware, preloadedState);
     }
 }

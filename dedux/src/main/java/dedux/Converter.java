@@ -1,5 +1,7 @@
 package dedux;
 
+import javax.annotation.Nonnull;
+
 public interface Converter<T, R> {
-    R apply(T t);
+    R apply(@Nonnull T t);
 }
