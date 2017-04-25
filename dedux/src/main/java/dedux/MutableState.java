@@ -4,6 +4,11 @@ import javax.annotation.Nonnull;
 
 public interface MutableState extends State {
 
+    interface Storage {
+        <S extends StateItem> S get(@Nonnull Class<S> cl);
+        <S extends StateItem> void set(@Nonnull S s);
+    }
+
     @Nonnull
     @Override
     <S extends StateItem> MutableOp<S> get(@Nonnull Class<S> cl);

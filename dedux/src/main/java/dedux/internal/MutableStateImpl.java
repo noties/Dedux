@@ -16,8 +16,23 @@ import dedux.Subscription;
 @SuppressWarnings("WeakerAccess")
 public class MutableStateImpl implements MutableState {
 
-    // todo, we need a way to `persist` whole state, so we do not store it in memory only
-    
+    // todo, we need a way to `persist` whole state, so we do not store it in the memory only
+    //
+    // so, what can we do?
+    // we can `track` all states by having, for example, a `Set<Class<? extends StateItem>>` that will
+    // store all attached states, and a standalone `storage` data type (that can save/restore state when asked)
+    //
+    // we should provide default implementation that will store everything in memory
+    // and give means to store/restore state
+    //
+    // also, we must define a behavior so MutableOp and its subscribers are preserved...maybe, if property has no subscriptions
+    // it can be freed, and if property has subscribers, then it must be preserved
+    //
+    // another thing... how to give ability to `serialize` the full state without putting it all in memory?
+    // can we have a lazy iterator maybe? anyway, for example, if we are planning on synchronizing the full
+    // state somewhere in network, we might need to obtain the full state...
+
+
     private final Map<Class<? extends StateItem>, MutableOp<StateItem>> properties = new HashMap<>();
     private final MutableOp<MutableState> op = new MutableOpImpl<>((MutableState) this);
     private final Consumer<Object> notification = new Consumer<Object>() {

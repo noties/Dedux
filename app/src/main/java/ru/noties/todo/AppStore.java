@@ -17,9 +17,9 @@ import dedux.Middleware;
 import dedux.Reducer;
 import dedux.StateItem;
 import dedux.Store;
+import dedux.StoreBuilder;
 import dedux.builders.MiddlewareBuilder;
 import dedux.builders.ReducerBuilder;
-import dedux.builders.StoreBuilder;
 import ru.noties.debug.Debug;
 import ru.noties.todo.app.account.AccountAuthAction;
 import ru.noties.todo.app.account.AccountAuthReducer;
@@ -85,11 +85,10 @@ class AppStore {
         final StateSerializer stateSerializer = new StateSerializer();
         final StatePersistence persistence = new StatePersistence(application.getApplicationContext(), stateSerializer, initialState());
 
-        final Store store = StoreBuilder.create()
-                .setPreloadedState(persistence.preloadedState())
-                .addMiddleware(Action.class, middleware(stateSerializer))
-                .addReducer(Action.class, reducer())
-                .build();
+        final Store store = new StoreBuilder()
+                .preloadedState(persistence.preloadedState())
+                .middleware(middleware(stateSerializer))
+                .build(reducer());
 
         persistence.onStoreCreated(store);
 

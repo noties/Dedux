@@ -34,12 +34,16 @@ public class ReducerBuilder<A extends Action> {
     }
 
     public <R extends A> ReducerBuilder<A> add(@Nonnull Class<R> cl, @Nonnull Reducer<? super R> reducer) {
+
+        validateClass(cl);
+
         // check if not present already
         final int hash = cl.hashCode();
         //noinspection unchecked
         if (reducers.put(hash, reducer) != null) {
             throw new IllegalStateException("Class `" + cl.getName() + "` is already registered");
         }
+
         return this;
     }
 
@@ -64,6 +68,13 @@ public class ReducerBuilder<A extends Action> {
         }
 
         return new CompositeReducer<>(new HashMap<>(reducers), defaultReducer);
+    }
+
+    private static void validateClass(@Nonnull Class<?> cl) {
+        // we do not allow interfaces (due to the fact that one class can implement multiple interfaces)
+        if (cl.isInterface()) {
+            throw new IllegalStateException("Cannot register an interface: " + cl.getName());
+        }
     }
 
     private static class CompositeReducer<A extends Action> implements Reducer<A> {
@@ -108,40 +119,14 @@ public class ReducerBuilder<A extends Action> {
                 // okay, first we check if we have a direct hit
                 Reducer<? extends Action> reducer = reducers.get(cl.hashCode());
                 if (reducer == null) {
-                    // if not, check interfaces
-                    reducer = findReducerInterface(cl);
-                    if (reducer == null) {
-                        // if nothing is found find recursively for a super class
-                        reducer = findReducerRecursive(cl.getSuperclass());
-                    }
+                    // if nothing is found check recursively for a super class
+                    reducer = findReducerRecursive(cl.getSuperclass());
                 }
                 //noinspection unchecked
                 out = (Reducer<A>) reducer;
             }
 
             return out;
-        }
-
-        @Nullable
-        private Reducer<Action> findReducerInterface(@Nonnull Class<?> cl) {
-
-            final Class<?>[] impl = cl.getInterfaces();
-
-            if (impl == null
-                    || impl.length == 0) {
-                return null;
-            }
-
-            Reducer<? extends Action> reducer = null;
-            for (Class<?> i : impl) {
-                reducer = reducers.get(i.hashCode());
-                if (reducer != null) {
-                    break;
-                }
-            }
-
-            //noinspection unchecked
-            return (Reducer<Action>) reducer;
         }
     }
 
