@@ -10,7 +10,7 @@ import android.widget.TextView;
 import javax.annotation.Nonnull;
 
 import ru.noties.todo.app.ComponentHelper;
-import ru.noties.todo.sample.R;
+import ru.noties.todo.R;
 import ru.noties.todo.utils.ViewUtils;
 
 public class AccountAuthComponent extends FrameLayout {

@@ -5,7 +5,6 @@ import android.app.Application;
 import dedux.Store;
 import ru.noties.debug.AndroidLogDebugOutput;
 import ru.noties.debug.Debug;
-import ru.noties.todo.sample.BuildConfig;
 
 public class App extends Application implements StoreHolder {
 

@@ -1,9 +1,14 @@
+// okay, I'm close to giving up... there is no way to apply gps only for one dimension
+// I'm introducing project property to indicate if gps must be used
+
 buildscript {
     repositories {
         jcenter()
     }
     dependencies {
-        classpath 'com.google.gms:google-services:3.0.0'
+        if (project.hasProperty('firebase') && project.property('firebase') as Boolean) {
+            classpath 'com.google.gms:google-services:3.0.0'
+        }
     }
 }
 
@@ -87,21 +92,26 @@ dependencies {
     // this adds also: `support-annotations`, `support-compat`, `support-core-ui`
     compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
 
+
     // Dear Lord, I had to add this dependency because on JB device
     // we will be crashed by VerifyError (from GoogleApiClient.Builder)
     // as it's requires FragmentActivity to be present... nice coupling
     // and completely reasonable thing from Google side.
     // Once you have added a smallest support or other google artifact don't expect
     // to end up with it only
-    compile "com.android.support:support-fragment:$SUPPORT_VERSION"
+    firebaseCompile "com.android.support:support-fragment:$SUPPORT_VERSION"
 
     // Dear Lord, I had to add this dependency because Firebase & GPS needs WakefulBroadcastReceiver
-    compile "com.android.support:support-core-utils:$SUPPORT_VERSION"
+    firebaseCompile "com.android.support:support-core-utils:$SUPPORT_VERSION"
 
-    compile "com.google.firebase:firebase-auth:$FIREBASE_VERSION"
-    compile "com.google.firebase:firebase-database:$FIREBASE_VERSION"
+    firebaseCompile "com.google.firebase:firebase-auth:$FIREBASE_VERSION"
+    firebaseCompile "com.google.firebase:firebase-database:$FIREBASE_VERSION"
 }
 
 
-// to place it here seems just about right
-apply plugin: 'com.google.gms.google-services'
+
+if (project.hasProperty('firebase') && project.property('firebase') as Boolean) {
+    // to place it here seems just about right (docs specifically ask to place it here,
+    // there must be a good reason)
+    apply plugin: 'com.google.gms.google-services'
+}

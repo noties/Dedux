@@ -11,7 +11,7 @@ import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-import ru.noties.todo.sample.R;
+import ru.noties.todo.R;
 
 public class IconView extends ImageView {
 

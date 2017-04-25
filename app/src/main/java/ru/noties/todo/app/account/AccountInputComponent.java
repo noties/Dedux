@@ -15,7 +15,7 @@ import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.app.navigation.core.NavigationCloseAccountAction;
 import ru.noties.todo.core.InputEditText;
 import ru.noties.todo.core.TextWatcherAdapter;
-import ru.noties.todo.sample.R;
+import ru.noties.todo.R;
 import ru.noties.todo.utils.KeyboardUtils;
 import ru.noties.todo.utils.ViewUtils;
 

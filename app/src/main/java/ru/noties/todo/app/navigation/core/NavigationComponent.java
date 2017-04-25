@@ -14,7 +14,7 @@ import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.app.account.AccountAuthComponent;
 import ru.noties.todo.app.navigation.confirm.ConfirmAction;
 import ru.noties.todo.app.navigation.confirm.ConfirmComponent;
-import ru.noties.todo.sample.R;
+import ru.noties.todo.R;
 
 public class NavigationComponent extends FrameLayout {
 

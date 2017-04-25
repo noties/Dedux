@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import ru.noties.todo.sample.R;
+import ru.noties.todo.R;
 import ru.noties.todo.core.IconView;
 import ru.noties.vt.Holder;
 import ru.noties.vt.ViewType;

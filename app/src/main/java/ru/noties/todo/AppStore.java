@@ -2,8 +2,6 @@ package ru.noties.todo;
 
 import android.app.Application;
 
-import com.google.firebase.auth.FirebaseAuth;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,12 +59,11 @@ import ru.noties.todo.app.todo.input.InputAction;
 import ru.noties.todo.app.todo.input.InputReducer;
 import ru.noties.todo.app.todo.list.ScrollAction;
 import ru.noties.todo.app.todo.list.ScrollReducer;
-import ru.noties.todo.sample.R;
+import ru.noties.todo.state.AuthenticationSyncAction;
+import ru.noties.todo.state.AuthenticationSyncMiddleware;
+import ru.noties.todo.state.AuthenticationSyncReducer;
 import ru.noties.todo.state.StatePersistence;
 import ru.noties.todo.state.StateSerializer;
-import ru.noties.todo.state.action.FirebaseSyncAction;
-import ru.noties.todo.state.middleware.FirebaseSyncMiddleware;
-import ru.noties.todo.state.reducer.FirebaseSyncReducer;
 
 class AppStore {
 
@@ -93,7 +90,7 @@ class AppStore {
         persistence.onStoreCreated(store);
 
         // check if we are authenticated and dispatch event
-        final boolean isAuthenticated = FirebaseAuth.getInstance().getCurrentUser() != null;
+        final boolean isAuthenticated = AppAuthentication.isAuthenticated();
         Debug.i("isAuthenticated: %s", isAuthenticated);
         store.dispatch(new AccountAuthStateChangedAction(isAuthenticated));
 
@@ -121,7 +118,7 @@ class AppStore {
                 .add(AppBarCountDoneAction.class, new AppBarCountDoneReducer())
                 .add(ConfirmCloseAction.class, new ConfirmCloseReducer())
                 .add(ScrollAction.class, new ScrollReducer())
-                .add(FirebaseSyncAction.class, new FirebaseSyncReducer())
+                .add(AuthenticationSyncAction.class, new AuthenticationSyncReducer())
                 .add(AccountAuthAction.class, new AccountAuthReducer())
                 .add(AccountAuthStateChangedAction.class, new AccountAuthStateChangedReducer())
                 .add(AccountClearInputErrorAction.class, new AccountClearInputErrorReducer())
@@ -136,7 +133,7 @@ class AppStore {
                 }))
                 .add(ModifyTodoAction.class, new ModifyTodoMiddleware())
                 .add(ConfirmAction.class, new ConfirmMiddleware())
-                .add(AccountAuthStateChangedAction.class, new FirebaseSyncMiddleware(stateSerializer, firebaseAcceptedKeys()))
+                .add(AccountAuthStateChangedAction.class, new AuthenticationSyncMiddleware(stateSerializer, firebaseAcceptedKeys()))
                 .add(AccountLogInAction.class, new AccountLogInMiddleware(application.getResources()))
                 .build();
     }

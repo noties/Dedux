@@ -1,4 +1,4 @@
-package ru.noties.todo.state.middleware;
+package ru.noties.todo.state;
 
 import android.os.Handler;
 
@@ -26,10 +26,8 @@ import dedux.Store;
 import dedux.Subscription;
 import ru.noties.debug.Debug;
 import ru.noties.todo.app.account.AccountAuthStateChangedAction;
-import ru.noties.todo.state.StateSerializer;
-import ru.noties.todo.state.action.FirebaseSyncAction;
 
-public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChangedAction> {
+public class AuthenticationSyncMiddleware implements Middleware<AccountAuthStateChangedAction> {
 
     private final StateSerializer stateSerializer;
     private final Handler handler = new Handler();
@@ -39,7 +37,7 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
     private FirebaseHelper firebaseHelper;
     private Subscription subscription;
 
-    public FirebaseSyncMiddleware(StateSerializer stateSerializer, @Nullable Set<Class<? extends StateItem>> acceptedKeys) {
+    public AuthenticationSyncMiddleware(StateSerializer stateSerializer, @Nullable Set<Class<? extends StateItem>> acceptedKeys) {
         this.stateSerializer = stateSerializer;
         this.acceptedKeys = acceptedKeys;
     }
@@ -103,7 +101,7 @@ public class FirebaseSyncMiddleware implements Middleware<AccountAuthStateChange
     private void onNewValueObtained(Store store, String value) {
         executor.execute(() -> {
             final Map<Class<? extends StateItem>, StateItem> map = stateSerializer.fromJson(value);
-            handler.post(() -> store.dispatch(new FirebaseSyncAction(map)));
+            handler.post(() -> store.dispatch(new AuthenticationSyncAction(map)));
         });
     }
 

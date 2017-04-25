@@ -8,12 +8,13 @@ import android.widget.TextView;
 
 import javax.annotation.Nonnull;
 
+import ru.noties.todo.BuildConfig;
+import ru.noties.todo.R;
 import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneAction;
 import ru.noties.todo.app.navigation.core.NavigationOpenAccountAction;
 import ru.noties.todo.app.todo.core.ToggleAllDoneAction;
 import ru.noties.todo.core.IconView;
-import ru.noties.todo.sample.R;
 import ru.noties.todo.utils.ViewUtils;
 
 public class AppBarComponent extends LinearLayout {
@@ -21,7 +22,7 @@ public class AppBarComponent extends LinearLayout {
     private ComponentHelper helper;
 
     private TextView title;
-    private IconView filter;
+    private IconView account;
     private IconView action;
     private View clear;
     private TextView countDone;
@@ -50,7 +51,7 @@ public class AppBarComponent extends LinearLayout {
         inflate(context, R.layout.view_app_bar, this);
 
         this.title = ViewUtils.findView(this, R.id.app_bar_title);
-        this.filter = ViewUtils.findView(this, R.id.app_bar_account);
+        this.account = ViewUtils.findView(this, R.id.app_bar_account);
         this.action = ViewUtils.findView(this, R.id.app_bar_action);
         this.clear = findViewById(R.id.app_bar_clear);
         this.countDone = ViewUtils.findView(this, R.id.app_bar_done_count);
@@ -85,11 +86,18 @@ public class AppBarComponent extends LinearLayout {
     }
 
     private void renderAccount(@Nonnull AppBarState state) {
+
+        if (!BuildConfig.AUTHENTICATION_PRESENT) {
+            account.setVisibility(INVISIBLE);
+            return;
+        }
+
+        //noinspection UnusedAssignment
         final int colorRes = state.loggedIn()
                 ? R.color.colorAccent
                 : R.color.colorWhite;
-        filter.setColorRes(colorRes);
-        filter.setOnClickListener(v -> helper.store().dispatch(new NavigationOpenAccountAction()));
+        account.setColorRes(colorRes);
+        account.setOnClickListener(v -> helper.store().dispatch(new NavigationOpenAccountAction()));
     }
 
     private void renderClear(@Nonnull AppBarState state) {

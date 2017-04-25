@@ -16,7 +16,7 @@ import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.app.todo.core.Todo;
 import ru.noties.todo.app.todo.core.TodosState;
 import ru.noties.todo.app.todo.core.ToggleTodoAction;
-import ru.noties.todo.sample.R;
+import ru.noties.todo.R;
 import ru.noties.todo.utils.CollectionUtils;
 import ru.noties.todo.utils.ViewUtils;
 import ru.noties.vt.ViewTypesAdapter;

@@ -2,7 +2,7 @@ package ru.noties.todo.core;
 
 import android.app.Activity;
 
-import ru.noties.todo.sample.R;
+import ru.noties.todo.R;
 
 public abstract class BaseActivity extends Activity {
 

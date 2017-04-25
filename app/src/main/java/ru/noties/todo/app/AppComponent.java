@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
-import ru.noties.todo.sample.R;
+import ru.noties.todo.R;
 
 public class AppComponent extends FrameLayout {
 

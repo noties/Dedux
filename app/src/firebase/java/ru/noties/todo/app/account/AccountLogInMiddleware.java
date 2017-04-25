@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 
 import dedux.Middleware;
 import dedux.Store;
-import ru.noties.todo.sample.R;
+import ru.noties.todo.R;
 
 public class AccountLogInMiddleware implements Middleware<AccountLogInAction> {
 
