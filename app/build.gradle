@@ -9,20 +9,17 @@ buildscript {
 
 apply plugin: 'com.android.application'
 
-//sourceCompatibility = "1.8"
-//targetCompatibility = "1.8"
-
 android {
 
     compileSdkVersion TARGET_SDK
     buildToolsVersion BUILD_TOOLS
 
     defaultConfig {
-        applicationId "ru.noties.tddd"
+        applicationId "ru.noties.todo"
         minSdkVersion MIN_SDK
         targetSdkVersion TARGET_SDK
         versionCode 1
-        versionName "1.0"
+        versionName version
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
@@ -30,6 +27,22 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+
+        regular {
+            buildConfigField 'boolean', 'AUTHENTICATION_PRESENT', 'false'
+        }
+
+        firebase {
+            applicationIdSuffix '.firebase'
+            // todo, signing config
+            buildConfigField 'boolean', 'AUTHENTICATION_PRESENT', 'true'
+
+            buildConfigField 'boolean', 'SYNCHRONIZE_FULL_STATE',
+                    "${project.hasProperty('fs') ? project.property('fs') as Boolean : false}"
         }
     }
 
@@ -90,6 +103,5 @@ dependencies {
 }
 
 
-// Feels like a breeze, I haven't tried it, but I have a feeling that it works only if it's here
-// where you can easily find it
+// to place it here seems just about right
 apply plugin: 'com.google.gms.google-services'

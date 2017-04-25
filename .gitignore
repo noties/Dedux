@@ -10,3 +10,5 @@
 gradlew
 gradlew.bat
 **/build
+
+**/google-services.json
