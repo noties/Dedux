@@ -16,6 +16,8 @@ import dedux.Subscription;
 @SuppressWarnings("WeakerAccess")
 public class MutableStateImpl implements MutableState {
 
+    // todo, we need a way to `persist` whole state, so we do not store it in memory only
+    
     private final Map<Class<? extends StateItem>, MutableOp<StateItem>> properties = new HashMap<>();
     private final MutableOp<MutableState> op = new MutableOpImpl<>((MutableState) this);
     private final Consumer<Object> notification = new Consumer<Object>() {
@@ -24,6 +26,7 @@ public class MutableStateImpl implements MutableState {
             notifyOp();
         }
     };
+
 
     public MutableStateImpl(@Nullable PreloadedState preloadedState) {
         if (preloadedState != null) {
