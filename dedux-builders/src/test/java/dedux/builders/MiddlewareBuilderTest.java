@@ -1,10 +1,18 @@
-package dedux;
+package dedux.builders;
 
 import org.junit.Test;
 
 import javax.annotation.Nonnull;
 
-import static org.junit.Assert.*;
+import dedux.Action;
+import dedux.Consumer;
+import dedux.Middleware;
+import dedux.State;
+import dedux.Store;
+import dedux.Subscription;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class MiddlewareBuilderTest {
 
@@ -13,7 +21,7 @@ public class MiddlewareBuilderTest {
     @Test
     public void no_middleware_registered_throws() {
         try {
-            new MiddlewareBuilder()
+            MiddlewareBuilder.create()
                     .build();
             assertTrue(false);
         } catch (IllegalStateException e) {
@@ -25,7 +33,7 @@ public class MiddlewareBuilderTest {
     public void single_middleware_one_type() {
 
         final MiddlewareFlag<Action> flag = new MiddlewareFlag<>();
-        final Middleware<Action> middleware = new MiddlewareBuilder()
+        final Middleware<Action> middleware = MiddlewareBuilder.create()
                 .add(Action.class, flag)
                 .build();
         final NextFlag nextFlag = new NextFlag();
@@ -41,7 +49,7 @@ public class MiddlewareBuilderTest {
         final MiddlewareFlag<Action> first = new MiddlewareFlag<>();
         final MiddlewareFlag<Action> second = new MiddlewareFlag<>();
 
-        final Middleware<Action> middleware = new MiddlewareBuilder()
+        final Middleware<Action> middleware = MiddlewareBuilder.create()
                 .add(Action.class, first)
                 .add(Action.class, second)
                 .build();
@@ -61,7 +69,7 @@ public class MiddlewareBuilderTest {
         final MiddlewareFlag<Action> generic = new MiddlewareFlag<>();
         final MiddlewareFlag<TestAction> specific = new MiddlewareFlag<>();
 
-        final Middleware<Action> middleware = new MiddlewareBuilder()
+        final Middleware<Action> middleware = MiddlewareBuilder.create()
                 .add(Action.class, generic)
                 .add(TestAction.class, specific)
                 .build();

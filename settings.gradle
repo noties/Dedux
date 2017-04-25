@@ -1,1 +1,1 @@
-include ':app', ':dedux'
+include ':app', ':dedux', ':dedux-builders'

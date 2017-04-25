@@ -62,6 +62,7 @@ configurations {
 dependencies {
 
     compile project(':dedux')
+    compile project(':dedux-builders')
 
     compile 'ru.noties:debug:3.0.0@jar'
     compile 'ru.noties:vt:1.0.0'

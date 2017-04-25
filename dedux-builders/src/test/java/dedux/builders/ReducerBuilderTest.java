@@ -1,10 +1,18 @@
-package dedux;
+package dedux.builders;
 
 import org.junit.Test;
 
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+
+import dedux.Action;
+import dedux.Consumer;
+import dedux.MutableOp;
+import dedux.MutableState;
+import dedux.Reducer;
+import dedux.StateItem;
+import dedux.Subscription;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,7 +30,7 @@ public class ReducerBuilderTest {
     @Test
     public void duplicate_reducer_added_throws() {
         try {
-            new ReducerBuilder()
+            ReducerBuilder.create()
                     .add(TestAction.class, ReducerNoOp.<TestAction>create())
                     .add(TestAction.class, ReducerNoOp.<TestAction>create());
             assertTrue(false);
@@ -34,7 +42,7 @@ public class ReducerBuilderTest {
     @Test
     public void no_def_no_reducers_added_throws() {
         try {
-            new ReducerBuilder()
+            ReducerBuilder.create()
                     .build();
             assertTrue(false);
         } catch (IllegalStateException e) {
@@ -45,7 +53,7 @@ public class ReducerBuilderTest {
     @Test
     public void no_def_provided_throws_for_unknown_action() {
 
-        final Reducer<Action> reducer = new ReducerBuilder()
+        final Reducer<Action> reducer = ReducerBuilder.create()
                 .add(TestAction.class, ReducerNoOp.<TestAction>create())
                 .build();
 
@@ -63,7 +71,7 @@ public class ReducerBuilderTest {
     public void reducer_called_simple() {
 
         final ReducerFlag<TestAction> testActionReducer = new ReducerFlag<>();
-        final Reducer<Action> reducer = new ReducerBuilder()
+        final Reducer<Action> reducer = ReducerBuilder.create()
                 .add(TestAction.class, testActionReducer)
                 .build();
 
@@ -78,7 +86,7 @@ public class ReducerBuilderTest {
         final ReducerFlag<TestAction_02> action02Reducer = new ReducerFlag<>();
         final ReducerFlag<TestAction_03> action03Reducer = new ReducerFlag<>();
 
-        final Reducer<Action> reducer = new ReducerBuilder()
+        final Reducer<Action> reducer = ReducerBuilder.create()
                 .add(TestAction_01.class, action01Reducer)
                 .add(TestAction_02.class, action02Reducer)
                 .add(TestAction_03.class, action03Reducer)
@@ -124,7 +132,7 @@ public class ReducerBuilderTest {
     public void sibling_action_correct_reducer() {
 
         final ReducerFlag<TestAction_01> action01ReducerFlag = new ReducerFlag<>();
-        final Reducer<Action> reducer = new ReducerBuilder()
+        final Reducer<Action> reducer = ReducerBuilder.create()
                 .add(TestAction_01.class, action01ReducerFlag)
                 .build();
 
@@ -135,7 +143,7 @@ public class ReducerBuilderTest {
     @Test
     public void default_reducer_called() {
         final ReducerFlag<Action> reducerFlag = new ReducerFlag<>();
-        final Reducer<Action> reducer = new ReducerBuilder()
+        final Reducer<Action> reducer = ReducerBuilder.create()
                 .add(TestAction.class, ReducerNoOp.<TestAction>create())
                 .build(reducerFlag);
 

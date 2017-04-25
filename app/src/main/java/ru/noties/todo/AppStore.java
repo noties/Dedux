@@ -14,12 +14,12 @@ import javax.annotation.Nullable;
 
 import dedux.Action;
 import dedux.Middleware;
-import dedux.MiddlewareBuilder;
 import dedux.Reducer;
-import dedux.ReducerBuilder;
 import dedux.StateItem;
 import dedux.Store;
-import dedux.StoreBuilder;
+import dedux.builders.MiddlewareBuilder;
+import dedux.builders.ReducerBuilder;
+import dedux.builders.StoreBuilder;
 import ru.noties.debug.Debug;
 import ru.noties.todo.app.account.AccountAuthAction;
 import ru.noties.todo.app.account.AccountAuthReducer;
@@ -85,10 +85,11 @@ class AppStore {
         final StateSerializer stateSerializer = new StateSerializer();
         final StatePersistence persistence = new StatePersistence(application.getApplicationContext(), stateSerializer, initialState());
 
-        final Store store = new StoreBuilder()
-                .preloadedState(persistence.preloadedState())
-                .middleware(middleware(stateSerializer))
-                .build(reducer());
+        final Store store = StoreBuilder.create()
+                .setPreloadedState(persistence.preloadedState())
+                .addMiddleware(Action.class, middleware(stateSerializer))
+                .addReducer(Action.class, reducer())
+                .build();
 
         persistence.onStoreCreated(store);
 
@@ -107,7 +108,7 @@ class AppStore {
     }
 
     private Reducer<Action> reducer() {
-        return new ReducerBuilder()
+        return ReducerBuilder.create()
                 .add(InputAction.class, new InputReducer())
                 .add(AddTodoAction.class, new AddTodoReducer())
                 .add(ToggleTodoAction.class, new ToggleTodoReducer())
@@ -129,7 +130,7 @@ class AppStore {
     }
 
     private Middleware<Action> middleware(@Nonnull StateSerializer stateSerializer) {
-        return new MiddlewareBuilder()
+        return MiddlewareBuilder.create()
                 .add(Action.class, ((store, action, next) -> {
                     Debug.i("action: %s", action);
                     next.next();

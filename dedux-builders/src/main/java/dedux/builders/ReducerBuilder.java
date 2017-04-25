@@ -1,4 +1,4 @@
-package dedux;
+package dedux.builders;
 
 
 import java.util.Collections;
@@ -8,16 +8,32 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import dedux.Action;
+import dedux.MutableState;
+import dedux.Reducer;
+
 @SuppressWarnings("WeakerAccess")
-public class ReducerBuilder {
+public class ReducerBuilder<A extends Action> {
+
+
+    public static ReducerBuilder<Action> create() {
+        return new ReducerBuilder<>(Action.class);
+    }
+
+    @SuppressWarnings("unused")
+    public static <A extends Action> ReducerBuilder<A> create(@Nonnull Class<A> base) {
+        return new ReducerBuilder<>(base);
+    }
+
 
     private final Map<Integer, Reducer<? extends Action>> reducers;
 
-    public ReducerBuilder() {
+    @SuppressWarnings("unused")
+    public ReducerBuilder(Class<A> base) {
         this.reducers = new HashMap<>();
     }
 
-    public <A extends Action> ReducerBuilder add(@Nonnull Class<A> cl, @Nonnull Reducer<A> reducer) {
+    public <R extends A> ReducerBuilder<A> add(@Nonnull Class<R> cl, @Nonnull Reducer<? super R> reducer) {
         // check if not present already
         final int hash = cl.hashCode();
         //noinspection unchecked
@@ -27,11 +43,11 @@ public class ReducerBuilder {
         return this;
     }
 
-    public Reducer<Action> build() {
+    public Reducer<A> build() {
         return build(null);
     }
 
-    public Reducer<Action> build(@Nullable Reducer<Action> def) {
+    public Reducer<A> build(@Nullable Reducer<A> def) {
 
         // if we have nothing, then indicate
         // we check for size & def, because it's perfectly legal to have only one default reducer
@@ -40,38 +56,38 @@ public class ReducerBuilder {
             throw new IllegalStateException("No reducers were registered and no default reducer was provided");
         }
 
-        final Reducer<Action> defaultReducer;
+        final Reducer<A> defaultReducer;
         if (def == null) {
-            defaultReducer = new ReducerThrows();
+            defaultReducer = new ReducerThrows<>();
         } else {
             defaultReducer = def;
         }
 
-        return new CompositeReducer(new HashMap<>(reducers), defaultReducer);
+        return new CompositeReducer<>(new HashMap<>(reducers), defaultReducer);
     }
 
-    private static class CompositeReducer implements Reducer<Action> {
+    private static class CompositeReducer<A extends Action> implements Reducer<A> {
 
         private final Map<Integer, Reducer<? extends Action>> reducers;
-        private final Reducer<Action> def;
+        private final Reducer<A> def;
 
         CompositeReducer(
                 @Nonnull Map<Integer, Reducer<? extends Action>> reducers,
-                @Nonnull Reducer<Action> def
+                @Nonnull Reducer<A> def
         ) {
             this.reducers = Collections.unmodifiableMap(reducers);
             this.def = def;
         }
 
         @Override
-        public void reduce(@Nonnull MutableState state, @Nonnull Action action) {
-            final Reducer<Action> reducer = findReducer(action.getClass());
+        public void reduce(@Nonnull MutableState state, @Nonnull A action) {
+            final Reducer<A> reducer = findReducer(action.getClass());
             reducer.reduce(state, action);
         }
 
         @Nonnull
-        private Reducer<Action> findReducer(@Nonnull Class<?> cl) {
-            final Reducer<Action> reducer = findReducerRecursive(cl);
+        private Reducer<A> findReducer(@Nonnull Class<?> cl) {
+            final Reducer<A> reducer = findReducerRecursive(cl);
             if (reducer == null) {
                 return def;
             } else {
@@ -80,14 +96,14 @@ public class ReducerBuilder {
         }
 
         @Nullable
-        private Reducer<Action> findReducerRecursive(@Nullable Class<?> cl) {
+        private Reducer<A> findReducerRecursive(@Nullable Class<?> cl) {
 
             if (cl == null
                     || Object.class == cl) {
                 return null;
             }
 
-            final Reducer<Action> out;
+            final Reducer<A> out;
             {
                 // okay, first we check if we have a direct hit
                 Reducer<? extends Action> reducer = reducers.get(cl.hashCode());
@@ -100,7 +116,7 @@ public class ReducerBuilder {
                     }
                 }
                 //noinspection unchecked
-                out = (Reducer<Action>) reducer;
+                out = (Reducer<A>) reducer;
             }
 
             return out;
@@ -129,10 +145,10 @@ public class ReducerBuilder {
         }
     }
 
-    private static class ReducerThrows implements Reducer<Action> {
+    private static class ReducerThrows<A extends Action> implements Reducer<A> {
 
         @Override
-        public void reduce(@Nonnull MutableState state, @Nonnull Action action) {
+        public void reduce(@Nonnull MutableState state, @Nonnull A action) {
             throw new IllegalStateException(String.format(
                     "Class: `%s`, action: `%s` has no registered reducer", action.getClass().getName(), action
             ));
