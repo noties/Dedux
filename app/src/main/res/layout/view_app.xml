@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:preview="http://schemas.android.com/">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,6 +35,9 @@
 
     <ru.noties.todo.app.appbar.AppBarComponent
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        preview:yo="123"
+        preview:yoyo="@string/app_name"
+        preview:loggedIn="true"/>
 
 </merge>

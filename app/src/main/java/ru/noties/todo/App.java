@@ -3,6 +3,7 @@ package ru.noties.todo;
 import android.app.Application;
 
 import dedux.Store;
+import dedux.androidcomponent.StoreHolder;
 import ru.noties.debug.AndroidLogDebugOutput;
 import ru.noties.debug.Debug;
 

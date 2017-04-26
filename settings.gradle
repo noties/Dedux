@@ -1,1 +1,1 @@
-include ':app', ':dedux', ':dedux-builders'
+include ':app', ':dedux', ':dedux-builders', ':dedux-android-component'

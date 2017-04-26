@@ -1,4 +1,4 @@
-package ru.noties.todo;
+package dedux.androidcomponent;
 
 import dedux.Store;
 

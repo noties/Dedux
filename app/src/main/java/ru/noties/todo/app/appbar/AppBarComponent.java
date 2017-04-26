@@ -3,21 +3,18 @@ package ru.noties.todo.app.appbar;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import javax.annotation.Nonnull;
 
+import dedux.androidcomponent.DeduxComponent;
 import ru.noties.todo.R;
-import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneAction;
 import ru.noties.todo.app.todo.core.ToggleAllDoneAction;
 import ru.noties.todo.core.IconView;
 import ru.noties.todo.utils.ViewUtils;
 
-public class AppBarComponent extends LinearLayout {
-
-    private ComponentHelper helper;
+public class AppBarComponent extends DeduxComponent {
 
     private TextView title;
     private IconView action;
@@ -34,16 +31,12 @@ public class AppBarComponent extends LinearLayout {
         init(context, attrs);
     }
 
+    @Override
+    protected void onAttached() {
+        subscribeTo(AppBarState.class, this::render);
+    }
+
     private void init(Context context, AttributeSet attributeSet) {
-
-        helper = ComponentHelper.install(context);
-        if (helper == null) {
-            if (!isInEditMode()) {
-                throw new IllegalStateException("Cannot install ComponentHelper");
-            }
-        }
-
-        setOrientation(VERTICAL);
 
         inflate(context, R.layout.view_app_bar, this);
 
@@ -51,22 +44,6 @@ public class AppBarComponent extends LinearLayout {
         this.action = ViewUtils.findView(this, R.id.app_bar_action);
         this.clear = findViewById(R.id.app_bar_clear);
         this.countDone = ViewUtils.findView(this, R.id.app_bar_done_count);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (helper != null) {
-            helper.attach(AppBarState.class, this::render);
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (helper != null) {
-            helper.detach();
-        }
     }
 
     private void render(@Nonnull AppBarState state) {
@@ -88,7 +65,7 @@ public class AppBarComponent extends LinearLayout {
 
         final OnClickListener listener;
         if (visible) {
-            listener = v -> helper.store().dispatch(new ConfirmClearDoneAction());
+            listener = v -> store().dispatch(new ConfirmClearDoneAction());
         } else {
             listener = null;
         }
@@ -105,7 +82,7 @@ public class AppBarComponent extends LinearLayout {
         action.setActivated(allDone);
         action.setEnabled(enabled);
 
-        final View.OnClickListener onClickListener = v -> helper.store().dispatch(new ToggleAllDoneAction());
+        final View.OnClickListener onClickListener = v -> store().dispatch(new ToggleAllDoneAction());
         action.setOnClickListener(onClickListener);
 
         // todo, initial state on JB emulator device is not rendered (nothing is displayed)

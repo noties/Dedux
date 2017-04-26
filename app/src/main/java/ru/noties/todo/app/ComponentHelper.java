@@ -8,7 +8,7 @@ import javax.annotation.Nullable;
 import dedux.CompositeSubscription;
 import dedux.StateItemBase;
 import dedux.Store;
-import ru.noties.todo.StoreHolder;
+import dedux.androidcomponent.StoreHolder;
 
 public class ComponentHelper {
 

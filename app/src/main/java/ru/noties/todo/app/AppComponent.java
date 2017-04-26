@@ -20,5 +20,7 @@ public class AppComponent extends FrameLayout {
 
     private void init(Context context, AttributeSet attributeSet) {
         inflate(context, R.layout.view_app, this);
+
+
     }
 }
