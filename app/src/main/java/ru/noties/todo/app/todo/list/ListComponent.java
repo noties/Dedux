@@ -99,7 +99,12 @@ public class ListComponent extends FrameLayout {
 
         final boolean scrollToLast = state.scrollToLast();
         if (scrollToLast) {
-            recyclerView.post(() -> recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1));
+            // todo, we should indicate that we have scrolled
+            recyclerView.post(() -> {
+                selfChange = true;
+                recyclerView.smoothScrollToPosition(adapter.getItemCount() - 1);
+                selfChange = false;
+            });
         }
     }
 

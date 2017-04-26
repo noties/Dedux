@@ -9,18 +9,16 @@ import android.widget.FrameLayout;
 
 import javax.annotation.Nonnull;
 
+import ru.noties.todo.R;
 import ru.noties.todo.app.AppComponent;
 import ru.noties.todo.app.ComponentHelper;
-import ru.noties.todo.app.account.AccountAuthComponent;
 import ru.noties.todo.app.navigation.confirm.ConfirmAction;
 import ru.noties.todo.app.navigation.confirm.ConfirmComponent;
-import ru.noties.todo.R;
 
 public class NavigationComponent extends FrameLayout {
 
     private ComponentHelper helper;
 
-    private Dialog accountDialog;
     private Dialog confirmDialog;
 
     public NavigationComponent(Context context) {
@@ -65,7 +63,6 @@ public class NavigationComponent extends FrameLayout {
 
     private void render(@Nonnull NavigationState state) {
         renderApp(state);
-        renderAccount(state);
         renderConfirmClearDoneAction(state);
     }
 
@@ -75,40 +72,6 @@ public class NavigationComponent extends FrameLayout {
         // we will always render app
         if (getChildCount() == 0) {
             addView(new AppComponent(getContext()));
-        }
-    }
-
-    private void renderAccount(@Nonnull NavigationState state) {
-
-        final boolean show = state.showAccount();
-
-        if (show) {
-            if (accountDialog == null
-                    || !accountDialog.isShowing()) {
-                final Dialog dialog = new Dialog(getContext(), R.style.DialogTheme);
-                dialog.setContentView(new AccountAuthComponent(getContext()));
-                dialog.setOnDismissListener(di -> {
-                    helper.store().dispatch(new NavigationCloseAccountAction());
-                });
-                this.accountDialog = dialog;
-                this.accountDialog.show();
-
-                final Window window = dialog.getWindow();
-                if (window != null) {
-                    window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-                    final WindowManager.LayoutParams params = new WindowManager.LayoutParams();
-                    params.copyFrom(window.getAttributes());
-                    params.width = WindowManager.LayoutParams.MATCH_PARENT;
-                    params.height = LayoutParams.WRAP_CONTENT;
-                    window.setAttributes(params);
-                }
-            }
-        } else {
-            if (accountDialog != null
-                    && accountDialog.isShowing()) {
-                accountDialog.dismiss();
-                accountDialog = null;
-            }
         }
     }
 

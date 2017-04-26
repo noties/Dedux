@@ -1,6 +1,7 @@
 <resources>
 
-    <string name="app_name">//\u00a0TODO</string>
+    <string name="app_name">TODO</string>
+    <string name="app_bar_title">//\u00a0TODO</string>
 
     <string name="input_hint">\u00a0//\u00a0TODO</string>
 

@@ -5,7 +5,6 @@ import dedux.StateItemBase;
 public class NavigationState extends StateItemBase {
 
     private boolean showApp = true;
-    private boolean showAccount;
     private boolean showConfirm;
 
     public boolean showApp() {
@@ -14,15 +13,6 @@ public class NavigationState extends StateItemBase {
 
     public NavigationState showApp(boolean showApp) {
         this.showApp = showApp;
-        return this;
-    }
-
-    public boolean showAccount() {
-        return showAccount;
-    }
-
-    public NavigationState showAccount(boolean showAccount) {
-        this.showAccount = showAccount;
         return this;
     }
 
@@ -39,7 +29,6 @@ public class NavigationState extends StateItemBase {
     public String toString() {
         return "NavigationState{" +
                 "showApp=" + showApp +
-                ", showAccount=" + showAccount +
                 ", showConfirm=" + showConfirm +
                 '}';
     }

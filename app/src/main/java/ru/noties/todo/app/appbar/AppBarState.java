@@ -5,7 +5,6 @@ import dedux.StateItemBase;
 public class AppBarState extends StateItemBase {
 
     private String title;
-    private boolean loggedIn;
     private boolean clearEnabled;
     private boolean allDone;
     private boolean toggleDoneEnabled;
@@ -20,15 +19,6 @@ public class AppBarState extends StateItemBase {
 
     public AppBarState title(String title) {
         this.title = title;
-        return this;
-    }
-
-    public boolean loggedIn() {
-        return loggedIn;
-    }
-
-    public AppBarState loggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
         return this;
     }
 
@@ -72,7 +62,6 @@ public class AppBarState extends StateItemBase {
     public String toString() {
         return "AppBarState{" +
                 "title='" + title + '\'' +
-                ", loggedIn=" + loggedIn +
                 ", clearEnabled=" + clearEnabled +
                 ", allDone=" + allDone +
                 ", toggleDoneEnabled=" + toggleDoneEnabled +
