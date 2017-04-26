@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -18,7 +17,6 @@ import dedux.PreloadedState;
 import dedux.StateItem;
 import dedux.Store;
 import dedux.Subscription;
-import ru.noties.debug.Debug;
 import ru.noties.todo.utils.CollectionUtils;
 
 public class StatePersistence {
@@ -51,15 +49,10 @@ public class StatePersistence {
 
         // okay, we anyway put our initial items
         if (!CollectionUtils.isEmpty(initial)) {
-            for (StateItem item: initial) {
-                preloadedState.add(item);
-            }
+            preloadedState.addAll(initial);
         }
 
-        final Map<Class<? extends StateItem>, StateItem> map = persisted();
-        for (StateItem item: map.values()) {
-            preloadedState.add(item);
-        }
+        preloadedState.addAll(persisted());
 
         return preloadedState;
     }
@@ -74,28 +67,27 @@ public class StatePersistence {
             handler.removeCallbacksAndMessages(null);
             // it's kind of debounce (with more or less reasonable timeout)
             handler.postDelayed(() -> {
-                final Map<Class<? extends StateItem>, StateItem> map = state.state();
-                executor.execute(() -> persist(map));
+                final List<StateItem> list = state.state();
+                executor.execute(() -> persist(list));
             }, 1000L);
         });
     }
 
-    private void persist(Map<Class<? extends StateItem>, StateItem> state) {
-        Debug.i(state);
-        final String serialized = stateSerializer.toJson(state);
+    private void persist(List<StateItem> list) {
+        final String serialized = stateSerializer.toJson(list);
         preferences.edit().putString(KEY, serialized).apply();
     }
 
     @Nonnull
-    private Map<Class<? extends StateItem>, StateItem> persisted() {
-        final Map<Class<? extends StateItem>, StateItem> map;
+    private List<StateItem> persisted() {
+        final List<StateItem> list;
         final String serialized = preferences.getString(KEY, null);
         if (TextUtils.isEmpty(serialized)) {
             //noinspection unchecked
-            map = Collections.EMPTY_MAP;
+            list = Collections.EMPTY_LIST;
         } else {
-            map = stateSerializer.fromJson(serialized);
+            list = stateSerializer.fromJson(serialized);
         }
-        return map;
+        return list;
     }
 }

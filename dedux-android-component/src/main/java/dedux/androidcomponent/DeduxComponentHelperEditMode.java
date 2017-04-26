@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -28,14 +29,10 @@ class DeduxComponentHelperEditMode implements DeduxComponentHelper {
     }
 
     private final Store store;
-    private final Context context;
-    private final AttributeSet attributeSet;
     private final Map<String, String> map;
 
     private DeduxComponentHelperEditMode(@Nonnull Context context, @Nullable AttributeSet attributeSet) {
         this.store = new StoreNoOp();
-        this.context = context;
-        this.attributeSet = attributeSet;
         // we need to build own copy of attributes, because (seems so) attributeSet is cleared
         // after this method exists
         this.map = EditModeHelper.buildAttributes(context, attributeSet);
@@ -48,7 +45,6 @@ class DeduxComponentHelperEditMode implements DeduxComponentHelper {
 
     @Override
     public <T extends StateItem> void subscribeTo(@Nonnull Class<T> state, @Nonnull DeduxComponent.OnStateListener<? super T> listener) {
-//        listener.apply(create(state, attributeSet));
         listener.apply(create(state, map));
     }
 
@@ -169,9 +165,9 @@ class DeduxComponentHelperEditMode implements DeduxComponentHelper {
 
         @Nonnull
         @Override
-        public Map<Class<? extends StateItem>, StateItem> state() {
+        public List<StateItem> state() {
             //noinspection unchecked
-            return Collections.EMPTY_MAP;
+            return Collections.EMPTY_LIST;
         }
     }
 }

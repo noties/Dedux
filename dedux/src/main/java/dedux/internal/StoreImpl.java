@@ -1,7 +1,7 @@
 package dedux.internal;
 
 
-import java.util.Map;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -116,7 +116,7 @@ public class StoreImpl implements Store {
 
         @Nonnull
         @Override
-        public Map<Class<? extends StateItem>, StateItem> state() {
+        public List<StateItem> state() {
             return StoreImpl.this.state.state();
         }
     }

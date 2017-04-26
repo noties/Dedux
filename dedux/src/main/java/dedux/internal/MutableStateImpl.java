@@ -1,6 +1,8 @@
 package dedux.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -75,25 +77,25 @@ public class MutableStateImpl implements MutableState {
 
     @Nonnull
     @Override
-    public Map<Class<? extends StateItem>, StateItem> state() {
-        final Map<Class<? extends StateItem>, StateItem> map;
+    public List<StateItem> state() {
+        final List<StateItem> list;
         synchronized (properties) {
-            map = new HashMap<>(properties.size());
-            for (Map.Entry<Class<? extends StateItem>, MutableOp<StateItem>> entry: properties.entrySet()) {
-                map.put(entry.getKey(), entry.getValue().get());
+            list = new ArrayList<>(properties.size());
+            for (MutableOp<StateItem> op : properties.values()) {
+                list.add(op.get());
             }
         }
-        return map;
+        return list;
     }
 
     @SuppressWarnings("unchecked")
-    private void state(@Nonnull Map<Class<? extends StateItem>, StateItem> map) {
+    private void state(@Nonnull List<StateItem> list) {
         synchronized (properties) {
             properties.clear();
             Class<? extends StateItem> cl;
-            for (Map.Entry<Class<? extends StateItem>, StateItem> entry: map.entrySet()) {
-                cl = entry.getKey();
-                final MutableOp op = new MutableOpImpl(entry.getValue());
+            for (StateItem item : list) {
+                cl = item.getClass();
+                final MutableOp op = new MutableOpImpl(item);
                 op.subscribe(notification);
                 properties.put(cl, op);
             }

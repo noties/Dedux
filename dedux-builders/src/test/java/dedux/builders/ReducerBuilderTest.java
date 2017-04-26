@@ -2,7 +2,7 @@ package dedux.builders;
 
 import org.junit.Test;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -19,13 +19,20 @@ import static org.junit.Assert.assertTrue;
 
 public class ReducerBuilderTest {
 
-    private static class TestAction implements Action {}
+    private static class TestAction implements Action {
+    }
 
-    private static class TestAction_01 implements Action {}
-    private static class TestAction_02 implements Action {}
-    private static class TestAction_03 implements Action {}
+    private static class TestAction_01 implements Action {
+    }
 
-    private static class TestAction_01_01 extends TestAction_01 {}
+    private static class TestAction_02 implements Action {
+    }
+
+    private static class TestAction_03 implements Action {
+    }
+
+    private static class TestAction_01_01 extends TestAction_01 {
+    }
 
     @Test
     public void duplicate_reducer_added_throws() {
@@ -57,7 +64,8 @@ public class ReducerBuilderTest {
                 .add(TestAction.class, ReducerNoOp.<TestAction>create())
                 .build();
 
-        final Action action = new Action() {};
+        final Action action = new Action() {
+        };
 
         try {
             reducer.reduce(new MutableStateNoOp(), action);
@@ -147,7 +155,8 @@ public class ReducerBuilderTest {
                 .add(TestAction.class, ReducerNoOp.<TestAction>create())
                 .build(reducerFlag);
 
-        reducer.reduce(new MutableStateNoOp(), new Action() {});
+        reducer.reduce(new MutableStateNoOp(), new Action() {
+        });
         assertTrue(reducerFlag.called);
     }
 
@@ -194,7 +203,7 @@ public class ReducerBuilderTest {
 
         @Nonnull
         @Override
-        public Map<Class<? extends StateItem>, StateItem> state() {
+        public List<StateItem> state() {
             return null;
         }
     }

@@ -1,20 +1,28 @@
 package dedux;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
 
 public class PreloadedState {
 
-    private final Map<Class<? extends StateItem>, StateItem> map = new HashMap<>();
+    private final List<StateItem> list = new ArrayList<>();
 
     public <S extends StateItem> PreloadedState add(@Nonnull S stateItem) {
-        map.put(stateItem.getClass(), stateItem);
+        list.add(stateItem);
         return this;
     }
 
-    public Map<Class<? extends StateItem>, StateItem> build() {
-        return new HashMap<>(map);
+    public PreloadedState addAll(@Nonnull Collection<? extends StateItem> collection) {
+        list.addAll(collection);
+        return this;
+    }
+
+    public List<StateItem> build() {
+        return new ArrayList<>(list);
     }
 }
