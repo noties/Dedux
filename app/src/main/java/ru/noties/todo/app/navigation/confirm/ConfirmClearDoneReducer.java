@@ -6,9 +6,9 @@ import javax.annotation.Nonnull;
 
 import dedux.MutableState;
 import dedux.Reducer;
+import ru.noties.todo.R;
 import ru.noties.todo.app.appbar.AppBarState;
 import ru.noties.todo.app.navigation.core.NavigationState;
-import ru.noties.todo.R;
 
 public class ConfirmClearDoneReducer implements Reducer<ConfirmClearDoneAction> {
 
@@ -22,9 +22,7 @@ public class ConfirmClearDoneReducer implements Reducer<ConfirmClearDoneAction> 
     public void reduce(@Nonnull MutableState state, @Nonnull ConfirmClearDoneAction confirmClearDoneAction) {
 
         final AppBarState appBarState = state.get(AppBarState.class).get();
-        final int done = appBarState != null
-                ? appBarState.doneCount()
-                : 0; // weird, should not happen.. ever
+        final int done = appBarState.doneCount();
 
         final String message = resources.getString(
                 R.string.confirm_clear_done_message,

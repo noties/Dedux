@@ -1,7 +1,9 @@
 package dedux.androidcomponent;
 
 import android.content.Context;
+import android.support.annotation.IdRes;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import javax.annotation.Nonnull;
@@ -27,6 +29,16 @@ public abstract class DeduxComponent extends FrameLayout {
     public DeduxComponent(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context, attrs);
+    }
+
+    // searches current View
+    public <V extends View> V findView(@IdRes int id) {
+        return findView(this, id);
+    }
+
+    public <V extends View> V findView(@Nonnull View view, @IdRes int id) {
+        //noinspection unchecked
+        return (V) view.findViewById(id);
     }
 
     public boolean isAttached() {

@@ -15,9 +15,5 @@ public class CollectionUtils {
         return map == null || map.size() == 0;
     }
 
-    public static <C extends Collection<?>> int length(@Nullable C collection) {
-        return collection != null ? collection.size() : 0;
-    }
-
     private CollectionUtils() {}
 }

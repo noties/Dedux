@@ -7,23 +7,20 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import ru.noties.todo.app.ComponentHelper;
+import dedux.androidcomponent.DeduxComponent;
+import ru.noties.todo.R;
 import ru.noties.todo.app.todo.core.AddTodoAction;
 import ru.noties.todo.core.InputEditText;
 import ru.noties.todo.core.TextWatcherAdapter;
-import ru.noties.todo.R;
 import ru.noties.todo.utils.KeyboardUtils;
 import ru.noties.todo.utils.StringUtils;
-import ru.noties.todo.utils.ViewUtils;
 
-public class InputComponent extends FrameLayout {
-
-    private ComponentHelper helper;
+public class InputComponent extends DeduxComponent {
 
     private InputEditText editText;
     private TextWatcher textWatcher;
@@ -34,96 +31,83 @@ public class InputComponent extends FrameLayout {
 
     public InputComponent(Context context) {
         super(context);
-        init(context, null);
     }
 
     public InputComponent(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
     }
 
-    private void init(Context context, AttributeSet attributeSet) {
-
-        helper = ComponentHelper.install(context);
-        if (helper == null) {
-            if (!isInEditMode()) {
-                throw new IllegalStateException();
-            }
-        }
+    @Override
+    protected void onCreated(@Nonnull Context context, @Nullable AttributeSet set) {
 
         inflate(context, R.layout.view_input, this);
 
-        this.editText = ViewUtils.findView(this, R.id.input_edit_text);
+        this.editText = findView(R.id.input_edit_text);
         this.focus = findViewById(R.id.input_focus);
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (helper != null) {
+    protected void onAttached() {
 
-            helper.attach(InputState.class, this::render);
+        subscribeTo(InputState.class, this::render);
 
-            textWatcher = new TextWatcherAdapter() {
-                @Override
-                public void afterTextChanged(Editable s) {
-                    if (!selfChange) {
-                        final String input = TextUtils.isEmpty(s)
-                                ? null
-                                : s.toString();
-                        helper.store().dispatch(new InputAction(InputAction.Type.INPUT).currentInput(input));
-                    }
-                }
-            };
-            editText.addTextChangedListener(textWatcher);
-
-            editText.setOnSelectionChangedListener((start, end) -> {
+        textWatcher = new TextWatcherAdapter() {
+            @Override
+            public void afterTextChanged(Editable s) {
                 if (!selfChange) {
-                    helper.store()
-                            .dispatch(new InputAction(InputAction.Type.SELECTION)
-                                    .selectionStart(start)
-                                    .selectionEnd(end));
+                    final String input = TextUtils.isEmpty(s)
+                            ? null
+                            : s.toString();
+                    store().dispatch(new InputAction(InputAction.Type.INPUT).currentInput(input));
                 }
-            });
+            }
+        };
+        editText.addTextChangedListener(textWatcher);
 
-            editText.setOnFocusChangeListener((v, hasFocus) -> {
-                if (!selfChange) {
-                    helper.store().dispatch(new InputAction().hasFocus(hasFocus));
+        editText.setOnSelectionChangedListener((start, end) -> {
+            if (!selfChange) {
+                store()
+                        .dispatch(new InputAction(InputAction.Type.SELECTION)
+                                .selectionStart(start)
+                                .selectionEnd(end));
+            }
+        });
+
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!selfChange) {
+                store().dispatch(new InputAction().hasFocus(hasFocus));
+            }
+        });
+
+        editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                final CharSequence input = v.getText();
+                if (TextUtils.isEmpty(input)) {
+                    // do nothing
+                    store().dispatch(new InputAction(InputAction.Type.FOCUS).hasFocus(false));
+                } else {
+                    store().dispatch(new AddTodoAction(input.toString()));
                 }
-            });
+                return true;
+            }
+        });
 
-            editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    final CharSequence input = v.getText();
-                    if (TextUtils.isEmpty(input)) {
-                        // do nothing
-                        helper.store().dispatch(new InputAction(InputAction.Type.FOCUS).hasFocus(false));
-                    } else {
-                        helper.store().dispatch(new AddTodoAction(input.toString()));
-                    }
-                    return true;
-                }
+        editText.setOnBackPressedListener(() -> {
+            editText.post(() -> {
+                editText.clearFocus();
+                focus.post(() -> focus.requestFocus());
             });
-
-            editText.setOnBackPressedListener(() -> {
-                editText.post(() -> {
-                    editText.clearFocus();
-                    focus.post(() -> focus.requestFocus());
-                });
-            });
-        }
+        });
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+    protected void onDetached() {
+        super.onDetached();
 
-        if (helper != null) {
-            editText.removeTextChangedListener(textWatcher);
-            textWatcher = null;
-            helper.detach();
-        }
+        // strictly speaking we do not need this
+        editText.removeTextChangedListener(textWatcher);
+        textWatcher = null;
     }
 
     private void render(@Nonnull InputState state) {

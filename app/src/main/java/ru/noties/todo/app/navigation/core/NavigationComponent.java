@@ -5,60 +5,36 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
+import dedux.androidcomponent.DeduxComponent;
 import ru.noties.todo.R;
 import ru.noties.todo.app.AppComponent;
-import ru.noties.todo.app.ComponentHelper;
 import ru.noties.todo.app.navigation.confirm.ConfirmAction;
 import ru.noties.todo.app.navigation.confirm.ConfirmComponent;
 
-public class NavigationComponent extends FrameLayout {
-
-    private ComponentHelper helper;
+public class NavigationComponent extends DeduxComponent {
 
     private Dialog confirmDialog;
 
     public NavigationComponent(Context context) {
         super(context);
-        init(context, null);
     }
 
     public NavigationComponent(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
-    }
-
-    private void init(Context context, AttributeSet attributeSet) {
-        helper = ComponentHelper.install(context);
-        if (helper == null
-                && !isInEditMode()) {
-            throw new IllegalStateException();
-        }
-
-
-        // for layout preview
-        if (isInEditMode()) {
-            addView(new AppComponent(context));
-        }
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if (helper != null) {
-            helper.attach(NavigationState.class, this::render);
-        }
+    protected void onCreated(@Nonnull Context context, @Nullable AttributeSet set) {
+        // no op
     }
 
     @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        if (helper != null) {
-            helper.detach();
-        }
+    protected void onAttached() {
+        subscribeTo(NavigationState.class, this::render);
     }
 
     private void render(@Nonnull NavigationState state) {
@@ -84,7 +60,7 @@ public class NavigationComponent extends FrameLayout {
                     || !confirmDialog.isShowing()) {
                 final Dialog dialog = new Dialog(getContext(), R.style.DialogTheme);
                 dialog.setContentView(new ConfirmComponent(getContext()));
-                dialog.setOnDismissListener(di -> helper.store().dispatch(new ConfirmAction()));
+                dialog.setOnDismissListener(di -> store().dispatch(new ConfirmAction()));
                 this.confirmDialog = dialog;
                 this.confirmDialog.show();
 

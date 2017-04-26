@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import dedux.androidcomponent.DeduxComponent;
 import ru.noties.todo.R;
@@ -23,27 +24,26 @@ public class AppBarComponent extends DeduxComponent {
 
     public AppBarComponent(Context context) {
         super(context);
-        init(context, null);
     }
 
     public AppBarComponent(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
+    }
+
+    @Override
+    protected void onCreated(@Nonnull Context context, @Nullable AttributeSet set) {
+
+        inflate(context, R.layout.view_app_bar, this);
+
+        this.title = findView(R.id.app_bar_title);
+        this.action = findView(R.id.app_bar_action);
+        this.clear = findViewById(R.id.app_bar_clear);
+        this.countDone = findView(R.id.app_bar_done_count);
     }
 
     @Override
     protected void onAttached() {
         subscribeTo(AppBarState.class, this::render);
-    }
-
-    private void init(Context context, AttributeSet attributeSet) {
-
-        inflate(context, R.layout.view_app_bar, this);
-
-        this.title = ViewUtils.findView(this, R.id.app_bar_title);
-        this.action = ViewUtils.findView(this, R.id.app_bar_action);
-        this.clear = findViewById(R.id.app_bar_clear);
-        this.countDone = ViewUtils.findView(this, R.id.app_bar_done_count);
     }
 
     private void render(@Nonnull AppBarState state) {

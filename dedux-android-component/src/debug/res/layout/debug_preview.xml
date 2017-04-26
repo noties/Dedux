@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         preview:state_name="sdjsdfjs\ndffddf\tshit, \u00a9\n\nsdfsdfsdf"
-        preview:state_count="@color/colorAccent"
+        preview:state_count="@android:integer/config_shortAnimTime"
         preview:state_isTrue="true"/>
 
 </FrameLayout>

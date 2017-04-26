@@ -35,29 +35,25 @@ public class AppBarCheckDoneReducer implements Reducer<AppBarCheckDoneAction> {
     }
 
     @Nonnull
-    private static DoneFlags doneFlags(@Nullable TodosState state) {
+    private static DoneFlags doneFlags(@Nonnull TodosState state) {
         final DoneFlags out;
-        if (state == null) {
+        final List<Todo> todos = state.todos();
+        if (CollectionUtils.isEmpty(todos)) {
             out = new DoneFlags(false, false, false);
         } else {
-            final List<Todo> todos = state.todos();
-            if (CollectionUtils.isEmpty(todos)) {
-                out = new DoneFlags(false, false, false);
-            } else {
-                boolean allDone = true;
-                boolean hasDone = false;
-                for (Todo todo: todos) {
-                    if (!todo.isDone()) {
-                        allDone = false;
-                        if (hasDone) {
-                            break;
-                        }
-                    } else {
-                        hasDone = true;
+            boolean allDone = true;
+            boolean hasDone = false;
+            for (Todo todo: todos) {
+                if (!todo.isDone()) {
+                    allDone = false;
+                    if (hasDone) {
+                        break;
                     }
+                } else {
+                    hasDone = true;
                 }
-                out = new DoneFlags(hasDone, allDone, true);
             }
+            out = new DoneFlags(hasDone, allDone, true);
         }
         return out;
     }

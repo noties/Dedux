@@ -15,4 +15,5 @@ android {
 
 dependencies {
     compile project(':dedux')
+    compile "com.android.support:support-annotations:$SUPPORT_VERSION"
 }

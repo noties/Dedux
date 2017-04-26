@@ -6,12 +6,6 @@ public class Todo {
     private final String name;
     private final boolean done;
 
-    // comment for now
-//    final long whenCreated;
-//    final long whenDone;
-    // final String label;
-
-
     public Todo(long id, String name, boolean done) {
         this.id = id;
         this.name = name;

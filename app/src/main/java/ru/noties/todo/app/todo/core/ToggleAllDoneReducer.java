@@ -16,8 +16,7 @@ public class ToggleAllDoneReducer implements Reducer<ToggleAllDoneAction> {
     public void reduce(@Nonnull MutableState state, @Nonnull ToggleAllDoneAction toggleAllDoneAction) {
 
         final TodosState todosState = state.get(TodosState.class).get();
-        if (todosState == null
-                || CollectionUtils.isEmpty(todosState.todos())) {
+        if (CollectionUtils.isEmpty(todosState.todos())) {
             return;
         }
 
@@ -30,7 +29,7 @@ public class ToggleAllDoneReducer implements Reducer<ToggleAllDoneAction> {
 
     private static List<Todo> setAll(boolean isDone, List<Todo> list) {
         final List<Todo> out = new ArrayList<>(list.size());
-        for (Todo todo: list) {
+        for (Todo todo : list) {
             out.add(new Todo(todo.id(), todo.getName(), isDone));
         }
         return out;

@@ -5,25 +5,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import ru.noties.todo.app.ComponentHelper;
+import dedux.androidcomponent.DeduxComponent;
+import ru.noties.todo.R;
 import ru.noties.todo.app.todo.core.Todo;
 import ru.noties.todo.app.todo.core.TodosState;
 import ru.noties.todo.app.todo.core.ToggleTodoAction;
-import ru.noties.todo.R;
 import ru.noties.todo.utils.CollectionUtils;
-import ru.noties.todo.utils.ViewUtils;
 import ru.noties.vt.ViewTypesAdapter;
 
-public class ListComponent extends FrameLayout {
-
-    private ComponentHelper helper;
+public class ListComponent extends DeduxComponent {
 
     private RecyclerView recyclerView;
     private LinearLayoutManager layoutManager;
@@ -33,64 +30,43 @@ public class ListComponent extends FrameLayout {
 
     public ListComponent(Context context) {
         super(context);
-        init(context, null);
     }
 
     public ListComponent(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context, attrs);
     }
 
-    private void init(Context context, AttributeSet attributeSet) {
-
-        helper = ComponentHelper.install(context);
-        if (helper == null) {
-            if (!isInEditMode()) {
-                throw new IllegalStateException();
-            }
-        }
+    @Override
+    protected void onCreated(@Nonnull Context context, @Nullable AttributeSet set) {
 
         inflate(context, R.layout.view_list, this);
 
         adapter = ViewTypesAdapter.builder(Item.class)
                 .register(Item.TodoItem.class, new TodoItemViewType(), ((item, holder) -> {
-                    helper.store().dispatch(new ToggleTodoAction(((Item.TodoItem) item).id));
+                    store().dispatch(new ToggleTodoAction(((Item.TodoItem) item).id));
                 }))
                 .setHasStableIds(true)
                 .build(context);
 
-        recyclerView = ViewUtils.findView(this, R.id.list_recycler_view);
+        recyclerView = findView(R.id.list_recycler_view);
         layoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
+    protected void onAttached() {
 
-        if (helper != null) {
-            // for now, then we will create standalone state for list (to show also filtered items)
-            helper.attach(TodosState.class, this::render);
-            helper.attach(ListScrollState.class, this::renderScroll);
+        subscribeTo(TodosState.class, this::render);
+        subscribeTo(ListScrollState.class, this::renderScroll);
 
-            recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    recyclerView.removeCallbacks(scrollChangedRunnable);
-                    recyclerView.postDelayed(scrollChangedRunnable, 1000L);
-                }
-            });
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-
-        if (helper != null) {
-            helper.detach();
-        }
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                recyclerView.removeCallbacks(scrollChangedRunnable);
+                recyclerView.postDelayed(scrollChangedRunnable, 1000L);
+            }
+        });
     }
 
     private void render(@Nonnull TodosState state) {
@@ -142,7 +118,7 @@ public class ListComponent extends FrameLayout {
 
         selfChange = true;
 
-        helper.store().dispatch(new ScrollAction(outPosition, outOffset));
+        store().dispatch(new ScrollAction(outPosition, outOffset));
 
         selfChange = false;
     };
