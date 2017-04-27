@@ -1,6 +1,7 @@
 package dedux.builders;
 
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,29 +22,41 @@ public class ReducerBuilder<A extends Action> {
     }
 
     @SuppressWarnings("unused")
-    public static <A extends Action> ReducerBuilder<A> create(@Nonnull Class<A> base) {
-        return new ReducerBuilder<>(base);
+    public static <A extends Action> ReducerBuilder<A> create(@Nonnull Class<A> type) {
+        return new ReducerBuilder<>(type);
     }
 
 
+    private final Class<A> type;
     private final Map<Integer, Reducer<? extends Action>> reducers;
 
     @SuppressWarnings("unused")
-    public ReducerBuilder(Class<A> base) {
+    public ReducerBuilder(Class<A> type) {
+        this.type = type;
         this.reducers = new HashMap<>();
     }
 
-    public <R extends A> ReducerBuilder<A> add(@Nonnull Class<R> cl, @Nonnull Reducer<? super R> reducer) {
-
-        validateClass(cl);
+    public <R extends A> ReducerBuilder<A> add(@Nonnull Reducer<R> reducer) {
 
         // check if not present already
+        final Class<?> cl = reducer.actionType();
         final int hash = cl.hashCode();
+
         //noinspection unchecked
         if (reducers.put(hash, reducer) != null) {
-            throw new IllegalStateException("Class `" + cl.getName() + "` is already registered");
+            throw new IllegalStateException("Reducer `" + cl.getName() + "` is already registered");
         }
 
+        return this;
+    }
+
+    public ReducerBuilder<A> addAll(@Nonnull Collection<Reducer<? extends A>> collection) {
+        for (Reducer<? extends A> reducer: collection) {
+            if (reducer == null) {
+                throw new NullPointerException("Cannot add null reducer");
+            }
+            add(reducer);
+        }
         return this;
     }
 
@@ -62,12 +75,12 @@ public class ReducerBuilder<A extends Action> {
 
         final Reducer<A> defaultReducer;
         if (def == null) {
-            defaultReducer = new ReducerThrows<>();
+            defaultReducer = new ReducerThrows<>(type);
         } else {
             defaultReducer = def;
         }
 
-        return new CompositeReducer<>(new HashMap<>(reducers), defaultReducer);
+        return new CompositeReducer<>(type, new HashMap<>(reducers), defaultReducer);
     }
 
     private static void validateClass(@Nonnull Class<?> cl) {
@@ -79,15 +92,24 @@ public class ReducerBuilder<A extends Action> {
 
     private static class CompositeReducer<A extends Action> implements Reducer<A> {
 
+        private final Class<A> type;
         private final Map<Integer, Reducer<? extends Action>> reducers;
         private final Reducer<A> def;
 
         CompositeReducer(
+                @Nonnull Class<A> type,
                 @Nonnull Map<Integer, Reducer<? extends Action>> reducers,
                 @Nonnull Reducer<A> def
         ) {
+            this.type = type;
             this.reducers = Collections.unmodifiableMap(reducers);
             this.def = def;
+        }
+
+        @Nonnull
+        @Override
+        public Class<A> actionType() {
+            return type;
         }
 
         @Override
@@ -131,6 +153,18 @@ public class ReducerBuilder<A extends Action> {
     }
 
     private static class ReducerThrows<A extends Action> implements Reducer<A> {
+
+        private final Class<A> type;
+
+        ReducerThrows(Class<A> type) {
+            this.type = type;
+        }
+
+        @Nonnull
+        @Override
+        public Class<A> actionType() {
+            return type;
+        }
 
         @Override
         public void reduce(@Nonnull MutableState state, @Nonnull A action) {

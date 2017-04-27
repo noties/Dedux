@@ -108,7 +108,7 @@ public class MiddlewareBuilder<A extends Action> {
                         @Override
                         public void next() {
                             iterator.remove();
-                            MiddlewareBuilder.CompositeMiddleware.MiddlewareChain.this.apply(store, action, next);
+                            apply(store, action, next);
                         }
                     });
                 } else {

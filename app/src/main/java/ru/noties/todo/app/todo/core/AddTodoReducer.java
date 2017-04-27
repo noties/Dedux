@@ -13,6 +13,12 @@ import ru.noties.todo.utils.CollectionUtils;
 
 public class AddTodoReducer implements Reducer<AddTodoAction> {
 
+    @Nonnull
+    @Override
+    public Class<AddTodoAction> actionType() {
+        return AddTodoAction.class;
+    }
+
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull AddTodoAction addTodoAction) {
 

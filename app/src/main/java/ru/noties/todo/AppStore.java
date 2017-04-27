@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -13,34 +14,24 @@ import dedux.Middleware;
 import dedux.Reducer;
 import dedux.StateItem;
 import dedux.Store;
-import dedux.StoreBuilder;
 import dedux.builders.MiddlewareBuilder;
 import dedux.builders.ReducerBuilder;
+import dedux.builders.StoreBuilder;
 import ru.noties.debug.Debug;
-import ru.noties.todo.app.appbar.AppBarCheckDoneAction;
 import ru.noties.todo.app.appbar.AppBarCheckDoneReducer;
-import ru.noties.todo.app.appbar.AppBarCountDoneAction;
 import ru.noties.todo.app.appbar.AppBarCountDoneReducer;
 import ru.noties.todo.app.appbar.AppBarState;
 import ru.noties.todo.app.navigation.confirm.ConfirmAction;
-import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneAction;
 import ru.noties.todo.app.navigation.confirm.ConfirmClearDoneReducer;
-import ru.noties.todo.app.navigation.confirm.ConfirmCloseAction;
 import ru.noties.todo.app.navigation.confirm.ConfirmCloseReducer;
 import ru.noties.todo.app.navigation.confirm.ConfirmMiddleware;
-import ru.noties.todo.app.todo.core.AddTodoAction;
 import ru.noties.todo.app.todo.core.AddTodoReducer;
-import ru.noties.todo.app.todo.core.ClearDoneAction;
 import ru.noties.todo.app.todo.core.ClearDoneReducer;
 import ru.noties.todo.app.todo.core.ModifyTodoAction;
 import ru.noties.todo.app.todo.core.ModifyTodoMiddleware;
-import ru.noties.todo.app.todo.core.ToggleAllDoneAction;
 import ru.noties.todo.app.todo.core.ToggleAllDoneReducer;
-import ru.noties.todo.app.todo.core.ToggleTodoAction;
 import ru.noties.todo.app.todo.core.ToggleTodoReducer;
-import ru.noties.todo.app.todo.input.InputAction;
 import ru.noties.todo.app.todo.input.InputReducer;
-import ru.noties.todo.app.todo.list.ScrollAction;
 import ru.noties.todo.app.todo.list.ScrollReducer;
 
 class AppStore {
@@ -74,17 +65,24 @@ class AppStore {
     }
 
     private Reducer<Action> reducer() {
+
+        // can register each reducer individually or in a list
+        final List<Reducer<? extends Action>> reducers = Arrays.asList(new InputReducer(), new AddTodoReducer());
+
+        // order in which reducers are added doesn't matter
+
         return ReducerBuilder.create()
-                .add(InputAction.class, new InputReducer())
-                .add(AddTodoAction.class, new AddTodoReducer())
-                .add(ToggleTodoAction.class, new ToggleTodoReducer())
-                .add(AppBarCheckDoneAction.class, new AppBarCheckDoneReducer())
-                .add(ToggleAllDoneAction.class, new ToggleAllDoneReducer())
-                .add(ConfirmClearDoneAction.class, new ConfirmClearDoneReducer(application.getResources()))
-                .add(ClearDoneAction.class, new ClearDoneReducer())
-                .add(AppBarCountDoneAction.class, new AppBarCountDoneReducer())
-                .add(ConfirmCloseAction.class, new ConfirmCloseReducer())
-                .add(ScrollAction.class, new ScrollReducer())
+//                .add(new InputReducer())
+//                .add(new AddTodoReducer())
+                .add(new ToggleTodoReducer())
+                .add(new AppBarCheckDoneReducer())
+                .add(new ToggleAllDoneReducer())
+                .add(new ConfirmClearDoneReducer(application.getResources()))
+                .add(new ClearDoneReducer())
+                .add(new AppBarCountDoneReducer())
+                .add(new ConfirmCloseReducer())
+                .add(new ScrollReducer())
+                .addAll(reducers)
                 .build();
     }
 

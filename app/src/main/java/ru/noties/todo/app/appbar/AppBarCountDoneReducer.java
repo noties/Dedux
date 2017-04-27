@@ -12,6 +12,12 @@ import ru.noties.todo.utils.CollectionUtils;
 
 public class AppBarCountDoneReducer implements Reducer<AppBarCountDoneAction> {
 
+    @Nonnull
+    @Override
+    public Class<AppBarCountDoneAction> actionType() {
+        return AppBarCountDoneAction.class;
+    }
+
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull AppBarCountDoneAction appBarCountDoneAction) {
 

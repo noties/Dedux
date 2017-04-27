@@ -1,8 +1,13 @@
-package dedux;
+package dedux.builders;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import dedux.Action;
+import dedux.Middleware;
+import dedux.MutableState;
+import dedux.Reducer;
+import dedux.Store;
 import dedux.internal.StoreImpl;
 
 public class StoreBuilder {

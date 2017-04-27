@@ -18,6 +18,12 @@ public class ConfirmClearDoneReducer implements Reducer<ConfirmClearDoneAction> 
         this.resources = resources;
     }
 
+    @Nonnull
+    @Override
+    public Class<ConfirmClearDoneAction> actionType() {
+        return ConfirmClearDoneAction.class;
+    }
+
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull ConfirmClearDoneAction confirmClearDoneAction) {
 

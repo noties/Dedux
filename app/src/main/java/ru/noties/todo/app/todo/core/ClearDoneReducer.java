@@ -11,6 +11,12 @@ import ru.noties.todo.utils.CollectionUtils;
 
 public class ClearDoneReducer implements Reducer<ClearDoneAction> {
 
+    @Nonnull
+    @Override
+    public Class<ClearDoneAction> actionType() {
+        return ClearDoneAction.class;
+    }
+
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull ClearDoneAction clearDoneAction) {
 

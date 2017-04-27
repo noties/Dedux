@@ -8,6 +8,12 @@ import ru.noties.todo.app.navigation.core.NavigationState;
 
 public class ConfirmCloseReducer implements Reducer<ConfirmCloseAction> {
 
+    @Nonnull
+    @Override
+    public Class<ConfirmCloseAction> actionType() {
+        return ConfirmCloseAction.class;
+    }
+
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull ConfirmCloseAction confirmCloseAction) {
         final NavigationState navigationState = state.get(NavigationState.class).get();

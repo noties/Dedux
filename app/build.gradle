@@ -35,7 +35,6 @@ android {
 dependencies {
 
     compile project(':dedux')
-    compile project(':dedux-builders')
     compile project(':dedux-android-component')
 
     compile 'ru.noties:debug:3.0.0@jar'

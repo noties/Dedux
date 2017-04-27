@@ -6,6 +6,13 @@ import dedux.MutableState;
 import dedux.Reducer;
 
 public class ScrollReducer implements Reducer<ScrollAction> {
+
+    @Nonnull
+    @Override
+    public Class<ScrollAction> actionType() {
+        return ScrollAction.class;
+    }
+
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull ScrollAction scrollAction) {
         final ListScrollState scrollState = new ListScrollState()

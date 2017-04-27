@@ -3,15 +3,20 @@ package ru.noties.todo.app.appbar;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import dedux.MutableState;
 import dedux.Reducer;
-import ru.noties.todo.app.todo.core.TodosState;
 import ru.noties.todo.app.todo.core.Todo;
+import ru.noties.todo.app.todo.core.TodosState;
 import ru.noties.todo.utils.CollectionUtils;
 
 public class AppBarCheckDoneReducer implements Reducer<AppBarCheckDoneAction> {
+
+    @Nonnull
+    @Override
+    public Class<AppBarCheckDoneAction> actionType() {
+        return AppBarCheckDoneAction.class;
+    }
 
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull AppBarCheckDoneAction appBarCheckDoneAction) {
@@ -43,7 +48,7 @@ public class AppBarCheckDoneReducer implements Reducer<AppBarCheckDoneAction> {
         } else {
             boolean allDone = true;
             boolean hasDone = false;
-            for (Todo todo: todos) {
+            for (Todo todo : todos) {
                 if (!todo.isDone()) {
                     allDone = false;
                     if (hasDone) {

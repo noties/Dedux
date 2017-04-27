@@ -12,6 +12,12 @@ import ru.noties.todo.utils.CollectionUtils;
 
 public class ToggleAllDoneReducer implements Reducer<ToggleAllDoneAction> {
 
+    @Nonnull
+    @Override
+    public Class<ToggleAllDoneAction> actionType() {
+        return ToggleAllDoneAction.class;
+    }
+
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull ToggleAllDoneAction toggleAllDoneAction) {
 

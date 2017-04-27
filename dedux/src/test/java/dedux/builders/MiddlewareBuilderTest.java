@@ -5,18 +5,17 @@ import org.junit.Test;
 import javax.annotation.Nonnull;
 
 import dedux.Action;
-import dedux.Consumer;
 import dedux.Middleware;
 import dedux.State;
 import dedux.Store;
-import dedux.Subscription;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MiddlewareBuilderTest {
 
-    private static class TestAction implements Action {}
+    private static class TestAction implements Action {
+    }
 
     @Test
     public void no_middleware_registered_throws() {
@@ -37,7 +36,8 @@ public class MiddlewareBuilderTest {
                 .add(Action.class, flag)
                 .build();
         final NextFlag nextFlag = new NextFlag();
-        middleware.apply(new StoreNoOp(), new Action() {}, nextFlag);
+        middleware.apply(new StoreNoOp(), new Action() {
+        }, nextFlag);
 
         assertTrue(flag.called);
         assertTrue(nextFlag.called);
@@ -56,7 +56,8 @@ public class MiddlewareBuilderTest {
 
         final NextFlag nextFlag = new NextFlag();
 
-        middleware.apply(new StoreNoOp(), new Action() {}, nextFlag);
+        middleware.apply(new StoreNoOp(), new Action() {
+        }, nextFlag);
 
         assertTrue(first.called);
         assertTrue(second.called);
@@ -78,7 +79,8 @@ public class MiddlewareBuilderTest {
 
         // dispatch generic, generic should handle, specific - not
 
-        middleware.apply(new StoreNoOp(), new Action() {}, nextFlag);
+        middleware.apply(new StoreNoOp(), new Action() {
+        }, nextFlag);
 
         assertTrue(generic.called);
         assertFalse(specific.called);
@@ -128,13 +130,6 @@ public class MiddlewareBuilderTest {
         @Override
         public void dispatch(@Nonnull Action action) {
 
-        }
-
-        @Nonnull
-        @Override
-        public Subscription subscribe(@Nonnull Consumer<State> consumer) {
-            //noinspection ConstantConditions
-            return null;
         }
     }
 }

@@ -10,6 +10,12 @@ import dedux.Reducer;
 
 public class ToggleTodoReducer implements Reducer<ToggleTodoAction> {
 
+    @Nonnull
+    @Override
+    public Class<ToggleTodoAction> actionType() {
+        return ToggleTodoAction.class;
+    }
+
     @Override
     public void reduce(@Nonnull MutableState state, @Nonnull ToggleTodoAction toggleTodoAction) {
 
