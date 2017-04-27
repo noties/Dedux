@@ -15,10 +15,11 @@ import javax.annotation.Nullable;
 import dedux.androidcomponent.DeduxComponent;
 import dedux.sample.todo.R;
 import dedux.sample.todo.model.Todo;
-import dedux.sample.todo.store.state.ListScrollState;
+import dedux.sample.todo.store.action.EditTodoAction;
 import dedux.sample.todo.store.action.ScrollAction;
-import dedux.sample.todo.store.state.TodosState;
 import dedux.sample.todo.store.action.ToggleTodoAction;
+import dedux.sample.todo.store.state.ListScrollState;
+import dedux.sample.todo.store.state.TodosState;
 import dedux.sample.todo.utils.CollectionUtils;
 import ru.noties.vt.ViewTypesAdapter;
 
@@ -43,8 +44,10 @@ public class ListComponent extends DeduxComponent {
 
         inflate(context, R.layout.view_list, this);
 
+        final TodoItemViewType viewType = new TodoItemViewType((id) -> store().dispatch(new EditTodoAction(id)));
+
         adapter = ViewTypesAdapter.builder(Item.class)
-                .register(Item.TodoItem.class, new TodoItemViewType(), ((item, holder) -> {
+                .register(Item.TodoItem.class, viewType, ((item, holder) -> {
                     store().dispatch(new ToggleTodoAction(((Item.TodoItem) item).id));
                 }))
                 .setHasStableIds(true)

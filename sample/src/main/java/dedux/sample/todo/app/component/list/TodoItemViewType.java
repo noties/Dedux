@@ -19,6 +19,16 @@ import ru.noties.vt.ViewType;
 
 class TodoItemViewType extends ViewType<Item.TodoItem, TodoItemViewType.TodoHolder> {
 
+    interface OnLongClickListener {
+        void onLongClick(long id);
+    }
+
+    private final OnLongClickListener onLongClickListener;
+
+    TodoItemViewType(OnLongClickListener onLongClickListener) {
+        this.onLongClickListener = onLongClickListener;
+    }
+
     @Override
     protected TodoHolder createView(LayoutInflater inflater, ViewGroup parent) {
         return new TodoHolder(inflater.inflate(R.layout.vt_todo_item, parent, false));
@@ -42,6 +52,11 @@ class TodoItemViewType extends ViewType<Item.TodoItem, TodoItemViewType.TodoHold
         holder.name.setActivated(isDone);
 
         holder.checkBox.setActivated(isDone);
+
+        holder.itemView.setOnLongClickListener(v -> {
+            onLongClickListener.onLongClick(item.id);
+            return true;
+        });
     }
 
     @Override

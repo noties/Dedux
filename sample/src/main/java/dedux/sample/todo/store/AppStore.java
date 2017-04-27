@@ -18,6 +18,7 @@ import dedux.builders.MiddlewareBuilder;
 import dedux.builders.ReducerBuilder;
 import dedux.builders.StoreBuilder;
 import dedux.sample.todo.R;
+import dedux.sample.todo.store.reducer.EditTodoReducer;
 import ru.noties.debug.Debug;
 import dedux.sample.todo.store.middleware.ConfirmMiddleware;
 import dedux.sample.todo.store.middleware.ModifyTodoMiddleware;
@@ -85,6 +86,7 @@ public class AppStore {
                 .add(new AppBarCountDoneReducer())
                 .add(new ConfirmCloseReducer())
                 .add(new ScrollReducer())
+                .add(new EditTodoReducer())
                 .addAll(reducers)
                 .build();
     }
