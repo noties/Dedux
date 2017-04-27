@@ -1,0 +1,49 @@
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion TARGET_SDK
+    buildToolsVersion BUILD_TOOLS
+
+    defaultConfig {
+        applicationId "dedux.sample.todo"
+        minSdkVersion MIN_SDK
+        targetSdkVersion TARGET_SDK
+        versionCode 1
+        versionName version
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dexOptions {
+        preDexLibraries true
+        javaMaxHeapSize '4g'
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+}
+
+dependencies {
+
+    compile project(':dedux')
+    compile project(':dedux-android-component')
+
+    compile 'ru.noties:debug:3.0.0@jar'
+    compile 'ru.noties:vt:1.0.0'
+
+    compile 'com.google.code.gson:gson:2.8.0'
+
+    compile "com.android.support:support-annotations:$SUPPORT_VERSION"
+
+    // this adds also: `support-annotations`, `support-compat`, `support-core-ui`
+    compile "com.android.support:recyclerview-v7:$SUPPORT_VERSION"
+}

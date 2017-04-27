@@ -1,1 +1,2 @@
-include ':app', ':dedux', ':dedux-android-component'
+include ':dedux', ':dedux-android-component'
+include ':sample'
