@@ -1,6 +1,7 @@
 package ru.noties.todo;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +16,6 @@ import dedux.Store;
 import dedux.StoreBuilder;
 import dedux.builders.MiddlewareBuilder;
 import dedux.builders.ReducerBuilder;
-import dedux.internal.MemoryStorage;
 import ru.noties.debug.Debug;
 import ru.noties.todo.app.appbar.AppBarCheckDoneAction;
 import ru.noties.todo.app.appbar.AppBarCheckDoneReducer;
@@ -57,20 +57,14 @@ class AppStore {
 
     private Store create() {
 
-//        final StateSerializer stateSerializer = new StateSerializer();
-//        final StatePersistence persistence = new StatePersistence(application.getApplicationContext(), stateSerializer, initialState());
+        final SharedPreferences preferences
+                = application.getSharedPreferences("pasa-pasa", Application.MODE_PRIVATE);
 
-        final Store store = new StoreBuilder()
-                .storage(MemoryStorage.create(initialState()))
+        return StoreBuilder.create()
+                .storage(new AppStorage(preferences, initialState()))
                 .reducer(reducer())
                 .middleware(middleware())
                 .build();
-
-//        persistence.onStoreCreated(store);
-
-        ;
-
-        return store;
     }
 
     private List<? extends StateItem> initialState() {

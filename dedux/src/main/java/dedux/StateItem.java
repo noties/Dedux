@@ -2,6 +2,9 @@ package dedux;
 
 import javax.annotation.Nonnull;
 
+import dedux.internal.ReflectUtils;
+
+// defined as interface to give ability to implement in classes that have own hierarchy already
 public interface StateItem {
 
     // we need to define 2 methods for cloning
@@ -31,4 +34,20 @@ public interface StateItem {
 
     @Nonnull
     <S extends StateItem> S clone(@Nonnull Class<S> cl, @Nonnull Apply<? super S> apply);
+
+
+
+    @SuppressWarnings("WeakerAccess")
+    class Cloner {
+
+        @Nonnull
+        public static <S extends StateItem> S clone(S who, @Nonnull Apply<? super S> apply) {
+            final S s = ReflectUtils.newInstance(who.getClass());
+            ReflectUtils.copy(who, s);
+            apply.apply(s);
+            return s;
+        }
+
+        private Cloner() {}
+    }
 }

@@ -2,7 +2,6 @@ package dedux.internal;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,14 +51,14 @@ public class MutableOpImpl<T> implements MutableOp<T> {
     public Subscription subscribe(boolean deliverFirst, @Nonnull Consumer<T> consumer) {
         synchronized (lock) {
 
-            final Subscription subscription = new SubscriptionImpl();
+            final Subscription subscription = new SubscriptionNoOp();
 
             if (deliverFirst) {
                 consumer.apply(subscription, value);
             }
 
             if (!subscription.isUnsubscribed()) {
-                map.put(subscription, consumer);
+                map.put(new SubscriptionImpl(), consumer);
             }
 
             return subscription;
@@ -92,7 +91,7 @@ public class MutableOpImpl<T> implements MutableOp<T> {
 
             List<Subscription> mark = null;
 
-            for (Map.Entry<Subscription, Consumer<T>> entry: map.entrySet()) {
+            for (Map.Entry<Subscription, Consumer<T>> entry : map.entrySet()) {
                 entry.getValue().apply(flag, value);
                 if (flag.unsubscribed) {
                     if (mark == null) {
@@ -104,7 +103,7 @@ public class MutableOpImpl<T> implements MutableOp<T> {
             }
 
             if (mark != null) {
-                for (Subscription subscription: mark) {
+                for (Subscription subscription : mark) {
                     subscription.unsubscribe();
                 }
             }

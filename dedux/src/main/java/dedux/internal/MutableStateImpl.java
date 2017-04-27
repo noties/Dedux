@@ -2,7 +2,6 @@ package dedux.internal;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -24,13 +23,6 @@ public class MutableStateImpl extends MutableState {
         this.lock = new Object();
     }
 
-//    @Nonnull
-//    @Override
-//    public List<StateItem> state() {
-//        // todo, mark to remove
-//        throw new RuntimeException();
-//    }
-
     @Nonnull
     @Override
     public <S extends StateItem> MutableOp<S> get(@Nonnull Class<S> cl) {
@@ -51,7 +43,7 @@ public class MutableStateImpl extends MutableState {
                     storage.set(s);
                 }
 
-                op = new MutableOpImpl<>((StateItem) s);
+                op = new MutableOpStateItemImpl<>(storage, (StateItem) s);
                 reference = new SoftReference<MutableOp<StateItem>>(op);
 
                 map.put(cl, reference);

@@ -18,7 +18,6 @@ public class StoreImpl implements Store {
     private final MutableState state;
     private final Reducer<Action> reducer;
     private final Middleware<Action> middleware;
-//    private final MutableOp<State> op;
 
     // we will create a facade for immutable store, so there is no casts
     // (ensuring immutable behavior where needed)
@@ -31,19 +30,9 @@ public class StoreImpl implements Store {
             @Nonnull Reducer<Action> reducer,
             @Nullable Middleware<Action> middleware
     ) {
-//        this.state = new MutableStateImpl_(preloadedState);
         this.state = new MutableStateImpl(storage);
-        //noinspection unchecked
         this.reducer = reducer;
         this.middleware = middleware == null ? new MiddlewareNoOp() : middleware;
-//        this.op = new MutableOpImpl<>((State) state);
-
-//        this.state.subscribe(new Consumer<MutableState>() {
-//            @Override
-//            public void apply(@Nonnull Subscription subscription, @Nonnull MutableState state) {
-//                op.set(state);
-//            }
-//        });
 
         this.immutableState = new ImmutableState();
         this.immutableStore = new ImmutableStore();
@@ -64,13 +53,6 @@ public class StoreImpl implements Store {
             }
         });
     }
-
-//    @Nonnull
-//    @Override
-//    public Subscription subscribe(@Nonnull Consumer<State> consumer) {
-//        return op.subscribe(consumer);
-//    }
-
 
     private static class MiddlewareNoOp implements Middleware<Action> {
 
@@ -93,12 +75,6 @@ public class StoreImpl implements Store {
         public void dispatch(@Nonnull Action action) {
             StoreImpl.this.dispatch(action);
         }
-
-//        @Nonnull
-//        @Override
-//        public Subscription subscribe(@Nonnull Consumer<State> consumer) {
-//            return StoreImpl.this.subscribe(consumer);
-//        }
     }
 
     private class ImmutableState implements State {
@@ -108,11 +84,5 @@ public class StoreImpl implements Store {
         public <S extends StateItem> Op<S> get(@Nonnull Class<S> cl) {
             return StoreImpl.this.state.get(cl);
         }
-//
-//        @Nonnull
-//        @Override
-//        public List<StateItem> state() {
-//            return StoreImpl.this.state.state();
-//        }
     }
 }

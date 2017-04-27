@@ -20,6 +20,7 @@ public abstract class MutableState implements State {
         public abstract <S extends StateItem> void set(@Nonnull S s);
     }
 
+
     public MutableState(@Nonnull Storage storage) {
 
     }
@@ -34,7 +35,4 @@ public abstract class MutableState implements State {
     // helper function == `get(SomeClass.class).set(new SomeClass(123L))`
     // NB, DOES NOT ALLOW NULL, if NULL value must be set use `get(*.class).set(null)`
     public abstract <S extends StateItem> void set(@Nonnull S s);
-
-//    @Nonnull
-//    Subscription subscribe(@Nonnull Consumer<MutableState> consumer);
 }

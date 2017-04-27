@@ -14,7 +14,6 @@ public class StoreBuilder {
     private MutableState.Storage storage;
     private Reducer<Action> reducer;
     private Middleware<Action> middleware;
-//    private PreloadedState preloadedState;
 
     public StoreBuilder() {
     }
@@ -33,11 +32,6 @@ public class StoreBuilder {
         this.middleware = middleware;
         return this;
     }
-
-//    public StoreBuilder preloadedState(PreloadedState preloadedState) {
-//        this.preloadedState = preloadedState;
-//        return this;
-//    }
 
     public Store build() {
         if (reducer == null) {
