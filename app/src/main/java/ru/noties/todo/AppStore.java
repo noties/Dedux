@@ -15,6 +15,7 @@ import dedux.Store;
 import dedux.StoreBuilder;
 import dedux.builders.MiddlewareBuilder;
 import dedux.builders.ReducerBuilder;
+import dedux.internal.MemoryStorage;
 import ru.noties.debug.Debug;
 import ru.noties.todo.app.appbar.AppBarCheckDoneAction;
 import ru.noties.todo.app.appbar.AppBarCheckDoneReducer;
@@ -41,8 +42,6 @@ import ru.noties.todo.app.todo.input.InputAction;
 import ru.noties.todo.app.todo.input.InputReducer;
 import ru.noties.todo.app.todo.list.ScrollAction;
 import ru.noties.todo.app.todo.list.ScrollReducer;
-import ru.noties.todo.state.StatePersistence;
-import ru.noties.todo.state.StateSerializer;
 
 class AppStore {
 
@@ -58,15 +57,18 @@ class AppStore {
 
     private Store create() {
 
-        final StateSerializer stateSerializer = new StateSerializer();
-        final StatePersistence persistence = new StatePersistence(application.getApplicationContext(), stateSerializer, initialState());
+//        final StateSerializer stateSerializer = new StateSerializer();
+//        final StatePersistence persistence = new StatePersistence(application.getApplicationContext(), stateSerializer, initialState());
 
         final Store store = new StoreBuilder()
-                .preloadedState(persistence.preloadedState())
+                .storage(MemoryStorage.create(initialState()))
+                .reducer(reducer())
                 .middleware(middleware())
-                .build(reducer());
+                .build();
 
-        persistence.onStoreCreated(store);
+//        persistence.onStoreCreated(store);
+
+        ;
 
         return store;
     }

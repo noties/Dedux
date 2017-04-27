@@ -148,11 +148,11 @@ class DeduxComponentHelperEditMode implements DeduxComponentHelper {
             // no op
         }
 
-        @Nonnull
-        @Override
-        public Subscription subscribe(@Nonnull Consumer<State> consumer) {
-            return new SubscriptionNoOp();
-        }
+//        @Nonnull
+//        @Override
+//        public Subscription subscribe(@Nonnull Consumer<State> consumer) {
+//            return new SubscriptionNoOp();
+//        }
     }
 
     private static class StateNoOp implements State {
@@ -163,11 +163,11 @@ class DeduxComponentHelperEditMode implements DeduxComponentHelper {
             return ReflectUtils.newInstance(cl);
         }
 
-        @Nonnull
-        @Override
-        public List<StateItem> state() {
-            //noinspection unchecked
-            return Collections.EMPTY_LIST;
-        }
+//        @Nonnull
+//        @Override
+//        public List<StateItem> state() {
+//            //noinspection unchecked
+//            return Collections.EMPTY_LIST;
+//        }
     }
 }
