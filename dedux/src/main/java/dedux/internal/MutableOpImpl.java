@@ -117,12 +117,6 @@ public class MutableOpImpl<T> implements MutableOp<T> {
         }
     }
 
-    boolean hasSubscriptions() {
-        synchronized (lock) {
-            return map.size() > 0;
-        }
-    }
-
     private class SubscriptionImpl implements Subscription {
 
         volatile boolean unsubscribed;

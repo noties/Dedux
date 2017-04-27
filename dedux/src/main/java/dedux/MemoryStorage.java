@@ -1,4 +1,4 @@
-package dedux.internal;
+package dedux;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,9 +7,6 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import dedux.MutableState;
-import dedux.StateItem;
 
 // stores full state in memory
 public class MemoryStorage extends MutableState.Storage {
