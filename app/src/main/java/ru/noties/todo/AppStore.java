@@ -66,11 +66,10 @@ class AppStore {
 
     private Reducer<Action> reducer() {
 
-        // can register each reducer individually or in a list
+        // can register each reducer individually or supply a list of reducers
         final List<Reducer<? extends Action>> reducers = Arrays.asList(new InputReducer(), new AddTodoReducer());
 
         // order in which reducers are added doesn't matter
-
         return ReducerBuilder.create()
 //                .add(new InputReducer())
 //                .add(new AddTodoReducer())
@@ -87,13 +86,32 @@ class AppStore {
     }
 
     private Middleware<Action> middleware() {
+
+        // Middleware can be registered independently and as a list
+        // order matters - it defines order in which middlewares will be called in a chain
+
+        final List<Middleware<? extends Action>> list = Arrays.asList(new ModifyTodoMiddleware(), new ConfirmMiddleware());
+
         return MiddlewareBuilder.create()
-                .add(Action.class, ((store, action, next) -> {
-                    Debug.i("action: %s", action);
-                    next.next();
-                }))
-                .add(ModifyTodoAction.class, new ModifyTodoMiddleware())
-                .add(ConfirmAction.class, new ConfirmMiddleware())
+                .add(new LoggingMiddleware())
+//                .add(new ModifyTodoMiddleware())
+//                .add(new ConfirmMiddleware())
+                .addAll(list)
                 .build();
+    }
+
+    private static class LoggingMiddleware implements Middleware<Action> {
+
+        @Nonnull
+        @Override
+        public Class<Action> actionType() {
+            return Action.class;
+        }
+
+        @Override
+        public void apply(@Nonnull Store store, @Nonnull Action action, @Nonnull Next next) {
+            Debug.i("action: %s", action);
+            next.next();
+        }
     }
 }

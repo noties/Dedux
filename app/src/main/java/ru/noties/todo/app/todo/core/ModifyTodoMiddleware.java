@@ -9,6 +9,12 @@ import ru.noties.todo.app.appbar.AppBarCountDoneAction;
 
 public class ModifyTodoMiddleware implements Middleware<ModifyTodoAction> {
 
+    @Nonnull
+    @Override
+    public Class<ModifyTodoAction> actionType() {
+        return ModifyTodoAction.class;
+    }
+
     @Override
     public void apply(@Nonnull Store store, @Nonnull ModifyTodoAction action, @Nonnull Next next) {
         // due to the fact that this middleware (in general) can do some async work,

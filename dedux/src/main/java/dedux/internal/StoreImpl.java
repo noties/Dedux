@@ -56,6 +56,12 @@ public class StoreImpl implements Store {
 
     private static class MiddlewareNoOp implements Middleware<Action> {
 
+        @Nonnull
+        @Override
+        public Class<Action> actionType() {
+            return Action.class;
+        }
+
         @Override
         public void apply(@Nonnull Store store, @Nonnull Action action, @Nonnull Next next) {
             next.next();

@@ -31,9 +31,9 @@ public class MiddlewareBuilderTest {
     @Test
     public void single_middleware_one_type() {
 
-        final MiddlewareFlag<Action> flag = new MiddlewareFlag<>();
+        final MiddlewareFlag<Action> flag = new MiddlewareFlag<>(Action.class);
         final Middleware<Action> middleware = MiddlewareBuilder.create()
-                .add(Action.class, flag)
+                .add(flag)
                 .build();
         final NextFlag nextFlag = new NextFlag();
         middleware.apply(new StoreNoOp(), new Action() {
@@ -46,12 +46,12 @@ public class MiddlewareBuilderTest {
     @Test
     public void multiple_middleware_one_type() {
 
-        final MiddlewareFlag<Action> first = new MiddlewareFlag<>();
-        final MiddlewareFlag<Action> second = new MiddlewareFlag<>();
+        final MiddlewareFlag<Action> first = new MiddlewareFlag<>(Action.class);
+        final MiddlewareFlag<Action> second = new MiddlewareFlag<>(Action.class);
 
         final Middleware<Action> middleware = MiddlewareBuilder.create()
-                .add(Action.class, first)
-                .add(Action.class, second)
+                .add(first)
+                .add(second)
                 .build();
 
         final NextFlag nextFlag = new NextFlag();
@@ -67,12 +67,12 @@ public class MiddlewareBuilderTest {
     @Test
     public void generic_and_specific_middleware() {
 
-        final MiddlewareFlag<Action> generic = new MiddlewareFlag<>();
-        final MiddlewareFlag<TestAction> specific = new MiddlewareFlag<>();
+        final MiddlewareFlag<Action> generic = new MiddlewareFlag<>(Action.class);
+        final MiddlewareFlag<TestAction> specific = new MiddlewareFlag<>(TestAction.class);
 
         final Middleware<Action> middleware = MiddlewareBuilder.create()
-                .add(Action.class, generic)
-                .add(TestAction.class, specific)
+                .add(generic)
+                .add(specific)
                 .build();
 
         final NextFlag nextFlag = new NextFlag();
@@ -99,7 +99,18 @@ public class MiddlewareBuilderTest {
 
     private static class MiddlewareFlag<A extends Action> implements Middleware<A> {
 
+        private final Class<A> type;
         boolean called;
+
+        MiddlewareFlag(Class<A> type) {
+            this.type = type;
+        }
+
+        @Nonnull
+        @Override
+        public Class<A> actionType() {
+            return type;
+        }
 
         @Override
         public void apply(@Nonnull Store store, @Nonnull A action, @Nonnull Next next) {

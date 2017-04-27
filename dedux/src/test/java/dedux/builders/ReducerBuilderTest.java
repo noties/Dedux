@@ -35,8 +35,8 @@ public class ReducerBuilderTest {
     public void duplicate_reducer_added_throws() {
         try {
             ReducerBuilder.create()
-                    .add(TestAction.class, ReducerNoOp.create(TestAction.class))
-                    .add(TestAction.class, ReducerNoOp.create(TestAction.class));
+                    .add(ReducerNoOp.create(TestAction.class))
+                    .add(ReducerNoOp.create(TestAction.class));
             assertTrue(false);
         } catch (IllegalStateException e) {
             assertTrue(true);
@@ -58,7 +58,7 @@ public class ReducerBuilderTest {
     public void no_def_provided_throws_for_unknown_action() {
 
         final Reducer<Action> reducer = ReducerBuilder.create()
-                .add(TestAction.class, ReducerNoOp.create(TestAction.class))
+                .add(ReducerNoOp.create(TestAction.class))
                 .build();
 
         final Action action = new Action() {
@@ -77,7 +77,7 @@ public class ReducerBuilderTest {
 
         final ReducerFlag<TestAction> testActionReducer = new ReducerFlag<>(TestAction.class);
         final Reducer<Action> reducer = ReducerBuilder.create()
-                .add(TestAction.class, testActionReducer)
+                .add(testActionReducer)
                 .build();
 
         reducer.reduce(new MutableStateNoOp(), new TestAction());
@@ -92,9 +92,9 @@ public class ReducerBuilderTest {
         final ReducerFlag<TestAction_03> action03Reducer = new ReducerFlag<>(TestAction_03.class);
 
         final Reducer<Action> reducer = ReducerBuilder.create()
-                .add(TestAction_01.class, action01Reducer)
-                .add(TestAction_02.class, action02Reducer)
-                .add(TestAction_03.class, action03Reducer)
+                .add(action01Reducer)
+                .add(action02Reducer)
+                .add(action03Reducer)
                 .build();
 
         @SuppressWarnings("WeakerAccess")
@@ -138,7 +138,7 @@ public class ReducerBuilderTest {
 
         final ReducerFlag<TestAction_01> action01ReducerFlag = new ReducerFlag<>(TestAction_01.class);
         final Reducer<Action> reducer = ReducerBuilder.create()
-                .add(TestAction_01.class, action01ReducerFlag)
+                .add(action01ReducerFlag)
                 .build();
 
         reducer.reduce(new MutableStateNoOp(), new TestAction_01_01());
@@ -149,7 +149,7 @@ public class ReducerBuilderTest {
     public void default_reducer_called() {
         final ReducerFlag<Action> reducerFlag = new ReducerFlag<>(Action.class);
         final Reducer<Action> reducer = ReducerBuilder.create()
-                .add(TestAction.class, ReducerNoOp.create(TestAction.class))
+                .add(ReducerNoOp.create(TestAction.class))
                 .build(reducerFlag);
 
         reducer.reduce(new MutableStateNoOp(), new Action() {

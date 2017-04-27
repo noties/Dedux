@@ -8,6 +8,9 @@ public interface Middleware<A extends Action> {
         void next();
     }
 
+    @Nonnull
+    Class<A> actionType();
+
     // we can dispatch new action here, and we can modify action that came
     // but we cannot pass to `next` another action
     void apply(@Nonnull Store store, @Nonnull A action, @Nonnull Next next);

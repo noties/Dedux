@@ -22,15 +22,16 @@ public class MiddlewareBuilder<A extends Action> {
     }
 
     @SuppressWarnings("unused")
-    public static <A extends Action> MiddlewareBuilder<A> create(Class<A> base) {
-        return new MiddlewareBuilder<>(base);
+    public static <A extends Action> MiddlewareBuilder<A> create(Class<A> type) {
+        return new MiddlewareBuilder<>(type);
     }
 
-
+    private final Class<A> type;
     private final Map<Class<? extends A>, List<Middleware<A>>> middlewares;
 
     @SuppressWarnings("unused")
-    public MiddlewareBuilder(Class<A> base) {
+    public MiddlewareBuilder(Class<A> type) {
+        this.type = type;
         this.middlewares = new LinkedHashMap<>();
     }
 
@@ -38,10 +39,13 @@ public class MiddlewareBuilder<A extends Action> {
 
     // here we can have duplicates of types, so having 2 middlewares of the same type just
     // will place them in one chain call
-    public <R extends A> MiddlewareBuilder<A> add(@Nonnull Class<R> cl, @Nonnull Middleware<? super R> middleware) {
+    public MiddlewareBuilder<A> add(@Nonnull Middleware<? extends A> middleware) {
+
+        final Class<? extends A> cl = middleware.actionType();
+
         List<Middleware<A>> current = middlewares.get(cl);
         if (current == null) {
-            current = new ArrayList<>(3);
+            current = new ArrayList<>(2);
             //noinspection unchecked
             current.add((Middleware<A>) middleware);
             middlewares.put(cl, current);
@@ -52,20 +56,39 @@ public class MiddlewareBuilder<A extends Action> {
         return this;
     }
 
+    // as order of the added middlewares is important, we allow a list (not a collection) only
+    public MiddlewareBuilder<A> addAll(@Nonnull List<Middleware<? extends A>> list) {
+        for (Middleware<? extends A> middleware: list) {
+            if (middleware == null) {
+                throw new NullPointerException("Cannot register null value");
+            }
+            add(middleware);
+        }
+        return this;
+    }
+
     public Middleware<A> build() {
         if (middlewares.size() == 0) {
             throw new IllegalStateException("No middlewares were registered");
         }
-        return new CompositeMiddleware<>(new LinkedHashMap<>(middlewares));
+        return new CompositeMiddleware<>(type, new LinkedHashMap<>(middlewares));
     }
 
 
     private static class CompositeMiddleware<A extends Action> implements Middleware<A> {
 
+        private final Class<A> type;
         private final Map<Class<? extends A>, List<Middleware<A>>> middlewares;
 
-        private CompositeMiddleware(Map<Class<? extends A>, List<Middleware<A>>> middlewares) {
+        private CompositeMiddleware(Class<A> type, Map<Class<? extends A>, List<Middleware<A>>> middlewares) {
+            this.type = type;
             this.middlewares = Collections.unmodifiableMap(middlewares);
+        }
+
+        @Nonnull
+        @Override
+        public Class<A> actionType() {
+            return type;
         }
 
         @Override
@@ -77,7 +100,7 @@ public class MiddlewareBuilder<A extends Action> {
                 // nothing is found, just pass further
                 next.next();
             } else {
-                final MiddlewareChain<A> chain = new MiddlewareChain<>(list);
+                final MiddlewareChain<A> chain = new MiddlewareChain<>(type, list);
                 chain.apply(store, action, next);
             }
         }
@@ -94,10 +117,18 @@ public class MiddlewareBuilder<A extends Action> {
 
         private static class MiddlewareChain<A extends Action> implements Middleware<A> {
 
+            private final Class<A> type;
             private final Iterator<Middleware<A>> iterator;
 
-            MiddlewareChain(@Nonnull List<Middleware<A>> list) {
+            MiddlewareChain(@Nonnull Class<A> type, @Nonnull List<Middleware<A>> list) {
+                this.type = type;
                 this.iterator = list.iterator();
+            }
+
+            @Nonnull
+            @Override
+            public Class<A> actionType() {
+                return type;
             }
 
             @Override

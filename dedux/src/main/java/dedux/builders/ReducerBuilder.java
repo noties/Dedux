@@ -38,8 +38,11 @@ public class ReducerBuilder<A extends Action> {
 
     public <R extends A> ReducerBuilder<A> add(@Nonnull Reducer<R> reducer) {
 
-        // check if not present already
         final Class<?> cl = reducer.actionType();
+
+        validateClass(cl);
+
+        // check if not present already
         final int hash = cl.hashCode();
 
         //noinspection unchecked
