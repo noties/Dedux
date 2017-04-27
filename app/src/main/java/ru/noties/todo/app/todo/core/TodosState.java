@@ -7,7 +7,7 @@ import dedux.StateItemBase;
 public class TodosState extends StateItemBase {
 
     private List<Todo> todos;
-    private boolean scrollToLast;
+    private transient boolean scrollToLast;
 
     public TodosState() {}
 

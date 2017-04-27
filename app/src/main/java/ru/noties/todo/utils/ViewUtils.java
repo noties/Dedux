@@ -8,14 +8,15 @@ import javax.annotation.Nonnull;
 public class ViewUtils {
 
     @IntDef({View.INVISIBLE, View.GONE})
-    @interface NotVisible {}
+    @interface NotVisible {
+    }
 
-    public static <V extends View> void setVisible(@Nonnull View view, boolean visible) {
+    public static <V extends View> void setVisible(@Nonnull V view, boolean visible) {
         setVisible(view, visible, View.GONE);
     }
 
     public static <V extends View> void setVisible(
-            @Nonnull View view,
+            @Nonnull V view,
             boolean visible,
             @NotVisible int notVisible
     ) {
