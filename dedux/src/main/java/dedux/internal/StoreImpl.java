@@ -1,30 +1,24 @@
 package dedux.internal;
 
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import dedux.Action;
-import dedux.Consumer;
 import dedux.Middleware;
-import dedux.MutableOp;
 import dedux.MutableState;
 import dedux.Op;
-import dedux.PreloadedState;
 import dedux.Reducer;
 import dedux.State;
 import dedux.StateItem;
 import dedux.Store;
-import dedux.Subscription;
 
 public class StoreImpl implements Store {
 
     private final MutableState state;
     private final Reducer<Action> reducer;
     private final Middleware<Action> middleware;
-    private final MutableOp<State> op;
+//    private final MutableOp<State> op;
 
     // we will create a facade for immutable store, so there is no casts
     // (ensuring immutable behavior where needed)
@@ -33,22 +27,23 @@ public class StoreImpl implements Store {
 
     // we allow only Reducer<Action>, as we should handle all actions
     public StoreImpl(
+            @Nonnull MutableState.Storage storage,
             @Nonnull Reducer<Action> reducer,
-            @Nullable Middleware<Action> middleware,
-            @Nullable PreloadedState preloadedState
+            @Nullable Middleware<Action> middleware
     ) {
-        this.state = new MutableStateImpl(preloadedState);
+//        this.state = new MutableStateImpl_(preloadedState);
+        this.state = new MutableStateImpl(storage);
         //noinspection unchecked
         this.reducer = reducer;
         this.middleware = middleware == null ? new MiddlewareNoOp() : middleware;
-        this.op = new MutableOpImpl<>((State) state);
+//        this.op = new MutableOpImpl<>((State) state);
 
-        this.state.subscribe(new Consumer<MutableState>() {
-            @Override
-            public void apply(@Nonnull Subscription subscription, @Nonnull MutableState state) {
-                op.set(state);
-            }
-        });
+//        this.state.subscribe(new Consumer<MutableState>() {
+//            @Override
+//            public void apply(@Nonnull Subscription subscription, @Nonnull MutableState state) {
+//                op.set(state);
+//            }
+//        });
 
         this.immutableState = new ImmutableState();
         this.immutableStore = new ImmutableStore();
@@ -70,11 +65,11 @@ public class StoreImpl implements Store {
         });
     }
 
-    @Nonnull
-    @Override
-    public Subscription subscribe(@Nonnull Consumer<State> consumer) {
-        return op.subscribe(consumer);
-    }
+//    @Nonnull
+//    @Override
+//    public Subscription subscribe(@Nonnull Consumer<State> consumer) {
+//        return op.subscribe(consumer);
+//    }
 
 
     private static class MiddlewareNoOp implements Middleware<Action> {
@@ -99,11 +94,11 @@ public class StoreImpl implements Store {
             StoreImpl.this.dispatch(action);
         }
 
-        @Nonnull
-        @Override
-        public Subscription subscribe(@Nonnull Consumer<State> consumer) {
-            return StoreImpl.this.subscribe(consumer);
-        }
+//        @Nonnull
+//        @Override
+//        public Subscription subscribe(@Nonnull Consumer<State> consumer) {
+//            return StoreImpl.this.subscribe(consumer);
+//        }
     }
 
     private class ImmutableState implements State {
@@ -113,11 +108,11 @@ public class StoreImpl implements Store {
         public <S extends StateItem> Op<S> get(@Nonnull Class<S> cl) {
             return StoreImpl.this.state.get(cl);
         }
-
-        @Nonnull
-        @Override
-        public List<StateItem> state() {
-            return StoreImpl.this.state.state();
-        }
+//
+//        @Nonnull
+//        @Override
+//        public List<StateItem> state() {
+//            return StoreImpl.this.state.state();
+//        }
     }
 }

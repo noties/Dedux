@@ -8,7 +8,7 @@ public interface Store {
     State state();
 
     void dispatch(@Nonnull Action action);
-
-    @Nonnull
-    Subscription subscribe(@Nonnull Consumer<State> consumer);
+//
+//    @Nonnull
+//    Subscription subscribe(@Nonnull Consumer<State> consumer);
 }

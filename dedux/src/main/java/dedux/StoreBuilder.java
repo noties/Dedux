@@ -1,29 +1,52 @@
 package dedux;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import dedux.internal.StoreImpl;
 
 public class StoreBuilder {
 
+    public static StoreBuilder create() {
+        return new StoreBuilder();
+    }
+
+    private MutableState.Storage storage;
+    private Reducer<Action> reducer;
     private Middleware<Action> middleware;
-    private PreloadedState preloadedState;
+//    private PreloadedState preloadedState;
 
     public StoreBuilder() {
     }
 
-    public StoreBuilder middleware(Middleware<Action> middleware) {
+    public StoreBuilder storage(@Nonnull MutableState.Storage storage) {
+        this.storage = storage;
+        return this;
+    }
+
+    public StoreBuilder reducer(@Nonnull Reducer<Action> reducer) {
+        this.reducer = reducer;
+        return this;
+    }
+
+    public StoreBuilder middleware(@Nullable Middleware<Action> middleware) {
         this.middleware = middleware;
         return this;
     }
 
-    public StoreBuilder preloadedState(PreloadedState preloadedState) {
-        this.preloadedState = preloadedState;
-        return this;
-    }
+//    public StoreBuilder preloadedState(PreloadedState preloadedState) {
+//        this.preloadedState = preloadedState;
+//        return this;
+//    }
 
-    public Store build(@Nonnull Reducer<Action> reducer) {
-        return new StoreImpl(reducer, middleware, preloadedState);
+    public Store build() {
+        if (reducer == null) {
+            throw new NullPointerException("Reducer must not be null");
+        }
+        if (storage == null) {
+            throw new NullPointerException("MutableState.Storage must not be null");
+        }
+        return new StoreImpl(storage, reducer, middleware);
     }
 
 }

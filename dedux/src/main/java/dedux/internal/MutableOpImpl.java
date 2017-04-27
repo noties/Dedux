@@ -53,10 +53,13 @@ public class MutableOpImpl<T> implements MutableOp<T> {
         synchronized (lock) {
 
             final Subscription subscription = new SubscriptionImpl();
-            map.put(subscription, consumer);
 
             if (deliverFirst) {
                 consumer.apply(subscription, value);
+            }
+
+            if (!subscription.isUnsubscribed()) {
+                map.put(subscription, consumer);
             }
 
             return subscription;
@@ -74,21 +77,35 @@ public class MutableOpImpl<T> implements MutableOp<T> {
     }
 
     private void notifySubscribers() {
-        final SubscriptionFlag flag = new SubscriptionFlag();
+
+        // maybe it's me, I don't know, but sometimes ConcurrentModificationException is thrown.
+        // despite synchronized block, somehow this method and one of the Subscriptions (in map)
+        // `unsubscribe` are called on one thread. It's weird, because we do not call directly
+        // unsubscribe here on subscriptions (we use a mock flag object) whilst iterating...
+        // I have changed implementation slightly to put unsubscribed subscriptions into a list
+        // to remove them after we have finished iteration
         synchronized (lock) {
+
+            final SubscriptionFlag flag = new SubscriptionFlag();
 
             final T value = this.value;
 
-            final Iterator<Map.Entry<Subscription, Consumer<T>>> iterator = new HashMap<>(map)
-                    .entrySet().iterator();
+            List<Subscription> mark = null;
 
-            Map.Entry<Subscription, Consumer<T>> entry;
-            while (iterator.hasNext()) {
-                entry = iterator.next();
+            for (Map.Entry<Subscription, Consumer<T>> entry: map.entrySet()) {
                 entry.getValue().apply(flag, value);
                 if (flag.unsubscribed) {
-                    iterator.remove();
+                    if (mark == null) {
+                        mark = new ArrayList<>(2);
+                    }
+                    mark.add(entry.getKey());
                     flag.unsubscribed = false;
+                }
+            }
+
+            if (mark != null) {
+                for (Subscription subscription: mark) {
+                    subscription.unsubscribe();
                 }
             }
         }
@@ -119,6 +136,7 @@ public class MutableOpImpl<T> implements MutableOp<T> {
         }
     }
 
+    // needed to mutate the state (reset `unsubscribed` flag)
     private static class SubscriptionFlag implements Subscription {
 
         boolean unsubscribed;
