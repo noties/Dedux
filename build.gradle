@@ -3,7 +3,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.4.0-alpha6'
+        classpath 'com.android.tools.build:gradle:2.4.0-alpha7'
     }
 }
 
@@ -11,7 +11,7 @@ allprojects {
     repositories {
         jcenter()
     }
-    version = '0.0.1'
+    version = '1.0.0'
 }
 
 task clean(type: Delete) {
@@ -27,8 +27,6 @@ ext {
     SUPPORT_VERSION = '25.3.1'
 
     FIREBASE_VERSION = '10.2.1'
-
-    JUNIT_VERSION = '4.12'
 
     JSR305 = 'com.google.code.findbugs:jsr305:3.0.2'
     JUNIT = 'junit:junit:4.12'

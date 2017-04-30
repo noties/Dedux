@@ -2,10 +2,19 @@ package dedux;
 
 import javax.annotation.Nonnull;
 
-// Subclasses must follow Java Bean convention and have an empty constructor
-// default values can be set in default empty constructor or directly into fields
+/**
+ * Simple implementation of the {@link StateItem}
+ *
+ * @see StateItem
+ * @since 1.0.0
+ */
 public class StateItemBase implements StateItem {
 
+    /**
+     * Required public empty constructor
+     *
+     * @since 1.0.0
+     */
     public StateItemBase() {
 
     }

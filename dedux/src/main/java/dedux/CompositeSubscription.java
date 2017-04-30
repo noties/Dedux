@@ -7,10 +7,24 @@ import javax.annotation.Nonnull;
 
 import dedux.internal.SubscriptionNoOp;
 
+/**
+ * Convenience class to keep track of multiple subscriptions with ability
+ * to unsubscribe all the added ones.
+ * Basic usage: {@code
+ * final CompositeSubscription subscription = new CompositeSubscription();
+ * final Op<Void> op = ...
+ * op.subscribe(subscription.compose((subscription, v) -> {}))
+ * }
+ *
+ * @see Op
+ * @see Op#subscribe(Consumer)
+ * @see Subscription
+ * @since 1.0.0
+ */
 @SuppressWarnings("WeakerAccess")
 public class CompositeSubscription implements Subscription {
 
-    private final List<Subscription> subscriptions = new ArrayList<>(3);
+    private final List<Subscription> subscriptions = new ArrayList<>(2);
     private final Object lock = new Object();
     private boolean isUnsubscribed;
 

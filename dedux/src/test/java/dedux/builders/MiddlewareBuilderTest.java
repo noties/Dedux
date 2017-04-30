@@ -2,6 +2,8 @@ package dedux.builders;
 
 import org.junit.Test;
 
+import java.util.concurrent.CancellationException;
+
 import javax.annotation.Nonnull;
 
 import dedux.Action;
@@ -35,12 +37,9 @@ public class MiddlewareBuilderTest {
         final Middleware<Action> middleware = MiddlewareBuilder.create()
                 .add(flag)
                 .build();
-        final NextFlag nextFlag = new NextFlag();
-        middleware.apply(new StoreNoOp(), new Action() {
-        }, nextFlag);
 
+        middleware.apply(new StoreNoOp(), createTestAction());
         assertTrue(flag.called);
-        assertTrue(nextFlag.called);
     }
 
     @Test
@@ -54,14 +53,10 @@ public class MiddlewareBuilderTest {
                 .add(second)
                 .build();
 
-        final NextFlag nextFlag = new NextFlag();
-
-        middleware.apply(new StoreNoOp(), new Action() {
-        }, nextFlag);
+        middleware.apply(new StoreNoOp(), createTestAction());
 
         assertTrue(first.called);
         assertTrue(second.called);
-        assertTrue(nextFlag.called);
     }
 
     @Test
@@ -75,26 +70,58 @@ public class MiddlewareBuilderTest {
                 .add(specific)
                 .build();
 
-        final NextFlag nextFlag = new NextFlag();
-
         // dispatch generic, generic should handle, specific - not
 
-        middleware.apply(new StoreNoOp(), new Action() {
-        }, nextFlag);
+        middleware.apply(new StoreNoOp(), createTestAction());
 
         assertTrue(generic.called);
         assertFalse(specific.called);
-        assertTrue(nextFlag.called);
 
         generic.called = false;
         specific.called = false;
-        nextFlag.called = false;
 
-        middleware.apply(new StoreNoOp(), new TestAction(), nextFlag);
+        middleware.apply(new StoreNoOp(), new TestAction());
 
         assertTrue(generic.called);
         assertTrue(specific.called);
-        assertTrue(nextFlag.called);
+    }
+
+    @Test
+    public void cancelled_chain() {
+
+        // second one cancel chain
+
+        final MiddlewareFlag<Action> f = new MiddlewareFlag<>(Action.class);
+        final MiddlewareFlag<Action> s = new MiddlewareFlag<Action>(Action.class) {
+            @Override
+            public void apply(@Nonnull Store store, @Nonnull Action action) {
+                super.apply(store, action);
+                throw new CancellationException();
+            }
+        };
+        final MiddlewareFlag<Action> t = new MiddlewareFlag<>(Action.class);
+
+        final Middleware<Action> middleware = MiddlewareBuilder.create()
+                .add(f)
+                .add(s)
+                .add(t)
+                .build();
+
+        try {
+            middleware.apply(new StoreNoOp(), createTestAction());
+            assertTrue(false);
+        } catch (CancellationException e) {
+            assertTrue(true);
+        }
+
+        assertTrue(f.called);
+        assertTrue(s.called);
+        assertFalse(t.called);
+    }
+
+    private static Action createTestAction() {
+        return new Action() {
+        };
     }
 
     private static class MiddlewareFlag<A extends Action> implements Middleware<A> {
@@ -113,18 +140,7 @@ public class MiddlewareBuilderTest {
         }
 
         @Override
-        public void apply(@Nonnull Store store, @Nonnull A action, @Nonnull Next next) {
-            called = true;
-            next.next();
-        }
-    }
-
-    private static class NextFlag implements Middleware.Next {
-
-        boolean called;
-
-        @Override
-        public void next() {
+        public void apply(@Nonnull Store store, @Nonnull A action) {
             called = true;
         }
     }

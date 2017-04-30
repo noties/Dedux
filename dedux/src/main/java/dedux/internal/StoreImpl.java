@@ -1,6 +1,8 @@
 package dedux.internal;
 
 
+import java.util.concurrent.CancellationException;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -46,12 +48,16 @@ public class StoreImpl implements Store {
 
     @Override
     public void dispatch(@Nonnull final Action action) {
-        middleware.apply(immutableStore, action, new Middleware.Next() {
-            @Override
-            public void next() {
-                reducer.reduce(state, action);
-            }
-        });
+        boolean cancelled;
+        try {
+            middleware.apply(immutableStore, action);
+            cancelled = false;
+        } catch (CancellationException e) {
+            cancelled = true;
+        }
+        if (!cancelled) {
+            reducer.reduce(state, action);
+        }
     }
 
     private static class MiddlewareNoOp implements Middleware<Action> {
@@ -63,8 +69,8 @@ public class StoreImpl implements Store {
         }
 
         @Override
-        public void apply(@Nonnull Store store, @Nonnull Action action, @Nonnull Next next) {
-            next.next();
+        public void apply(@Nonnull Store store, @Nonnull Action action) throws CancellationException {
+            // no op
         }
     }
 

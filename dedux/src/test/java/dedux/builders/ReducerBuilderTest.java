@@ -157,6 +157,18 @@ public class ReducerBuilderTest {
         assertTrue(reducerFlag.called);
     }
 
+    @Test
+    public void dispatch_anonymous_class() {
+        final ReducerFlag<TestAction> reducerFlag = new ReducerFlag<>(TestAction.class);
+        final Reducer<Action> reducer = ReducerBuilder.create()
+                .add(reducerFlag)
+                .build();
+
+        final Action action = new TestAction() {{}};
+        reducer.reduce(new MutableStateNoOp(), action);
+        assertTrue(reducerFlag.called);
+    }
+
     private static class ReducerNoOp<A extends Action> implements Reducer<A> {
 
         static <A extends Action> Reducer<A> create(Class<A> type) {

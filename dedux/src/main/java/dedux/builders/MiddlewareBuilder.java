@@ -2,10 +2,10 @@ package dedux.builders;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CancellationException;
 
 import javax.annotation.Nonnull;
 
@@ -58,7 +58,7 @@ public class MiddlewareBuilder<A extends Action> {
 
     // as order of the added middlewares is important, we allow a list (not a collection) only
     public MiddlewareBuilder<A> addAll(@Nonnull List<Middleware<? extends A>> list) {
-        for (Middleware<? extends A> middleware: list) {
+        for (Middleware<? extends A> middleware : list) {
             if (middleware == null) {
                 throw new NullPointerException("Cannot register null value");
             }
@@ -92,16 +92,13 @@ public class MiddlewareBuilder<A extends Action> {
         }
 
         @Override
-        public void apply(@Nonnull Store store, @Nonnull A action, @Nonnull Next next) {
+        public void apply(@Nonnull Store store, @Nonnull A action) throws CancellationException {
             //noinspection unchecked
             final List<Middleware<A>> list = findMiddlewaresForClass((Class<? extends A>) action.getClass());
-            if (list == null
-                    || list.size() == 0) {
-                // nothing is found, just pass further
-                next.next();
-            } else {
+            if (list != null
+                    && list.size() > 0) {
                 final MiddlewareChain<A> chain = new MiddlewareChain<>(type, list);
-                chain.apply(store, action, next);
+                chain.apply(store, action);
             }
         }
 
@@ -118,11 +115,11 @@ public class MiddlewareBuilder<A extends Action> {
         private static class MiddlewareChain<A extends Action> implements Middleware<A> {
 
             private final Class<A> type;
-            private final Iterator<Middleware<A>> iterator;
+            private final List<Middleware<A>> list;
 
             MiddlewareChain(@Nonnull Class<A> type, @Nonnull List<Middleware<A>> list) {
                 this.type = type;
-                this.iterator = list.iterator();
+                this.list = list;
             }
 
             @Nonnull
@@ -132,18 +129,9 @@ public class MiddlewareBuilder<A extends Action> {
             }
 
             @Override
-            public void apply(@Nonnull final Store store, @Nonnull final A action, @Nonnull final Next next) {
-                if (iterator.hasNext()) {
-                    final Middleware<A> middleware = iterator.next();
-                    middleware.apply(store, action, new Next() {
-                        @Override
-                        public void next() {
-                            iterator.remove();
-                            apply(store, action, next);
-                        }
-                    });
-                } else {
-                    next.next();
+            public void apply(@Nonnull final Store store, @Nonnull final A action) throws CancellationException {
+                for (Middleware<A> middleware : list) {
+                    middleware.apply(store, action);
                 }
             }
         }

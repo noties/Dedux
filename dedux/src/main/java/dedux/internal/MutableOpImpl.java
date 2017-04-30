@@ -16,8 +16,6 @@ import dedux.Subscription;
 @SuppressWarnings("WeakerAccess")
 public class MutableOpImpl<T> implements MutableOp<T> {
 
-    private static final boolean DELIVER_FIRST = false;
-
     private final Map<Subscription, Consumer<T>> map;
     private final Object lock = new Object();
     private T value;
@@ -44,7 +42,7 @@ public class MutableOpImpl<T> implements MutableOp<T> {
 
     @Override
     public Subscription subscribe(@Nonnull final Consumer<T> consumer) {
-        return subscribe(DELIVER_FIRST, consumer);
+        return subscribe(DEF_DELIVER_FIRST, consumer);
     }
 
     @Override
@@ -57,11 +55,16 @@ public class MutableOpImpl<T> implements MutableOp<T> {
                 consumer.apply(subscription, value);
             }
 
+            final Subscription out;
+
             if (!subscription.isUnsubscribed()) {
-                map.put(new SubscriptionImpl(), consumer);
+                out = new SubscriptionImpl();
+                map.put(out, consumer);
+            } else {
+                out = subscription;
             }
 
-            return subscription;
+            return out;
         }
     }
 
