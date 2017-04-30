@@ -2,8 +2,6 @@ package dedux.builders;
 
 import org.junit.Test;
 
-import java.util.concurrent.CancellationException;
-
 import javax.annotation.Nonnull;
 
 import dedux.Action;
@@ -38,7 +36,7 @@ public class MiddlewareBuilderTest {
                 .add(flag)
                 .build();
 
-        middleware.apply(new StoreNoOp(), createTestAction());
+        middleware.apply(new StoreNoOp(), createTestAction(), new ActionHandlerNoOp<Action>());
         assertTrue(flag.called);
     }
 
@@ -53,7 +51,7 @@ public class MiddlewareBuilderTest {
                 .add(second)
                 .build();
 
-        middleware.apply(new StoreNoOp(), createTestAction());
+        middleware.apply(new StoreNoOp(), createTestAction(), new ActionHandlerNoOp<Action>());
 
         assertTrue(first.called);
         assertTrue(second.called);
@@ -72,7 +70,7 @@ public class MiddlewareBuilderTest {
 
         // dispatch generic, generic should handle, specific - not
 
-        middleware.apply(new StoreNoOp(), createTestAction());
+        middleware.apply(new StoreNoOp(), createTestAction(), new ActionHandlerNoOp<Action>());
 
         assertTrue(generic.called);
         assertFalse(specific.called);
@@ -80,7 +78,7 @@ public class MiddlewareBuilderTest {
         generic.called = false;
         specific.called = false;
 
-        middleware.apply(new StoreNoOp(), new TestAction());
+        middleware.apply(new StoreNoOp(), new TestAction(), new ActionHandlerNoOp<Action>());
 
         assertTrue(generic.called);
         assertTrue(specific.called);
@@ -94,9 +92,9 @@ public class MiddlewareBuilderTest {
         final MiddlewareFlag<Action> f = new MiddlewareFlag<>(Action.class);
         final MiddlewareFlag<Action> s = new MiddlewareFlag<Action>(Action.class) {
             @Override
-            public void apply(@Nonnull Store store, @Nonnull Action action) {
-                super.apply(store, action);
-                throw new CancellationException();
+            public void apply(@Nonnull Store store, @Nonnull Action action, @Nonnull ActionHandler<Action> handler) {
+                super.apply(store, action, handler);
+                handler.cancelActionDispatch();
             }
         };
         final MiddlewareFlag<Action> t = new MiddlewareFlag<>(Action.class);
@@ -107,16 +105,16 @@ public class MiddlewareBuilderTest {
                 .add(t)
                 .build();
 
-        try {
-            middleware.apply(new StoreNoOp(), createTestAction());
-            assertTrue(false);
-        } catch (CancellationException e) {
-            assertTrue(true);
-        }
+        middleware.apply(new StoreNoOp(), createTestAction(), new ActionHandlerNoOp<Action>());
 
         assertTrue(f.called);
         assertTrue(s.called);
         assertFalse(t.called);
+    }
+
+    @Test
+    public void do_on_action_reduced() {
+
     }
 
     private static Action createTestAction() {
@@ -140,7 +138,7 @@ public class MiddlewareBuilderTest {
         }
 
         @Override
-        public void apply(@Nonnull Store store, @Nonnull A action) {
+        public void apply(@Nonnull Store store, @Nonnull A action, @Nonnull ActionHandler<A> handler) {
             called = true;
         }
     }
@@ -156,6 +154,19 @@ public class MiddlewareBuilderTest {
 
         @Override
         public void dispatch(@Nonnull Action action) {
+
+        }
+    }
+
+    private static class ActionHandlerNoOp<A extends Action> implements Middleware.ActionHandler<A> {
+
+        @Override
+        public void doOnActionReduced(@Nonnull Middleware.OnActionReduced<A> onActionReduced) {
+
+        }
+
+        @Override
+        public void cancelActionDispatch() {
 
         }
     }

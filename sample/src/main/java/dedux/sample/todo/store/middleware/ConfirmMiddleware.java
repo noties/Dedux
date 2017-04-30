@@ -17,7 +17,7 @@ public class ConfirmMiddleware implements Middleware<ConfirmAction> {
     }
 
     @Override
-    public void apply(@Nonnull Store store, @Nonnull ConfirmAction action, @Nonnull Next next) {
+    public void apply(@Nonnull Store store, @Nonnull ConfirmAction action, @Nonnull ActionHandler<ConfirmAction> handler) {
 
         store.dispatch(new ConfirmCloseAction());
 
@@ -26,6 +26,8 @@ public class ConfirmMiddleware implements Middleware<ConfirmAction> {
             store.dispatch(new ClearDoneAction());
         }
 
+
         // NB, we do not pass this event further the chain
+        handler.cancelActionDispatch();
     }
 }

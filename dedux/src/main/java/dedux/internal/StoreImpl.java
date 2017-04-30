@@ -1,7 +1,8 @@
 package dedux.internal;
 
 
-import java.util.concurrent.CancellationException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -48,15 +49,14 @@ public class StoreImpl implements Store {
 
     @Override
     public void dispatch(@Nonnull final Action action) {
-        boolean cancelled;
-        try {
-            middleware.apply(immutableStore, action);
-            cancelled = false;
-        } catch (CancellationException e) {
-            cancelled = true;
-        }
-        if (!cancelled) {
+
+        final ActionHandlerImpl<Action> handler = new ActionHandlerImpl<>();
+        middleware.apply(immutableStore, action, handler);
+        if (!handler.cancelled()) {
             reducer.reduce(state, action);
+            for (Middleware.OnActionReduced<Action> onActionReduced : handler.onActionReducedListeners()) {
+                onActionReduced.apply(immutableStore, action);
+            }
         }
     }
 
@@ -69,7 +69,7 @@ public class StoreImpl implements Store {
         }
 
         @Override
-        public void apply(@Nonnull Store store, @Nonnull Action action) throws CancellationException {
+        public void apply(@Nonnull Store store, @Nonnull Action action, @Nonnull ActionHandler<Action> handler) {
             // no op
         }
     }
@@ -95,6 +95,36 @@ public class StoreImpl implements Store {
         @Override
         public <S extends StateItem> Op<S> get(@Nonnull Class<S> cl) {
             return StoreImpl.this.state.get(cl);
+        }
+    }
+
+    private static class ActionHandlerImpl<A extends Action> implements Middleware.ActionHandler<A> {
+
+        private final List<Middleware.OnActionReduced<A>> onActionReducedListeners;
+        private boolean cancelled;
+
+        ActionHandlerImpl() {
+            this.onActionReducedListeners = new ArrayList<>(2);
+        }
+
+        @Override
+        public void doOnActionReduced(@Nonnull Middleware.OnActionReduced<A> onActionReduced) {
+            onActionReducedListeners.add(onActionReduced);
+        }
+
+        @Override
+        public void cancelActionDispatch() {
+            cancelled = true;
+            onActionReducedListeners.clear();
+        }
+
+        boolean cancelled() {
+            return cancelled;
+        }
+
+        @Nonnull
+        List<Middleware.OnActionReduced<A>> onActionReducedListeners() {
+            return onActionReducedListeners;
         }
     }
 }

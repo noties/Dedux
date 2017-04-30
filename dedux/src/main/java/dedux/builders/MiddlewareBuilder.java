@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CancellationException;
 
 import javax.annotation.Nonnull;
 
@@ -92,13 +91,13 @@ public class MiddlewareBuilder<A extends Action> {
         }
 
         @Override
-        public void apply(@Nonnull Store store, @Nonnull A action) throws CancellationException {
+        public void apply(@Nonnull Store store, @Nonnull A action, @Nonnull ActionHandler<A> handler) {
             //noinspection unchecked
             final List<Middleware<A>> list = findMiddlewaresForClass((Class<? extends A>) action.getClass());
             if (list != null
                     && list.size() > 0) {
                 final MiddlewareChain<A> chain = new MiddlewareChain<>(type, list);
-                chain.apply(store, action);
+                chain.apply(store, action, handler);
             }
         }
 
@@ -129,9 +128,38 @@ public class MiddlewareBuilder<A extends Action> {
             }
 
             @Override
-            public void apply(@Nonnull final Store store, @Nonnull final A action) throws CancellationException {
+            public void apply(@Nonnull final Store store, @Nonnull final A action, @Nonnull ActionHandler<A> handler) {
+                final ActionHandlerDelegate<A> delegate = new ActionHandlerDelegate<>(handler);
                 for (Middleware<A> middleware : list) {
-                    middleware.apply(store, action);
+                    middleware.apply(store, action, delegate);
+                    if (delegate.canceled()) {
+                        break;
+                    }
+                }
+            }
+
+            private static class ActionHandlerDelegate<A extends Action> implements ActionHandler<A> {
+
+                private final ActionHandler<A> parent;
+                private boolean canceled;
+
+                private ActionHandlerDelegate(@Nonnull ActionHandler<A> parent) {
+                    this.parent = parent;
+                }
+
+                @Override
+                public void doOnActionReduced(@Nonnull OnActionReduced<A> onActionReduced) {
+                    parent.doOnActionReduced(onActionReduced);
+                }
+
+                @Override
+                public void cancelActionDispatch() {
+                    canceled = true;
+                    parent.cancelActionDispatch();
+                }
+
+                public boolean canceled() {
+                    return canceled;
                 }
             }
         }

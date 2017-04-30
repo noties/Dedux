@@ -18,8 +18,6 @@ import dedux.builders.MiddlewareBuilder;
 import dedux.builders.ReducerBuilder;
 import dedux.builders.StoreBuilder;
 import dedux.sample.todo.R;
-import dedux.sample.todo.store.reducer.EditTodoReducer;
-import ru.noties.debug.Debug;
 import dedux.sample.todo.store.middleware.ConfirmMiddleware;
 import dedux.sample.todo.store.middleware.ModifyTodoMiddleware;
 import dedux.sample.todo.store.reducer.AddTodoReducer;
@@ -28,11 +26,13 @@ import dedux.sample.todo.store.reducer.AppBarCountDoneReducer;
 import dedux.sample.todo.store.reducer.ClearDoneReducer;
 import dedux.sample.todo.store.reducer.ConfirmClearDoneReducer;
 import dedux.sample.todo.store.reducer.ConfirmCloseReducer;
+import dedux.sample.todo.store.reducer.EditTodoReducer;
 import dedux.sample.todo.store.reducer.InputReducer;
 import dedux.sample.todo.store.reducer.ScrollReducer;
 import dedux.sample.todo.store.reducer.ToggleAllDoneReducer;
 import dedux.sample.todo.store.reducer.ToggleTodoReducer;
 import dedux.sample.todo.store.state.AppBarState;
+import ru.noties.debug.Debug;
 
 public class AppStore {
 
@@ -115,9 +115,8 @@ public class AppStore {
         }
 
         @Override
-        public void apply(@Nonnull Store store, @Nonnull Action action, @Nonnull Next next) {
+        public void apply(@Nonnull Store store, @Nonnull Action action, @Nonnull ActionHandler<Action> handler) {
             Debug.i("action: %s", action);
-            next.next();
         }
     }
 }
